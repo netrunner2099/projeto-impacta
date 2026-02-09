@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 
 namespace Credenciamento.Web;
 
@@ -20,7 +21,11 @@ public class Startup
     public void ConfigureServices(IServiceCollection services)
     {
         services.AddControllersWithViews();
-        
+
+        services.AddLogging(opt => { 
+            opt.AddConsole();
+        });
+
         ApplicationRegistration.AddApplicationServices(services, null, Configuration);
     }
 

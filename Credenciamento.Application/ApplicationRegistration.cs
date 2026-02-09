@@ -17,10 +17,7 @@ public static class ApplicationRegistration
         {
             cfg.LicenseKey = $"{configuration["MediatR:LicenseKey"]}";
             cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly());
-        });
-
-        // Validators
-        
+        });      
 
         #region "AutoMapper"
         var _mapperconf = new MapperConfiguration(mc => {

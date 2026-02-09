@@ -3,6 +3,7 @@ namespace Credenciamento.Domain.Interfaces;
 public interface IEventRepository
 {
     Task<IEnumerable<Event>> ListAllAsync();
+    Task<IEnumerable<Event>> ListFutureAsync();
     Task<Event> GetByIdAsync(long id);
     Task<Event> AddAsync(Event entity);
     Task<Event> UpdateAsync(Event entity);
