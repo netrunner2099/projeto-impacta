@@ -1,0 +1,12 @@
+﻿global using Credenciamento.Domain.Entities;
+global using Credenciamento.Domain.Enums;
+global using Credenciamento.Domain.Interfaces;
+global using Credenciamento.Infrastructure.Contexts;
+global using Microsoft.EntityFrameworkCore;
+global using System;
+global using System.Collections.Generic;
+global using System.Threading.Tasks;
+global using Credenciamento.Infrastructure.Repositories;
+global using Microsoft.Extensions.Configuration;
+global using Microsoft.Extensions.DependencyInjection;
+global using System.Linq;
