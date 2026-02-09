@@ -18,7 +18,7 @@ public class EventRepository : IEventRepository
     public async Task<IEnumerable<Event>> ListFutureAsync()
     {
         using var db = await _factory.CreateDbContextAsync();
-        return await db.Events.Where(q => q.Begin.Date >= DateTime.Now.Date).ToListAsync();
+        return await db.Events.Where(q => q.Status == (byte)EventStatus.Active && q.Begin.Date >= DateTime.Now.Date).ToListAsync();
     }
 
     public async Task<Event> GetByIdAsync(long id)

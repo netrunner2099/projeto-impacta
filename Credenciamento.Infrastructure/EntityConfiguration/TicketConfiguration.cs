@@ -1,59 +1,48 @@
-using Credenciamento.Domain.Entities;
-using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.Metadata.Builders;
+namespace Credenciamento.Infrastructure.EntityConfiguration;
 
-namespace Credenciamento.Infrastructure.EntityConfiguration
+public class TicketConfiguration : IEntityTypeConfiguration<Ticket>
 {
-    public class TicketConfiguration : IEntityTypeConfiguration<Ticket>
+    public void Configure(EntityTypeBuilder<Ticket> builder)
     {
-        public void Configure(EntityTypeBuilder<Ticket> builder)
-        {
-            builder.ToTable("ticket", "dbo");
+        builder.ToTable("ticket", "dbo");
 
-            builder.HasKey(t => t.TicketId);
+        builder.HasKey(t => t.TicketId);
 
-            builder.Property(t => t.TicketId)
-                .HasColumnName("ticketid")
-                .ValueGeneratedOnAdd();
+        builder.Property(t => t.TicketId)
+            .HasColumnName("ticketid")
+            .HasColumnType("bigint")
+            .ValueGeneratedOnAdd();
 
-            builder.Property(t => t.PersonId)
-                .HasColumnName("personid")
-                .IsRequired();
+        builder.Property(t => t.PersonId)
+            .HasColumnName("personid")
+            .HasColumnType("bigint");
 
-            builder.Property(t => t.EventId)
-                .HasColumnName("eventid")
-                .IsRequired();
+        builder.Property(t => t.EventId)
+            .HasColumnName("eventid")
+            .HasColumnType("bigint");
 
-            builder.Property(t => t.Price)
-                .HasColumnName("price")
-                .HasColumnType("numeric(18,6)")
-                .IsRequired();
+        builder.Property(t => t.Price)
+            .HasColumnName("price")
+            .HasColumnType("numeric(18,6)");
 
-            builder.Property(t => t.Status)
-                .HasColumnName("status")
-                .HasDefaultValue((byte)1)
-                .IsRequired();
+        builder.Property(t => t.Status)
+            .HasColumnName("status")
+            .HasColumnType("tinyint");
 
-            builder.Property(t => t.CreatedAt)
-                .HasColumnName("createdat")
-                .HasDefaultValueSql("getdate()")
-                .IsRequired();
+        builder.Property(t => t.CreatedAt)
+            .HasColumnName("createdat")
+            .HasColumnType("datetime");
 
-            builder.Property(t => t.UpdatedAt)
-                .HasColumnName("updatedat");
+        builder.Property(t => t.UpdatedAt)
+            .HasColumnName("updatedat");
 
-            // Foreign Keys
-            builder.HasOne(t => t.Person)
-                .WithMany()
-                .HasForeignKey(t => t.PersonId)
-                .HasConstraintName("fk_ticket_person")
-                .OnDelete(DeleteBehavior.Restrict);
+        // Foreign Keys
+        builder.HasOne(t => t.Person)
+            .WithMany(m => m.Tickets)
+            .HasForeignKey(t => t.PersonId);
 
-            builder.HasOne(t => t.Event)
-                .WithMany()
-                .HasForeignKey(t => t.EventId)
-                .HasConstraintName("fk_ticket_event")
-                .OnDelete(DeleteBehavior.Restrict);
-        }
+        builder.HasOne(t => t.Event)
+            .WithMany(m => m.Tickets)
+            .HasForeignKey(t => t.EventId);
     }
 }

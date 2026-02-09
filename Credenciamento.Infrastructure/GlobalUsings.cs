@@ -10,3 +10,4 @@ global using Credenciamento.Infrastructure.Repositories;
 global using Microsoft.Extensions.Configuration;
 global using Microsoft.Extensions.DependencyInjection;
 global using System.Linq;
+global using Microsoft.EntityFrameworkCore.Metadata.Builders;

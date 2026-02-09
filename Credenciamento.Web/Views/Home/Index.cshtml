@@ -1,8 +1,26 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
+﻿@model HomeIndexViewModel;
+@{
+    ViewData["Title"] = "Próximos Eventos";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-</div>
+@if (null != Model && null != Model.Events && Model.Events.Any())
+{
+    foreach (var item in Model.Events)
+    {
+        <div class="card mb-3">
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-8">
+                        <h5 class="card-title">@item.Name</h5>
+                        <p class="card-text">@item.Local - @item.Begin.ToString("dd/MM") a @item.End.ToString("dd/MM")</p>
+                    </div>
+                    <div class="col-md-4 text-end">
+                        <button type="button" class="btn btn-primary">Comprar ingresso</button>
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+    }
+
+}

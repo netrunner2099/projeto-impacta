@@ -42,7 +42,8 @@ create table [dbo].[event]
 (
 	[eventid]			bigint identity(1,1) not null,
 	[name]				varchar(100) not null,
-	[description]		varchar(500) not null,
+	[description]		varchar(500) null,
+	[local]				varchar(200) null,
 	[begin]				datetime not null,
 	[end]				datetime not null,
 	[price]				numeric(18,6) not null,
