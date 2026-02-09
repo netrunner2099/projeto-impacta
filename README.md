@@ -86,6 +86,35 @@ dotnet run
 - URL padrão: `http://localhost:5000`
 - Página inicial de venda de ingressos deve ser exibida
 
+## 📁 Estrutura do Banco de Dados
+
+### Scripts SQL
+
+Os scripts de criação das tabelas estão disponíveis na pasta `database/`:
+
+- `01-create-database.sql` - Criação da database
+- `02-create-objects.sql` - Criação das tabelas e outros objetos
+
+## 🔐 Funcionalidades de Segurança
+
+- Senhas armazenadas com hash (BCrypt)
+- Controle de acesso por roles (Administrador/Operador)
+- Validação de dados de entrada
+- Proteção contra SQL Injection via EF Core
+
+## 👥 Equipe
+
+Projeto desenvolvido por Rodrigo Miranda - Turma EAD - ADS 5A para a disciplina Software Product: Analysis, Specification, Project da Impacta.
+
+## 📝 Licença
+
+Este projeto é um trabalho acadêmico e está disponível para fins educacionais.
+
+## 📞 Contato
+
+Para dúvidas ou sugestões, abra uma [issue](https://github.com/netrunner2099/projeto-impacta/issues) no repositório.
+
+
 ## 👨‍💻 Contribuição
 
 Contribuições são bem-vindas! Veja o arquivo [CONTRIBUTING.md](CONTRIBUTING.md) para detalhes sobre como contribuir para este projeto.
