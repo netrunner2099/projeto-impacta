@@ -114,14 +114,10 @@ Este projeto é um trabalho acadêmico e está disponível para fins educacionai
 
 Para dúvidas ou sugestões, abra uma [issue](https://github.com/netrunner2099/projeto-impacta/issues) no repositório.
 
+## 👨‍💻 Projeto 
 
-## 👨‍💻 Contribuição
-
-Contribuições são bem-vindas! Veja o arquivo [CONTRIBUTING.md](CONTRIBUTING.md) para detalhes sobre como contribuir para este projeto.
-
-## 📝 Licença
-
-Este projeto está licenciado sob a licença MIT. Veja o arquivo [LICENSE](LICENSE) para mais detalhes.
+O projeto está sendo gerenciado utilizando o Github Projects, e o link deste projeto está abaixo:
+https://github.com/users/netrunner2099/projects/1
 
 ---
 
