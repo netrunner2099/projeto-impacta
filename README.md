@@ -31,6 +31,8 @@ Apenas participantes que realizaram o pagamento do ingresso receberão a pulseir
 ## 🏗️ Arquitetura
 
 O projeto segue uma arquitetura em camadas (Layered Architecture) com separação clara de responsabilidades:
+- **CQRS**: Command Query Responsibility Segregation 
+- **MVVM**: Model-View-ViewModel
 
 ### 📦 Camadas
 
@@ -122,5 +124,5 @@ https://github.com/users/netrunner2099/projects/1
 ---
 
 > Status do Projeto: Em Andamento 🚧
-> Última Atualização: 08/02/2026
+> Última Atualização: 09/02/2026
 > Para mais informações, consulte a documentação técnica do projeto.
