@@ -24,6 +24,7 @@ create table [dbo].[person]
 	[document]			varchar(12) not null,
 	[email]				varchar(255) not null,
 	[phone]				varchar(20) not null,
+	[birthday]			datetime not null,
 	[zipcode]			varchar(9) not null,
 	[address]			varchar(255) not null,
 	[number]			varchar(50) not null,

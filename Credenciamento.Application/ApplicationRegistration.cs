@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Credenciamento.Application.Mappings;
+using Credenciamento.Application.Validators.Person;
 using Credenciamento.Infrastructure;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -15,7 +16,6 @@ public static class ApplicationRegistration
         // Adding Mediator
         services.AddMediatR(cfg =>
         {
-            cfg.LicenseKey = $"{configuration["MediatR:LicenseKey"]}";
             cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly());
         });      
 
@@ -30,6 +30,9 @@ public static class ApplicationRegistration
         IMapper _mapper = _mapperconf.CreateMapper();
         services.AddSingleton(_mapper);
         #endregion
+
+        // Validators
+        services.AddScoped<IValidator<CreatePersonCommand>, CreatePersonCommandValidator>();
 
         InfrastructureRegistration.AddInfrastructure(services, configuration);
 

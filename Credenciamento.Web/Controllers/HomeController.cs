@@ -1,13 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Threading.Tasks;
-using Credenciamento.Application.Queries.Event;
+﻿using Credenciamento.Application.Queries.Event;
 using Credenciamento.Web.Models;
-using MediatR;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.Extensions.Logging;
 
 namespace Credenciamento.Web.Controllers;
 

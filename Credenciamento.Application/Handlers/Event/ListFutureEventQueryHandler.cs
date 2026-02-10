@@ -1,7 +1,4 @@
-﻿
-using Microsoft.Extensions.Logging;
-
-namespace Credenciamento.Application.Handlers.Event;
+﻿namespace Credenciamento.Application.Handlers.Event;
 
 public class ListFutureEventQueryHandler : IRequestHandler<ListFutureEventQuery, ListFutureEventQueryResponse>
 {
@@ -28,7 +25,7 @@ public class ListFutureEventQueryHandler : IRequestHandler<ListFutureEventQuery,
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Error while listing future events");
+            _logger.LogError(ex, "Handle: error {0}", ex.Message);
         }
 
         return returns;

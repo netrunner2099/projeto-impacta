@@ -11,3 +11,7 @@ global using MediatR;
 global using Credenciamento.Application.Queries.Event;
 global using Credenciamento.Domain.Interfaces;
 global using System.Threading;
+global using Credenciamento.Application.Contracts.Person;
+global using Credenciamento.Application.Commands.Person;
+global using FluentValidation;
+global using Microsoft.Extensions.Logging;

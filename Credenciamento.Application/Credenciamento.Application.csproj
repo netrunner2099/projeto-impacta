@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
 		<TargetFramework>net8.0</TargetFramework>
@@ -7,14 +7,13 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<Folder Include="Commands\" />
-		<Folder Include="Validators\" />
 		<Folder Include="Services\" />
 	</ItemGroup>
 
 	<ItemGroup>
 		<PackageReference Include="AutoMapper" Version="13.0.1" />
-		<PackageReference Include="MediatR" Version="13.0.0" />
+		<PackageReference Include="MediatR" Version="12.5.0" />
+		<PackageReference Include="FluentValidation" Version="11.11.0" />
 	</ItemGroup>
 
 	<ItemGroup>

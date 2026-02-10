@@ -7,5 +7,7 @@ public interface IPersonRepository
     Task<Person> AddAsync(Person entity);
     Task<Person> UpdateAsync(Person entity);
     Task<bool> DeleteAsync(long id);
-    Task<bool> ExistsAsync(string document);
+    Task<bool> DocumentExistsAsync(Person entity);
+    Task<bool> PhoneNumberExistsAsync(Person entity);
+    Task<bool> EmailExistsAsync(Person entity);
 }

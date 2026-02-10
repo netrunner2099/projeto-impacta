@@ -53,9 +53,21 @@ public class PersonRepository : IPersonRepository
         return true;
     }
 
-    public async Task<bool> ExistsAsync(string document)
+    public async Task<bool> DocumentExistsAsync(Person entity)
     {
         var db = await _factory.CreateDbContextAsync();
-        return await db.Persons.AnyAsync(p => p.Document == document);
+        return await db.Persons.AnyAsync(p => p.Document == entity.Document && p.PersonId != entity.PersonId && p.Status != (byte)PersonStatus.Deleted);
+    }
+
+    public async Task<bool> PhoneNumberExistsAsync(Person entity)
+    {
+        var db = await _factory.CreateDbContextAsync();
+        return await db.Persons.AnyAsync(p => p.Phone == entity.Phone && p.PersonId != entity.PersonId && p.Status != (byte)PersonStatus.Deleted);
+    }
+
+    public async Task<bool> EmailExistsAsync(Person entity)
+    {
+        var db = await _factory.CreateDbContextAsync();
+        return await db.Persons.AnyAsync(p => p.Email == entity.Email && p.PersonId != entity.PersonId && p.Status != (byte)PersonStatus.Deleted);
     }
 }

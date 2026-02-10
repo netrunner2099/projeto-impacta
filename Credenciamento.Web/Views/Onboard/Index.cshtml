@@ -1,0 +1,210 @@
+﻿@model OnboardIndexViewModel;
+@{
+    ViewData["Title"] = "Compre seu ingresso";
+}
+
+@if (Model.Event is not null)
+{
+    <form asp-action="Create" asp-controller="Onboard" method="post" id="formOnboard">
+        <input type="hidden" asp-for="Event.EventId" />
+        <div class="card mb-3">
+            <div class="card-header">
+                <h5 class="card-title">@Model.Event.Name</h5>
+            </div>
+
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-8">
+                        <p class="card-text">@Model.Event.Local - @Model.Event.Begin.ToString("dd/MM") a @Model.Event.End.ToString("dd/MM")</p>
+                        <p class="card-text">@Model.Event.Price.ToString("c2")</p>
+                    </div>
+                </div>
+
+                <div class="row mt-3"><hr /></div>
+
+                <div class="row g-3 mb-3">
+                    <div class="col-md-8">
+                        <label asp-for="Person.Name" class="form-label fw-bold"></label>
+                        <input type="text" asp-for="Person.Name" class="form-control">
+                        <span asp-validation-for="Person.Name" class="text-danger"></span>
+                    </div>
+                    <div class="col-md-4">
+                        <label asp-for="Person.Document" class="form-label fw-bold"></label>
+                        <input type="text" asp-for="Person.Document" class="form-control">
+                        <span asp-validation-for="Person.Document" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <div class="row g-3 mb-3">
+                    <div class="col-md-8">
+                        <label asp-for="Person.Email" class="form-label fw-bold"></label>
+                        <input type="email" asp-for="Person.Email" class="form-control">
+                        <span asp-validation-for="Person.Email" class="text-danger"></span>
+                    </div>
+                    <div class="col-md-4">
+                        <label asp-for="Person.Phone" class="form-label fw-bold"></label>
+                        <input type="tel" asp-for="Person.Phone" class="form-control">
+                        <span asp-validation-for="Person.Phone" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <div class="row g-3 mb-3">
+                    <div class="col-md-4">
+                        <label asp-for="Person.ZipCode" class="form-label fw-bold"></label>
+                        <div class="input-group">
+                            <input type="text" asp-for="Person.ZipCode" class="form-control">
+                            <button type="button" class="btn btn-outline-secondary" id="btnConsultaCep" title="Consultar CEP">
+                                <i class="bi bi-search"></i>
+                            </button>
+                        </div>
+                        <span asp-validation-for="Person.ZipCode" class="text-danger"></span>
+                    </div>
+                    <div class="col-md-8">
+                        <label asp-for="Person.Address" class="form-label fw-bold"></label>
+                        <input type="text" asp-for="Person.Address" class="form-control">
+                        <span asp-validation-for="Person.Address" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <div class="row g-3 mb-3">
+                    <div class="col-md-4">
+                        <label asp-for="Person.Number" class="form-label fw-bold"></label>
+                        <input type="text" asp-for="Person.Number" class="form-control">
+                        <span asp-validation-for="Person.Number" class="text-danger"></span>
+                    </div>
+                    <div class="col-md-8">
+                        <label asp-for="Person.Complement" class="form-label fw-bold"></label>
+                        <input type="text" asp-for="Person.Complement" class="form-control">
+                        <span asp-validation-for="Person.Complement" class="text-danger"></span>
+                    </div>
+                </div>
+
+                <div class="row g-3 mb-3">
+                    <div class="col-md-4">
+                        <label asp-for="Person.Neighborhood" class="form-label fw-bold"></label>
+                        <input type="text" asp-for="Person.Neighborhood" class="form-control">
+                        <span asp-validation-for="Person.Neighborhood" class="text-danger"></span>
+                    </div>
+                    <div class="col-md-5">
+                        <label asp-for="Person.City" class="form-label fw-bold"></label>
+                        <input type="text" asp-for="Person.City" class="form-control">
+                        <span asp-validation-for="Person.City" class="text-danger"></span>
+                    </div>
+                    <div class="col-md-3">
+                        <label asp-for="Person.State" class="form-label fw-bold"></label>
+                        <select asp-for="Person.State" class="form-select">
+                            <option value="AC">Acre</option>
+                            <option value="AL">Alagoas</option>
+                            <option value="AP">Amapá</option>
+                            <option value="AM">Amazonas</option>
+                            <option value="BA">Bahia</option>
+                            <option value="CE">Ceará</option>
+                            <option value="DF">Distrito Federal</option>
+                            <option value="ES">Espírito Santo</option>
+                            <option value="GO">Goiás</option>
+                            <option value="MA">Maranhão</option>
+                            <option value="MT">Mato Grosso</option>
+                            <option value="MS">Mato Grosso do Sul</option>
+                            <option value="MG">Minas Gerais</option>
+                            <option value="PA">Pará</option>
+                            <option value="PB">Paraíba</option>
+                            <option value="PR">Paraná</option>
+                            <option value="PE">Pernambuco</option>
+                            <option value="PI">Piauí</option>
+                            <option value="RJ">Rio de Janeiro</option>
+                            <option value="RN">Rio Grande do Norte</option>
+                            <option value="RS">Rio Grande do Sul</option>
+                            <option value="RO">Rondônia</option>
+                            <option value="RR">Roraima</option>
+                            <option value="SC">Santa Catarina</option>
+                            <option value="SP" selected>São Paulo</option>
+                            <option value="SE">Sergipe</option>
+                            <option value="TO">Tocantins</option>
+                        </select>
+                        <span asp-validation-for="Person.State" class="text-danger"></span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="card-footer">
+                <div class="row">
+                    <div class="col text-center">
+                        <button type="submit" class="btn btn-primary">Cadastrar</button>
+                    </div>
+                    <div class="col text-center">
+                        <button type="reset" class="btn btn-secondary">Cancelar</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+}
+
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script type="text/javascript">
+        $(document).ready(function(){
+
+            $.validator.addMethod("cpf", function(value, element) {
+                if (this.optional(element)) {
+                    return true;
+                }
+                return validarCPF(value);
+            }, "CPF inválido");
+
+            $('#Person_Document').mask('000.000.000-00');
+            $('#Person_Phone').mask('(00) 00000-0000');
+            $('#Person_ZipCode').mask('00000-000');
+
+            // Adiciona a validação de CPF ao campo Document
+            $('#Person_Document').rules('add', {
+                cpf: true,
+                messages: {
+                    cpf: "CPF inválido"
+                }
+            });
+
+            // Evento de click no botão de consulta CEP
+            $('#btnConsultaCep').on('click', function() {
+                var cep = $('#Person_ZipCode').val();
+                consultarCEP(cep);
+            });
+
+            // Permite consultar CEP ao pressionar Enter no campo
+            $('#Person_ZipCode').on('keypress', function(e) {
+                if (e.which === 13) {
+                    e.preventDefault();
+                    consultarCEP($(this).val());
+                }
+            });
+
+            // Configuração de validação
+            $.validator.setDefaults({
+                onsubmit: true,
+                onfocusout: function(element) {
+                    // Não valida inputs, mas permite validar selects
+                    if ($(element).is('select')) {
+                        return false;
+                    }
+                    return false;
+                },
+                onkeyup: false,
+                onclick: false,
+                highlight: function(element) {
+                    $(element).addClass('is-invalid').removeClass('is-valid');
+                },
+                unhighlight: function(element) {
+                    $(element).removeClass('is-invalid').addClass('is-valid');
+                },
+                errorElement: 'div',
+                errorClass: 'invalid-feedback',
+                errorPlacement: function(error, element) {
+                    error.insertAfter(element);
+                },
+                // Ignora erros em tempo real
+                ignore: []
+            });
+        });
+    </script>
+}
