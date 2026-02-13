@@ -3,12 +3,16 @@
     ViewData["Title"] = "Próximos Eventos";
 }
 
+<div class="row">
+    <h4>Próximos Eventos</h4>
+</div>
+
 @if (null != Model && null != Model.Events && Model.Events.Any())
 {
     foreach (var item in Model.Events)
     {
-        <div class="card mb-3">
-            <div class="card-header">
+        <div class="card mt-3 mb-3">
+            <div class="card-header bg-purple">
                 <h5 class="card-title">@item.Name</h5>
             </div>
             <div class="card-body">

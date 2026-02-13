@@ -28,6 +28,10 @@ public class PersonModel
     [RegularExpression(@"^\(\d{2}\)\s\d{5}-\d{4}$", ErrorMessage = "Telefone inválido")]
     public string Phone { get; set; }
 
+    [Display(Name = "Nascimento")]
+    [Required(ErrorMessage = "O nascimento é obrigatório")]
+    public DateTime? BirthDay { get; set; }
+
     [Display(Name = "CEP")]
     [Required(ErrorMessage = "O CEP é obrigatório")]
     [RegularExpression(@"^\d{5}-\d{3}$", ErrorMessage = "CEP inválido")]

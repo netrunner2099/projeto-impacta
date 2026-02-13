@@ -3,10 +3,14 @@
     ViewData["Title"] = "Compre seu ingresso";
 }
 
+<div class="row">
+    <h4>Compre seu ingresso</h4>
+</div>
+
 @if (Model.Event is not null)
 {
-    <div class="card mb-3">
-        <div class="card-header">
+    <div class="card mt-3 mb-3">
+        <div class="card-header bg-purple">
             <h5 class="card-title">@Model.Event.Name</h5>
         </div>
 

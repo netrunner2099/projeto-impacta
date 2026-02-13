@@ -1,14 +1,18 @@
 ﻿@model OnboardIndexViewModel;
 @{
-    ViewData["Title"] = "Compre seu ingresso";
+    ViewData["Title"] = "Faça seu cadastro";
 }
+
+<div class="row">
+    <h4>Faça seu cadastro</h4>
+</div>
 
 @if (Model.Event is not null)
 {
     <form asp-action="Create" asp-controller="Onboard" method="post" id="formOnboard">
         <input type="hidden" asp-for="Event.EventId" />
-        <div class="card mb-3">
-            <div class="card-header">
+        <div class="card mt-3 mb-3">
+            <div class="card-header bg-purple">
                 <h5 class="card-title">@Model.Event.Name</h5>
             </div>
 
@@ -36,7 +40,7 @@
                 </div>
 
                 <div class="row g-3 mb-3">
-                    <div class="col-md-8">
+                    <div class="col-md-6">
                         <label asp-for="Person.Email" class="form-label fw-bold"></label>
                         <input type="email" asp-for="Person.Email" class="form-control">
                         <span asp-validation-for="Person.Email" class="text-danger"></span>
@@ -45,6 +49,11 @@
                         <label asp-for="Person.Phone" class="form-label fw-bold"></label>
                         <input type="tel" asp-for="Person.Phone" class="form-control">
                         <span asp-validation-for="Person.Phone" class="text-danger"></span>
+                    </div>
+                    <div class="col-md-2">
+                        <label asp-for="Person.BirthDay" class="form-label fw-bold"></label>
+                        <input type="text" asp-for="Person.BirthDay" class="form-control" placeholder="dd/MM/yyyy" asp-format="{0:dd/MM/yyyy}">
+                        <span asp-validation-for="Person.BirthDay" class="text-danger"></span>
                     </div>
                 </div>
 
@@ -153,6 +162,7 @@
                 return validarCPF(value);
             }, "CPF inválido");
 
+            $('#Person_BirthDay').mask('00/00/0000');
             $('#Person_Document').mask('000.000.000-00');
             $('#Person_Phone').mask('(00) 00000-0000');
             $('#Person_ZipCode').mask('00000-000');

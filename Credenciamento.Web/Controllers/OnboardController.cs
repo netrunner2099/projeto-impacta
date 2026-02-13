@@ -24,6 +24,7 @@ public class OnboardController : Controller
         var result = await _mediator.Send(new GetEventQuery { EventId = id });
         model.Event = result ?? new EventModel();
         model.Person = new PersonModel();
+        model.Person.BirthDay = null;
         return View(model);
     }
 
@@ -40,9 +41,9 @@ public class OnboardController : Controller
         var command = _mapper.Map<CreatePersonCommand>(model.Person);
         var commandResult = await _mediator.Send(command);
         model.Errors = commandResult.Errors;
-        if(model.Errors.Any())
+        if(model.Errors is not null && model.Errors.Any())
             return View("Index", model);
 
-        return RedirectToAction("Index", "Checkout");
+        return RedirectToAction("Index", "Checkout", new { id = model.Event.EventId, personId = commandResult.PersonId });
     }
 }

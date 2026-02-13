@@ -13,6 +13,8 @@ public class MappingProfile : Profile
         CreateMap<CreatePersonCommand, PersonModel>().ReverseMap();
         CreateMap<Person, CreatePersonCommandResponse>().ReverseMap();
         CreateMap<PersonModel, CreatePersonCommandResponse>().ReverseMap();
+        CreateMap<Person, GetPersonQueryResponse>().ReverseMap();
+        CreateMap<PersonModel, GetPersonQueryResponse>().ReverseMap();
 
         CreateMap<Event, GetEventQueryResponse>().ReverseMap();
         CreateMap<EventModel, GetEventQueryResponse>().ReverseMap();

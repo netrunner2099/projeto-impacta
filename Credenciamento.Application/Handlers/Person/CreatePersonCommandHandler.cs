@@ -1,4 +1,6 @@
-﻿namespace Credenciamento.Application.Handlers.Person;
+﻿using Credenciamento.Domain.Enums;
+using Credenciamento.Shared.Extensions;
+namespace Credenciamento.Application.Handlers.Person;
 
 public class CreatePersonCommandHandler : IRequestHandler<CreatePersonCommand, CreatePersonCommandResponse>
 {
@@ -31,6 +33,10 @@ public class CreatePersonCommandHandler : IRequestHandler<CreatePersonCommand, C
             }
 
             var model = _mapper.Map<Domain.Entities.Person>(request);
+            model.CreatedAt = DateTime.UtcNow;
+            model.Status = (byte)PersonStatus.Active;
+            model.Document = model.Document.MaskRemove();
+            model.ZipCode = model.ZipCode.MaskRemove();
             var result = await _repository.AddAsync(model);
             returns = _mapper.Map<CreatePersonCommandResponse>(result);
         }

@@ -6,4 +6,8 @@
 		<NoWarn>CS8600,CS8602,CS8632</NoWarn>
 	</PropertyGroup>
 
+	<ItemGroup>
+	  <ProjectReference Include="..\Credenciamento.Shared\Credenciamento.Shared.csproj" />
+	</ItemGroup>
+
 </Project>
