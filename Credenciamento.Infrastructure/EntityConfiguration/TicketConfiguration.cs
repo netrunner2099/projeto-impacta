@@ -25,6 +25,10 @@ public class TicketConfiguration : IEntityTypeConfiguration<Ticket>
             .HasColumnName("price")
             .HasColumnType("numeric(18,6)");
 
+        builder.Property(t => t.Auth)
+            .HasColumnName("auth")
+            .HasColumnType("varchar(255)");
+
         builder.Property(t => t.Status)
             .HasColumnName("status")
             .HasColumnType("tinyint");

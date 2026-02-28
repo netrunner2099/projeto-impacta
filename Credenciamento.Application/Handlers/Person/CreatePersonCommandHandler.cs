@@ -1,22 +1,20 @@
-﻿using Credenciamento.Domain.Enums;
-using Credenciamento.Shared.Extensions;
-namespace Credenciamento.Application.Handlers.Person;
+﻿namespace Credenciamento.Application.Handlers.Person;
 
 public class CreatePersonCommandHandler : IRequestHandler<CreatePersonCommand, CreatePersonCommandResponse>
 {
     private readonly ILogger _logger;
     private readonly IMapper _mapper;
-    private readonly IPersonRepository _repository;
+    private readonly IPersonService _service;
     private readonly IValidator<CreatePersonCommand> _validator;
     public CreatePersonCommandHandler(
         ILogger<CreatePersonCommandHandler> logger,
         IMapper mapper,
-        IPersonRepository repository,
+        IPersonService service,
         IValidator<CreatePersonCommand> validator)
     {
         _logger = logger;
         _mapper = mapper;
-        _repository = repository;
+        _service = service;
         _validator = validator;
     }
 
@@ -32,13 +30,8 @@ public class CreatePersonCommandHandler : IRequestHandler<CreatePersonCommand, C
                 _logger.LogWarning("Handle: validation errors {0}", string.Join(", ", returns.Errors));
             }
 
-            var model = _mapper.Map<Domain.Entities.Person>(request);
-            model.CreatedAt = DateTime.UtcNow;
-            model.Status = (byte)PersonStatus.Active;
-            model.Document = model.Document.MaskRemove();
-            model.ZipCode = model.ZipCode.MaskRemove();
-            var result = await _repository.AddAsync(model);
-            returns = _mapper.Map<CreatePersonCommandResponse>(result);
+            var model = _mapper.Map<PersonModel>(request);
+            return _mapper.Map<CreatePersonCommandResponse>(await _service.AddAsync(model));
         }
         catch (Exception ex)
         {

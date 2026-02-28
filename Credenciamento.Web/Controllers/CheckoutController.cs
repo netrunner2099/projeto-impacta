@@ -9,13 +9,11 @@ namespace Credenciamento.Web.Controllers;
 public class CheckoutController : Controller
 {
     private readonly IMediator _mediator;
-    private readonly IMapper _mapper;
     public CheckoutController(
         IMediator mediator,
         IMapper mapper)
     {
         _mediator = mediator;
-        _mapper = mapper;
     }
 
     [HttpGet("{id}/{personId}")]

@@ -1,14 +1,4 @@
-﻿using Credenciamento.Application.Commands.User;
-using Credenciamento.Application.Mappings;
-using Credenciamento.Application.Validators.Person;
-using Credenciamento.Application.Validators.User;
-using Credenciamento.Infrastructure;
-using Microsoft.Extensions.Configuration;
-using Microsoft.Extensions.DependencyInjection;
-using System.Reflection;
-
-namespace Credenciamento.Application;
-
+﻿namespace Credenciamento.Application;
 
 public static class ApplicationRegistration
 {
@@ -32,9 +22,11 @@ public static class ApplicationRegistration
         services.AddSingleton(_mapper);
         #endregion
 
+        // Services
+        services.AddScoped<IPersonService, PersonService>();
+
         // Validators
         services.AddScoped<IValidator<CreatePersonCommand>, CreatePersonCommandValidator>();
-        services.AddScoped<IValidator<CreateUserCommand>, CreateUserCommandValidator>();
 
         InfrastructureRegistration.AddInfrastructure(services, configuration);
 

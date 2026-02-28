@@ -38,6 +38,11 @@ function validarCPF(cpf) {
     return true;
 }
 
+function validarEmail(email) {
+    let emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(email);
+}
+
 
 // Função para consultar CEP
 function consultarCEP(cep) {
@@ -74,4 +79,17 @@ function consultarCEP(cep) {
             // Restaura botão
             $('#btnConsultaCep').prop('disabled', false).html('<i class="bi bi-search"></i>');
         });
+}
+
+// Adicione no início do seu script ou em site.js
+function base64Encode(str) {
+    return btoa(encodeURIComponent(str).replace(/%([0-9A-F]{2})/g, function (match, p1) {
+        return String.fromCharCode('0x' + p1);
+    }));
+}
+
+function base64Decode(str) {
+    return decodeURIComponent(Array.prototype.map.call(atob(str), function (c) {
+        return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+    }).join(''));
 }

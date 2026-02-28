@@ -7,12 +7,13 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<Folder Include="Handlers\User\" />
-		<Folder Include="Services\" />
+		<Folder Include="Interfaces\User\" />
+		<Folder Include="Services\User\" />
 	</ItemGroup>
 
 	<ItemGroup>
 		<PackageReference Include="AutoMapper" Version="13.0.1" />
+		<PackageReference Include="MailKit" Version="4.15.0" />
 		<PackageReference Include="MediatR" Version="12.5.0" />
 		<PackageReference Include="FluentValidation" Version="11.11.0" />
 	</ItemGroup>

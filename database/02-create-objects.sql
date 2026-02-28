@@ -61,6 +61,7 @@ create table [dbo].[ticket]
 	[personid]			bigint  not null,
 	[eventid]			bigint not null,
 	[price]				numeric(18,6) not null,
+	[auth]				varchar(255) null,
 	[status]			tinyint not null default 1,
 	[createdat]			datetime not null default getdate(),
 	[updatedat]			datetime null,
@@ -69,7 +70,6 @@ create table [dbo].[ticket]
 	constraint fk_ticket_event foreign key (eventid) references [dbo].[event](eventid)
 )
 go
-
 
 create table [dbo].[user]
 (

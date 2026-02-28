@@ -7,4 +7,10 @@ public enum UserStatus : byte
     Deleted = 9
 }
 
+public enum UserRole : byte
+{
+    Admin = 1,
+    User = 2
+}
+
 

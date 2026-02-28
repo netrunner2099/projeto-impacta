@@ -121,3 +121,7 @@ body {
 .card-body .height-250 {
     min-height: 250px;
 }
+
+.btn-action {
+    width:100px;
+}

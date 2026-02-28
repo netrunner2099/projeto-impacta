@@ -38,12 +38,14 @@
 
 <script type="text/javascript">
     $(document).ready(function (){
-        $('.btn-login').off().on('click', function (){
-            window.location.href = '/home/login';
+        $('.btn-login').on('click', function (e){
+            e.preventDefault();
+            window.location.href = '@Url.Action("Index", "Login")';
         });
 
-        $('.btn-onboard').off().on('click', function (){
-            window.location.href = '/onboard/index/@Model.Event.EventId';
+        $('.btn-onboard').on('click', function (e){
+            e.preventDefault();
+            window.location.href = '@Url.Action("Index", "Onboard", new { id = Model.Event.EventId })';
         });
     });
 </script>

@@ -1,10 +1,10 @@
 using Credenciamento.Application;
+using Credenciamento.Application.Models;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 
 namespace Credenciamento.Web;
 
@@ -26,6 +26,9 @@ public class Startup
         services.AddLogging(opt => { 
             opt.AddConsole();
         });
+
+        services.AddOptions<SmtpOptions>()
+            .BindConfiguration("Environment:Smtp");
 
         ApplicationRegistration.AddApplicationServices(services, null, Configuration);
     }

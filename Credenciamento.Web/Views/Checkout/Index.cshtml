@@ -3,6 +3,28 @@
     ViewData["Title"] = "Escolha a forma de Pagamento";
 }
 
+<style type="text/css">
+    .modal-icon {
+        font-size: 3rem;
+    }
+
+    .fade-in {
+        animation: fadeIn 0.4s ease-in;
+    }
+
+    @@keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: scale(0.8);
+        }
+
+        to {
+            opacity: 1;
+            transform: scale(1);
+        }
+    }
+</style>
+
 <div class="row">
     <h4>Escolha a forma de Pagamento</h4>
 </div>
@@ -58,7 +80,7 @@
                                 <div class="row">
                                     <div class="col-md-6">
                                         <label asp-for="CardNumber" class="form-label fw-bold"></label>
-                                        <input type="text" asp-for="CardNumber" class="form-control" maxlength="19">
+                                        <input type="text" asp-for="CardNumber" id="CardNumber" class="form-control" maxlength="19">
                                         <span asp-validation-for="CardNumber" class="text-danger"></span>
                                     </div>
                                     <div class="col-md-4">
@@ -76,7 +98,7 @@
                             <div class="card-footer">
                                 <div class="row">
                                     <div class="col text-center">
-                                        <button type="submit" class="btn btn-primary">Selecionar</button>
+                                        <button type="button" class="btn btn-primary btn-credit-card" id="btnCreditCard">Selecionar</button>
                                     </div>
                                 </div>
                             </div>
@@ -88,15 +110,17 @@
                             <div class="card-header bg-purple">
                                 <h5 class="card-title">Boleto</h5>
                             </div>
+
                             <div class="card-body height-250">
                                 <div class="text-center">
                                     <img src="~/img/barcode-boleto.png" class="img-payment-method" alt="Boleto bancário" />
                                 </div>
                             </div>
+
                             <div class="card-footer">
                                 <div class="row">
                                     <div class="col text-center">
-                                        <button type="submit" class="btn btn-primary">Selecionar</button>
+                                        <button type="button" class="btn btn-primary btn-barcode-boleto" id="btnBarcodeBoleto">Selecionar</button>
                                     </div>
                                 </div>
                             </div>
@@ -108,15 +132,17 @@
                             <div class="card-header bg-purple">
                                 <h5 class="card-title">Pix</h5>
                             </div>
+
                             <div class="card-body height-250">
                                 <div class="text-center">
                                     <img src="~/img/qrcode-pix.png" class="img-payment-method" alt="Pix" />
                                 </div>
                             </div>
+
                             <div class="card-footer">
                                 <div class="row">
                                     <div class="col text-center">
-                                        <button type="submit" class="btn btn-primary">Selecionar</button>
+                                        <button type="button" class="btn btn-primary btn-qrcode-pix" id="btnQrcodePix">Selecionar</button>
                                     </div>
                                 </div>
                             </div>
@@ -125,5 +151,67 @@
                 </div>
             </div>
         </div>
+
+        <div class="modal fade" id="modal" tabindex="-1" role="dialog" aria-labelledby="modalPayment-label" aria-hidden="true">
+            <div class="modal-dialog modal-lg modal-big" role="document">
+                <div class="modal-content bg-light">
+                    <div class="modal-header bg-topo-cinza">
+                        <h5 class="modal-title" id="modalPayment-label">Modal title</h5>
+                        <button type="button" class="btn-close bg-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div id="modalPayment-details">
+                            <!-- Estado: Processando -->
+                            <div id="estadoProcessando" class="modal-body text-center py-5 px-4">
+                                <div class="spinner-border text-primary mb-4" style="width: 3.5rem; height: 3.5rem;" role="status">
+                                    <span class="visually-hidden">Processando...</span>
+                                </div>
+                                <h5 class="fw-semibold mb-2">Processando Pagamento</h5>
+                                <p class="text-muted mb-0">Por favor, não feche esta janela.<br />Estamos processando sua transação com segurança...</p>
+                            </div>
+
+                            <!-- Estado: Aprovado -->
+                            <div id="estadoAprovado" class="modal-body text-center py-5 px-4 d-none fade-in">
+                                <div class="modal-icon text-success mb-3 fade-in">✅</div>
+                                <h5 class="fw-semibold text-success mb-2">Pagamento Aprovado!</h5>
+                                <p class="text-muted mb-4">
+                                    Sua transação foi concluída com sucesso.<br />
+                                    <strong>ID da transação:</strong> <span id="transacaoId" class="text-dark"></span>
+                                </p>
+                                <button class="btn btn-success px-4" id="btnContinuar">Continuar</button>
+                            </div>
+
+                            <!-- Estado: Recusado -->
+                            <div id="estadoRecusado" class="modal-body text-center py-5 px-4 d-none fade-in">
+                                <div class="modal-icon text-danger mb-3">❌</div>
+                                <h5 class="fw-semibold text-danger mb-2">Pagamento Recusado</h5>
+                                <p class="text-muted mb-4">Não foi possível processar sua transação.<br />Verifique os dados do cartão e tente novamente.</p>
+                                <button class="btn btn-outline-danger px-4 me-2" id="btnCancelarRecusado">Cancelar</button>
+                                <button class="btn btn-danger px-4" id="btnTentarNovamente">Tentar Novamente</button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <div class="col text-center">
+                            <button type="button" id="btOk" class="btn btn-primary btn-action" data-bs-dismiss="modal">Ok</button>
+                        </div>
+
+                        <div class="col text-center">
+                            <button type="button" id="btCancel" class="btn btn-danger btn-action" data-bs-dismiss="modal">Cancelar</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </form>
+
+    <script type="text/javascript" src="~/js/views/checkout.index.js"></script>
+    <script type="text/javascript">
+             $(function () {
+            window.salarioCfg = new CheckoutIndex({
+                EventId: '@Model.Event.EventId',
+                PersonId: '@Model.Person.PersonId'
+            }).init();
+        });
+    </script>
 }

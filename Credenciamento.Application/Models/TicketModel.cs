@@ -8,6 +8,7 @@ public class TicketModel
     public long EventId { get; set; }
     public decimal Price { get; set; }
     public byte Status { get; set; }
+    public string Auth { get; set; }
     public DateTime CreatedAt { get; set; }
     public DateTime? UpdatedAt { get; set; }
 
