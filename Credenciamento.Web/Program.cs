@@ -14,6 +14,7 @@ public static class Program
         Host.CreateDefaultBuilder(args)
             .ConfigureWebHostDefaults(webBuilder =>
             {
+                webBuilder.UseKestrel(opt => { opt.ListenAnyIP(5000); });
                 webBuilder.UseStartup<Startup>();
             });
 }

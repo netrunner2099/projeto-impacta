@@ -1,6 +1,7 @@
-﻿using AutoMapper;
+﻿using Credenciamento.Application.Commands.User;
 using Credenciamento.Application.Mappings;
 using Credenciamento.Application.Validators.Person;
+using Credenciamento.Application.Validators.User;
 using Credenciamento.Infrastructure;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -33,6 +34,7 @@ public static class ApplicationRegistration
 
         // Validators
         services.AddScoped<IValidator<CreatePersonCommand>, CreatePersonCommandValidator>();
+        services.AddScoped<IValidator<CreateUserCommand>, CreateUserCommandValidator>();
 
         InfrastructureRegistration.AddInfrastructure(services, configuration);
 
