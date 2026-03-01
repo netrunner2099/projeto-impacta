@@ -28,7 +28,7 @@ IF EXISTS (SELECT * FROM sys.server_principals WHERE name = 'impacta_user')
 GO
 
 -- Cria o login
-CREATE LOGIN [impacta_user] WITH PASSWORD=N'vvsD%u3y!5s5m#EI', 
+CREATE LOGIN [impacta_user] WITH PASSWORD=N'[crie uma senha e coloque aqui]', 
     DEFAULT_DATABASE=[master], 
     CHECK_EXPIRATION=OFF, 
     CHECK_POLICY=OFF
