@@ -21,6 +21,12 @@ public class PersonRepository : IPersonRepository
         return await db.Persons.FindAsync(id);
     }
 
+    public async Task<Person> GetByEmailAsync(string email)
+    {
+        using var db = await _factory.CreateDbContextAsync();
+        return await db.Persons.FirstOrDefaultAsync(q => q.Email == email);
+    }
+
     public async Task<Person> AddAsync(Person entity)
     {
         using var db = await _factory.CreateDbContextAsync();

@@ -1,4 +1,6 @@
-﻿namespace Credenciamento.Application;
+﻿using Credenciamento.Application.Services.QrCode;
+
+namespace Credenciamento.Application;
 
 public static class ApplicationRegistration
 {
@@ -24,9 +26,11 @@ public static class ApplicationRegistration
 
         // Services
         services.AddScoped<IPersonService, PersonService>();
+        services.AddScoped<IQrCodeClient, QrCodeClient>();
 
         // Validators
         services.AddScoped<IValidator<CreatePersonCommand>, CreatePersonCommandValidator>();
+        services.AddScoped<IValidator<CreateTicketCommand>, CreateTicketCommandValidator>();
 
         InfrastructureRegistration.AddInfrastructure(services, configuration);
 

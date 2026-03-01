@@ -125,3 +125,16 @@ body {
 .btn-action {
     width:100px;
 }
+
+.img-qr-code{
+    width:300px;
+    height:300px;
+}
+
+.text-instructions {
+    height: 120px;
+}
+
+.text-small {
+    font-size:0.8em;
+}

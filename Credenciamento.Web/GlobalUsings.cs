@@ -8,3 +8,4 @@ global using System.Threading.Tasks;
 global using System.Collections.Generic;
 global using AutoMapper;
 global using Credenciamento.Shared.Extensions;
+global using System.Text.Json.Serialization;

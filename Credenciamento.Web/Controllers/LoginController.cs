@@ -1,10 +1,22 @@
-﻿using Credenciamento.Web.Models;
+﻿using Credenciamento.Application.Queries.User;
+using Credenciamento.Web.Models;
+using Microsoft.AspNetCore.Http;
+using System.Threading.Tasks;
 
 namespace Credenciamento.Web.Controllers;
 
 [Route("[controller]/[action]")]
 public class LoginController : Controller
 {
+    private static readonly CookieOptions authCookieOptions = new CookieOptions
+    {
+        Expires = DateTimeOffset.UtcNow.AddHours(8), // 8 horas
+        HttpOnly = true, // Não acessível via JavaScript (mais seguro)
+        Secure = true,
+        SameSite = SameSiteMode.Strict,
+        Path = "/"
+    };
+
     private readonly ILogger _logger;
     private readonly IMediator _mediator;
 
@@ -24,9 +36,26 @@ public class LoginController : Controller
     }
 
     [HttpPost]
-    public IActionResult Verify(LoginIndexViewModel request)
+    public async Task<IActionResult> Verify(LoginIndexViewModel request)
     {
-        request.ErrorMessage = "Erro";
+        var query = new VerifyLoginQuery
+        {
+            Email = request.Login,
+            Password = request.Password
+        }; 
+
+        var result = await _mediator.Send(query);
+        if(result is null)
+        {
+            request.ErrorMessage = "Email ou senha inválidos";
+            return View("Index", request);
+        }
+
+        // Gravando o cookie de autenticação
+        Response.Cookies.Append("user-token", result.Token.ToString(), authCookieOptions);
+        if (Request.Cookies.TryGetValue("store-eventId", out string? eventId))
+            return RedirectToAction("Index","Checkout", new { id = eventId, personId = result.PersonId });
+
         return View("Index", request);
     }
 
@@ -35,7 +64,7 @@ public class LoginController : Controller
     {
         var model = new LoginIndexViewModel();
         model.Login = "";
-        model.SuccessMessage = "Foi enviado um email com a nova senha para você.";
+        model.SuccessMessage = "Foi enviado um email com a nova senha para você.<br/>Caso não encontre, verifique a sua caixa de Spam, por favor.";
 
         return View("Index", model);
     }

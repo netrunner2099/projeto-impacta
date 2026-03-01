@@ -1,4 +1,6 @@
-﻿namespace Credenciamento.Application.Validators.Person;
+﻿using Credenciamento.Shared.Extensions;
+
+namespace Credenciamento.Application.Validators.Person;
 
 public class CreatePersonCommandValidator : AbstractValidator<CreatePersonCommand>
 {
@@ -19,7 +21,7 @@ public class CreatePersonCommandValidator : AbstractValidator<CreatePersonComman
             .NotEmpty().WithMessage("Email é obrigatório.")
             .EmailAddress().WithMessage("Formato de email inválido.");
         
-        RuleFor(x => x.Document)
+        RuleFor(x => x.Document.MaskRemove())
             .NotEmpty().WithMessage("CPF é obrigatório.")
             .Matches(@"^\d{11}$").WithMessage("CPF deve conter 11 dígitos.");
 

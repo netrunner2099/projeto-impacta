@@ -7,6 +7,11 @@
 		<Version>1.0.0</Version>
 		<Authors>Rodrigo Miranda - rodrigo.miranda@aluno.impacta.edu.br</Authors>
 		<Company>Impacta Tecnologia</Company>
+		<UserSecretsId>416da1de-46c3-42d2-8c77-7be60438e173</UserSecretsId>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+	  <DebugType>none</DebugType>
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -15,6 +20,12 @@
 
 	<ItemGroup>
 		<Folder Include="wwwroot\lib\" />
+		<Folder Include="wwwroot\files\" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <None Include="wwwroot\diagrams\class-diagram.html" />
+	  <None Include="wwwroot\diagrams\domain-diagram.html" />
 	</ItemGroup>
 
 	<ItemGroup>

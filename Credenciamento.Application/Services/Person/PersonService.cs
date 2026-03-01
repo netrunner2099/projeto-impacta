@@ -56,8 +56,7 @@ public class PersonService : IPersonService
                 _logger.LogWarning("Falha ao criar usuário para {0}", personModel.Email);
                 return null;
             }
-                
-
+            
             var sendPasswordResult = await SendPasswordAsync(personModel.Email, password);
             if (!sendPasswordResult)
             {
@@ -81,6 +80,7 @@ public class PersonService : IPersonService
         {
             var user = new User
             {
+                PersonId = model.PersonId,
                 Name = model.Name,
                 Email = model.Email,
                 Password = CryptHelpers.HashPassword(password),

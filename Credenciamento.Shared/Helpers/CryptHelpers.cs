@@ -7,12 +7,12 @@ public static class CryptHelpers
     private const int DefaultIterations = 1000; // ASP.NET Identity 2.x default
 
     public static string RandomPasswordGenerate(
-    int size = 8,
-    bool upper = true,
-    bool lower = true,
-    bool number = true,
-    bool special = false,
-    bool repeat = false)
+        int size = 8,
+        bool upper = true,
+        bool lower = true,
+        bool number = true,
+        bool special = false,
+        bool repeat = false)
     {
         // Validação: pelo menos um tipo deve ser selecionado
         if (!upper && !lower && !number && !special)

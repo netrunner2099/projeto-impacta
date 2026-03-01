@@ -27,7 +27,16 @@ public class TicketRepository : ITicketRepository
             .FirstOrDefaultAsync(t => t.TicketId == id);
     }
 
-    public async Task<IEnumerable<Ticket>> GetByPersonIdAsync(long personId)
+    public async Task<Ticket> GetByTransactionAsync(string transaction)
+    {
+        using var db = await _factory.CreateDbContextAsync();
+        return await db.Tickets
+            .Include(t => t.Person)
+            .Include(t => t.Event)
+            .FirstOrDefaultAsync(t => t.Transaction == transaction);
+    }
+
+    public async Task<IEnumerable<Ticket>> ListByPersonIdAsync(long personId)
     {
         using var db = await _factory.CreateDbContextAsync();
         return await db.Tickets
@@ -37,7 +46,7 @@ public class TicketRepository : ITicketRepository
             .ToListAsync();
     }
 
-    public async Task<IEnumerable<Ticket>> GetByEventIdAsync(long eventId)
+    public async Task<IEnumerable<Ticket>> ListByEventIdAsync(long eventId)
     {
         using var db = await _factory.CreateDbContextAsync();
         return await db.Tickets

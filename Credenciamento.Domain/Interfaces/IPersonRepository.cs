@@ -4,6 +4,7 @@ public interface IPersonRepository
 {
     Task<IEnumerable<Person>> ListAllAsync();
     Task<Person> GetByIdAsync(long id);
+    Task<Person> GetByEmailAsync(string email);
     Task<Person> AddAsync(Person entity);
     Task<Person> UpdateAsync(Person entity);
     Task<bool> DeleteAsync(long id);

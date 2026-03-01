@@ -6,7 +6,12 @@
 		<NoWarn>CS8600,CS8602,CS8632</NoWarn>
 	</PropertyGroup>
 
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+	  <DebugType>none</DebugType>
+	</PropertyGroup>
+
 	<ItemGroup>
+		<Folder Include="Contracts\NewFolder\" />
 		<Folder Include="Interfaces\User\" />
 		<Folder Include="Services\User\" />
 	</ItemGroup>

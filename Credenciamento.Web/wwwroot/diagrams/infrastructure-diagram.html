@@ -1,0 +1,155 @@
+﻿<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Infrastructure Layer - Sistema de Credenciamento</title>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10.9.5/dist/mermaid.min.js"></script>
+    <link type="text/css" href="../css/diagram.css" rel="stylesheet" />
+</head>
+<body>
+    <div class="container">
+        <h1>🟣 Infrastructure Layer</h1>
+        <div class="subtitle">Implementação de Repositórios e Persistência</div>
+
+         <nav class="nav">
+             <a href="domain-diagram.html">Domain</a>
+             <a href="infrastructure-diagram.html" class="active">Infrastructure</a>
+             <a href="application-diagram.html">Application</a>
+             <a href="web-diagram.html">Web</a>
+             <a href="database-diagram.html">Database</a>
+             <a href="usecase-diagram.html">Use Cases</a>
+             <a href="class-diagram.html">Visão Completa</a>
+         </nav>
+
+        <div class="info">
+            <strong>📦 Projeto:</strong> Credenciamento.Infrastructure<br>
+            <strong>🎯 Responsabilidade:</strong> Implementação de persistência e acesso a dados<br>
+            <strong>✨ Tecnologias:</strong> Entity Framework Core, SQL Server
+        </div>
+
+        <div class="mermaid">
+classDiagram
+    %% ===============================================
+    %% DOMAIN INTERFACES (referência)
+    %% ===============================================
+    class IEventRepository {
+        &lt;&lt;interface&gt;&gt;
+        +ListAllAsync()
+        +GetByIdAsync(long)
+    }
+
+    class IPersonRepository {
+        &lt;&lt;interface&gt;&gt;
+        +ListAllAsync()
+        +GetByIdAsync(long)
+    }
+
+    class IUserRepository {
+        &lt;&lt;interface&gt;&gt;
+        +ListAllAsync()
+        +GetByIdAsync(long)
+    }
+
+    class ITicketRepository {
+        &lt;&lt;interface&gt;&gt;
+        +ListAllAsync()
+        +GetByIdAsync(long)
+    }
+
+    %% ===============================================
+    %% REPOSITORY IMPLEMENTATIONS
+    %% ===============================================
+    class EventRepository {
+        -IDbContextFactory~ApplicationDbContext~ factory
+        +EventRepository(IDbContextFactory)
+        +ListAllAsync() Task~IEnumerable~Event~~
+        +ListFutureAsync() Task~IEnumerable~Event~~
+        +GetByIdAsync(long) Task~Event~
+        +AddAsync(Event) Task~Event~
+        +UpdateAsync(Event) Task~Event~
+        +DeleteAsync(long) Task~bool~
+    }
+
+    class PersonRepository {
+        -IDbContextFactory~ApplicationDbContext~ factory
+        +PersonRepository(IDbContextFactory)
+        +ListAllAsync() Task~IEnumerable~Person~~
+        +GetByIdAsync(long) Task~Person~
+        +GetByEmailAsync(string) Task~Person~
+        +AddAsync(Person) Task~Person~
+        +UpdateAsync(Person) Task~Person~
+        +DeleteAsync(long) Task~bool~
+        +DocumentExistsAsync(Person) Task~bool~
+        +PhoneNumberExistsAsync(Person) Task~bool~
+        +EmailExistsAsync(Person) Task~bool~
+    }
+
+    class UserRepository {
+        -IDbContextFactory~ApplicationDbContext~ factory
+        +UserRepository(IDbContextFactory)
+        +ListAllAsync() Task~IEnumerable~User~~
+        +GetByIdAsync(long) Task~User~
+        +GetByEmailAsync(string) Task~User~
+        +AddAsync(User) Task~User~
+        +UpdateAsync(User) Task~User~
+        +DeleteAsync(long) Task~bool~
+        +EmailExistsAsync(string) Task~bool~
+    }
+
+    class TicketRepository {
+        -IDbContextFactory~ApplicationDbContext~ factory
+        +TicketRepository(IDbContextFactory)
+        +ListAllAsync() Task~IEnumerable~Ticket~~
+        +GetByIdAsync(long) Task~Ticket~
+        +GetByTransactionAsync(string) Task~Ticket~
+        +ListByPersonIdAsync(long) Task~IEnumerable~Ticket~~
+        +ListByEventIdAsync(long) Task~IEnumerable~Ticket~~
+        +AddAsync(Ticket) Task~Ticket~
+        +UpdateAsync(Ticket) Task~Ticket~
+        +DeleteAsync(long) Task~bool~
+    }
+
+    %% ===============================================
+    %% DB CONTEXT
+    %% ===============================================
+    class ApplicationDbContext {
+        &lt;&lt;DbContext&gt;&gt;
+        +DbSet~Event~ Events
+        +DbSet~Person~ Persons
+        +DbSet~User~ Users
+        +DbSet~Ticket~ Tickets
+        +OnModelCreating(ModelBuilder)
+    }
+
+    %% ===============================================
+    %% RELATIONSHIPS
+    %% ===============================================
+    IEventRepository <|.. EventRepository : implementa
+    IPersonRepository <|.. PersonRepository : implementa
+    IUserRepository <|.. UserRepository : implementa
+    ITicketRepository <|.. TicketRepository : implementa
+
+    EventRepository --> ApplicationDbContext : usa
+    PersonRepository --> ApplicationDbContext : usa
+    UserRepository --> ApplicationDbContext : usa
+    TicketRepository --> ApplicationDbContext : usa
+        </div>
+    </div>
+
+    <script>
+        mermaid.initialize({
+            startOnLoad: true,
+            theme: 'default',
+            themeVariables: {
+                primaryColor: '#e1bee7',
+                primaryTextColor: '#000',
+                primaryBorderColor: '#9c27b0',
+                lineColor: '#666',
+                secondaryColor: '#d1c4e9',
+                tertiaryColor: '#f3e5f5',
+                fontSize: '14px'
+            }
+        });
+    </script>
+</body>
+</html>

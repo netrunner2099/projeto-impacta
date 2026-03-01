@@ -16,8 +16,9 @@
 
         <div class="card-body">
             <div class="row">
-                <div class="col-md-8">
+                <div class="col-md-12">
                     <p class="card-text">@Model.Event.Local - @Model.Event.Begin.ToString("dd/MM") a @Model.Event.End.ToString("dd/MM")</p>
+                    <p class="card-text" style="text-align:justify">@Model.Event.Description</p>
                     <p class="card-text">@Model.Event.Price.ToString("c2")</p>
                 </div>
             </div>
@@ -25,12 +26,21 @@
 
         <div class="card-footer">
             <div class="row">
-                <div class="col text-center">
-                    <button type="button" class="btn btn-primary btn-login">Já tenho cadastro</button>
-                </div>
-                <div class="col text-center">
-                    <button type="button" class="btn btn-secondary btn-onboard">Preciso me cadastrar</button>
-                </div>
+                @if(Model.User is null)
+                {
+                    <div class="col text-center">
+                        <button type="button" class="btn btn-primary btn-login">Já tenho cadastro</button>
+                    </div>
+                    <div class="col text-center">
+                        <button type="button" class="btn btn-secondary btn-onboard">Preciso me cadastrar</button>
+                    </div>
+                }
+                else
+                {
+                    <div class="col text-center">
+                        <button type="button" class="btn btn-primary btn-checkout">Prosseguir</button>
+                    </div>
+                }
             </div>
         </div>
     </div>
@@ -40,6 +50,7 @@
     $(document).ready(function (){
         $('.btn-login').on('click', function (e){
             e.preventDefault();
+            setCookie('store-eventId', '@Model.Event.EventId', 1, true, 'strict');
             window.location.href = '@Url.Action("Index", "Login")';
         });
 
@@ -47,5 +58,7 @@
             e.preventDefault();
             window.location.href = '@Url.Action("Index", "Onboard", new { id = Model.Event.EventId })';
         });
+
+        $('.btn-checkout').on('click', ()=> globalThis.location.href = '/checkout/index/' + '@Model.Event?.EventId' + '/' + '@Model.User?.PersonId');
     });
 </script>

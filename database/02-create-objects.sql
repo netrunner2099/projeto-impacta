@@ -61,6 +61,8 @@ create table [dbo].[ticket]
 	[personid]			bigint  not null,
 	[eventid]			bigint not null,
 	[price]				numeric(18,6) not null,
+	[payment]			tinyint not null default 1,
+	[transaction]		varchar(37) null,
 	[auth]				varchar(255) null,
 	[status]			tinyint not null default 1,
 	[createdat]			datetime not null default getdate(),
@@ -74,6 +76,7 @@ go
 create table [dbo].[user]
 (
 	[userid]			bigint identity(1,1) not null,
+	[personid]			bigint null,
 	[name]				varchar(255) not null,
 	[email]				varchar(255) not null,
 	[password]			varchar(255) not null,
@@ -81,10 +84,7 @@ create table [dbo].[user]
 	[status]			tinyint not null default 1,
 	[createdat]			datetime not null default getdate(),
 	[updatedat]			datetime null,
-	constraint pk_user primary key (userid)
+	constraint pk_user primary key (userid),
+	constraint fk_user_person foreign key (personid) references [dbo].[person](personid)
 )
 go
-
-
-
-

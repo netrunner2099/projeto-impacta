@@ -135,7 +135,7 @@ public class TicketRepositoryTests : TestBase
         await Context.SaveChangesAsync();
 
         // Act
-        var result = await _repository.GetByPersonIdAsync(person1.PersonId);
+        var result = await _repository.ListByPersonIdAsync(person1.PersonId);
 
         // Assert
         result.Should().HaveCount(2);
@@ -166,7 +166,7 @@ public class TicketRepositoryTests : TestBase
         await Context.SaveChangesAsync();
 
         // Act
-        var result = await _repository.GetByEventIdAsync(event1.EventId);
+        var result = await _repository.ListByEventIdAsync(event1.EventId);
 
         // Assert
         result.Should().HaveCount(3);

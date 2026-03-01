@@ -178,7 +178,7 @@
                                     Sua transação foi concluída com sucesso.<br />
                                     <strong>ID da transação:</strong> <span id="transacaoId" class="text-dark"></span>
                                 </p>
-                                <button class="btn btn-success px-4" id="btnContinuar">Continuar</button>
+                                <button type="button" class="btn btn-success px-4" id="btnContinuar">Continuar</button>
                             </div>
 
                             <!-- Estado: Recusado -->
@@ -187,7 +187,7 @@
                                 <h5 class="fw-semibold text-danger mb-2">Pagamento Recusado</h5>
                                 <p class="text-muted mb-4">Não foi possível processar sua transação.<br />Verifique os dados do cartão e tente novamente.</p>
                                 <button class="btn btn-outline-danger px-4 me-2" id="btnCancelarRecusado">Cancelar</button>
-                                <button class="btn btn-danger px-4" id="btnTentarNovamente">Tentar Novamente</button>
+                                <button type="button" class="btn btn-danger px-4" id="btnTentarNovamente">Tentar Novamente</button>
                             </div>
                         </div>
                     </div>
@@ -208,7 +208,8 @@
     <script type="text/javascript" src="~/js/views/checkout.index.js"></script>
     <script type="text/javascript">
              $(function () {
-            window.salarioCfg = new CheckoutIndex({
+            window.checkoutCfg = new CheckoutIndex({
+                BaseUrl:'@Model.BaseUrl',
                 EventId: '@Model.Event.EventId',
                 PersonId: '@Model.Person.PersonId'
             }).init();

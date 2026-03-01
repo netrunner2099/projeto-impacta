@@ -13,6 +13,10 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
             .HasColumnName("userid")
             .ValueGeneratedOnAdd();
 
+        builder.Property(u => u.PersonId)
+            .HasColumnName("personid")
+            .HasColumnType("bigint");
+
         builder.Property(u => u.Name)
             .HasColumnName("name")
             .HasColumnType("varchar(255)")

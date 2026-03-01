@@ -6,7 +6,20 @@ public class MappingProfile : Profile
     {
         CreateMap<Event, EventModel>().ReverseMap();
         CreateMap<Person, PersonModel>().ReverseMap();
+
+
         CreateMap<Ticket, TicketModel>().ReverseMap();
+        CreateMap<CreateTicketCommand, Ticket>().ReverseMap();
+        CreateMap<CreateTicketCommand, TicketModel>().ReverseMap();
+        CreateMap<Ticket, CreateTicketCommandResponse>().ReverseMap();
+        CreateMap<TicketModel, CreateTicketCommandResponse>().ReverseMap();
+        CreateMap<PayTicketCommand, TicketModel>().ReverseMap();
+        CreateMap<PayTicketCommand, Ticket>().ReverseMap();
+        CreateMap<TicketModel, PayTicketCommandResponse>().ReverseMap();
+        CreateMap<Ticket, PayTicketCommandResponse>().ReverseMap();
+        CreateMap<TicketModel, GetTicketQueryResponse>().ReverseMap();
+        CreateMap<Ticket, GetTicketQueryResponse>().ReverseMap();
+
         CreateMap<User, UserModel>().ReverseMap();
 
         CreateMap<CreatePersonCommand, Person>().ReverseMap();
@@ -20,6 +33,3 @@ public class MappingProfile : Profile
         CreateMap<EventModel, GetEventQueryResponse>().ReverseMap();
     }
 }
-
-
-

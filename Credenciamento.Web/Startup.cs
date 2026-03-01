@@ -1,4 +1,5 @@
 using Credenciamento.Application;
+using Credenciamento.Application.Mappings;
 using Credenciamento.Application.Models;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -30,7 +31,10 @@ public class Startup
         services.AddOptions<SmtpOptions>()
             .BindConfiguration("Environment:Smtp");
 
-        ApplicationRegistration.AddApplicationServices(services, null, Configuration);
+        services.AddOptions<QrCodeOptions>()
+            .BindConfiguration("Environment:QrCode");
+
+        ApplicationRegistration.AddApplicationServices(services, new Mappings.MappingProfile(), Configuration);
     }
 
     // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

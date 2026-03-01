@@ -1,13 +1,14 @@
 namespace Credenciamento.Application.Models;
 
-
 public class TicketModel
 {
     public long TicketId { get; set; }
     public long PersonId { get; set; }
     public long EventId { get; set; }
     public decimal Price { get; set; }
+    public byte Payment { get; set; }
     public byte Status { get; set; }
+    public string Transaction { get; set; }
     public string Auth { get; set; }
     public DateTime CreatedAt { get; set; }
     public DateTime? UpdatedAt { get; set; }
