@@ -1,8 +1,42 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
+﻿@model HomeIndexViewModel;
+@{
+    ViewData["Title"] = "Próximos Eventos";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<div class="row">
+    <h4>Próximos Eventos</h4>
 </div>
+
+@if (null != Model && null != Model.Events && Model.Events.Any())
+{
+    foreach (var item in Model.Events)
+    {
+        <div class="card mt-3 mb-3">
+            <div class="card-header bg-purple">
+                <h5 class="card-title">@item.Name</h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <div class="col-md-10">
+                        <p class="card-text">@item.Local - @item.Begin.ToString("dd/MM") a @item.End.ToString("dd/MM")</p>
+                        <p class="card-text" style="text-align:justify">@item.Description</p>
+                        <p class="card-text">@item.Price.ToString("c2")</p>
+                    </div>
+                    <div class="col-md-2 text-end">
+                        <button type="button" class="btn btn-primary btn-buy" data-id="@item.EventId">Comprar ingresso</button>
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+    }
+}
+
+<script type="text/javascript" defer>
+    $(document).ready(function () {
+        $('.btn-buy').click(function () {
+            var eventId = $(this).data('id');
+            window.location.href = '/Store/Index/' + eventId;
+        });
+    });
+</script>

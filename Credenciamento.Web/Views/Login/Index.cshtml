@@ -1,0 +1,148 @@
+﻿@model LoginIndexViewModel;
+@{
+    ViewData["Title"] = "Acesse sua conta";
+}
+
+<div class="row">
+    <div class="col-md-3"></div>
+    <div class="col-md-6">
+        <form asp-action="verify" asp-controller="Login" method="post" id="formLogin">
+            <div class="card">
+                <div class="card-header bg-purple">
+                    <h5 class="card-title">Acesse sua conta</h5>
+                </div>
+
+                <div class="card-body">
+                    <div class="row">
+                        <div class="form-group">
+                            <label asp-for="Login" class="form-label fw-medium">Email</label>
+                            <input type="text" asp-for="Login" class="form-control" />
+                            <span asp-validation-for="Login" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="form-group">
+                            <label asp-for="Password" class="form-label fw-medium">Senha</label>
+                            <input type="password" asp-for="Password" class="form-control" />
+                            <span asp-validation-for="Password" class="text-danger"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card-footer">
+                    <div class="row">
+                        <div class="col text-center">
+                            <button type="submit" class="btn btn-primary btn-action btn-login">Entrar</button>
+                        </div>
+
+                        <div class="col text-center">
+                            <button type="reset" class="btn btn-danger btn-action btn-cancel">Cancelar</button>
+                        </div>
+                    </div>
+
+                    <div class="row mt-3">
+                        <div class="col text-center">
+                            <button type="button" class="btn btn-secondary btn-forgot">Recuperar Senha</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+
+        @if(!string.IsNullOrEmpty(Model.SuccessMessage)){
+            <div class="alert alert-success mt-3" role="alert">
+                @Model.SuccessMessage
+            </div>
+        }
+        
+        @if (!string.IsNullOrEmpty(Model.ErrorMessage))
+        {
+            <div class="alert alert-danger mt-3" role="alert">
+                @Model.ErrorMessage
+            </div>
+        }
+    </div>
+    <div class="col-md-3"></div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script type="text/javascript">
+        $(document).ready(function(){
+            // Configuração de validação
+            $.validator.setDefaults({
+                onsubmit: true,
+                onfocusout: function(element) {
+                    // Não valida inputs, mas permite validar selects
+                    if ($(element).is('select')) {
+                        return false;
+                    }
+                    return false;
+                },
+                onkeyup: false,
+                onclick: false,
+                highlight: function(element) {
+                    $(element).addClass('is-invalid').removeClass('is-valid');
+                },
+                unhighlight: function(element) {
+                    $(element).removeClass('is-invalid').addClass('is-valid');
+                },
+                errorElement: 'div',
+                errorClass: 'invalid-feedback',
+                errorPlacement: function(error, element) {
+                    error.insertAfter(element);
+                },
+                // Ignora erros em tempo real
+                ignore: []
+            });
+
+            $(".btn-forgot").off('click').on('click', function(e) {
+                e.preventDefault();
+                
+                var $loginField = $('#Login');
+                var loginValue = $loginField.val().trim();
+                
+                // Remove classes de validação anteriores
+                $loginField.removeClass('is-invalid is-valid');
+                
+                // Valida se o campo está preenchido
+                if (!loginValue) {
+                    $loginField.addClass('is-invalid');
+                    
+                    // Remove mensagem de erro anterior se existir
+                    $loginField.next('.text-danger').remove();
+                    
+                    // Adiciona mensagem de erro
+                    $loginField.after('<span class="text-danger">Por favor, informe o email para recuperar a senha.</span>');
+                    
+                    $loginField.focus();
+                    return false;
+                }
+                
+                // Valida se é um email válido
+                if (!validarEmail(loginValue)) {
+                    // Adiciona a class de invalid.
+                    $loginField.addClass('is-invalid');                   
+                    // Remove mensagem de erro anterior se existir
+                    $loginField.next('.text-danger').remove();
+                    // Adiciona mensagem de erro
+                    $loginField.after('<span class="text-danger">Por favor, informe um email válido.</span>');
+                    // Foca no campo login
+                    $loginField.focus();
+                    return false;
+                }
+                
+                // Remove mensagem de erro se existir
+                $loginField.next('.text-danger').remove();
+                $loginField.addClass('is-valid');
+                
+                // Aqui você pode redirecionar ou abrir modal de recuperação
+                console.info('Recuperar senha para:', loginValue);
+                
+                // Exemplo: redirecionar para página de recuperação
+                window.location.href = '/Login/Forgot/' + base64Encode(loginValue);
+            });
+        });
+    </script>
+}

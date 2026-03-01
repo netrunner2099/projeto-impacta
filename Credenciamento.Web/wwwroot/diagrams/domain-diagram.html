@@ -1,0 +1,176 @@
+﻿<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <title>Domain Layer - Sistema de Credenciamento</title>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10.9.5/dist/mermaid.min.js"></script>
+    <link type="text/css" href="../css/diagram.css" rel="stylesheet" />
+</head>
+<body>
+    <div class="container">
+        <h1>🔵 Domain Layer</h1>
+        <div class="subtitle">Entidades e Interfaces de Repositório</div>
+
+        <nav class="nav">
+            <a href="domain-diagram.html" class="active">Domain</a>
+            <a href="infrastructure-diagram.html">Infrastructure</a>
+            <a href="application-diagram.html">Application</a>
+            <a href="web-diagram.html">Web</a>
+            <a href="database-diagram.html">Database</a>
+            <a href="usecase-diagram.html">Use Cases</a>
+            <a href="class-diagram.html">Visão Completa</a>
+        </nav>
+
+        <div class="info">
+            <strong>📦 Projeto:</strong> Credenciamento.Domain<br>
+            <strong>🎯 Responsabilidade:</strong> Definição de entidades e contratos (interfaces)<br>
+            <strong>✨ Características:</strong> Agnóstico de tecnologia, sem dependências externas
+        </div>
+
+        <div class="mermaid">
+            classDiagram
+            %% ===============================================
+            %% ENTITIES
+            %% ===============================================
+            class Event {
+            +long EventId
+            +string Name
+            +string Description
+            +string Local
+            +DateTime Begin
+            +DateTime End
+            +decimal Price
+            +byte Status
+            +DateTime CreatedAt
+            +DateTime UpdatedAt
+            +IEnumerable~Ticket~ Tickets
+            }
+
+            class Person {
+            +long PersonId
+            +string Name
+            +string Document
+            +string Email
+            +string Phone
+            +DateTime BirthDay
+            +string ZipCode
+            +string Address
+            +string Number
+            +string Complement
+            +string Neighborhood
+            +string City
+            +string State
+            +byte Status
+            +DateTime CreatedAt
+            +DateTime UpdatedAt
+            +IEnumerable~Ticket~ Tickets
+            }
+
+            class User {
+            +long UserId
+            +long PersonId
+            +string Name
+            +string Email
+            +string Password
+            +byte Role
+            +byte Status
+            +DateTime CreatedAt
+            +DateTime UpdatedAt
+            }
+
+            class Ticket {
+            +long TicketId
+            +long PersonId
+            +long EventId
+            +decimal Price
+            +byte Payment
+            +string Transaction
+            +string Auth
+            +byte Status
+            +DateTime CreatedAt
+            +DateTime UpdatedAt
+            +Person Person
+            +Event Event
+            }
+
+            %% ===============================================
+            %% REPOSITORY INTERFACES
+            %% ===============================================
+            class IEventRepository {
+            &lt;&lt;interface&gt;&gt;
+            +ListAllAsync() Task~IEnumerable~Event~~
+            +ListFutureAsync() Task~IEnumerable~Event~~
+            +GetByIdAsync(long) Task~Event~
+            +AddAsync(Event) Task~Event~
+            +UpdateAsync(Event) Task~Event~
+            +DeleteAsync(long) Task~bool~
+            }
+
+            class IPersonRepository {
+            &lt;&lt;interface&gt;&gt;
+            +ListAllAsync() Task~IEnumerable~Person~~
+            +GetByIdAsync(long) Task~Person~
+            +GetByDocumentAsync(string) Task~Person~
+            +GetByEmailAsync(string) Task~Person~
+            +AddAsync(Person) Task~Person~
+            +UpdateAsync(Person) Task~Person~
+            +DeleteAsync(long) Task~bool~
+            +DocumentExistsAsync(Person) Task~bool~
+            +PhoneNumberExistsAsync(Person) Task~bool~
+            +EmailExistsAsync(Person) Task~bool~
+            }
+
+            class IUserRepository {
+            &lt;&lt;interface&gt;&gt;
+            +ListAllAsync() Task~IEnumerable~User~~
+            +GetByIdAsync(long) Task~User~
+            +GetByEmailAsync(string) Task~User~
+            +AddAsync(User) Task~User~
+            +UpdateAsync(User) Task~User~
+            +DeleteAsync(long) Task~bool~
+            +EmailExistsAsync(string) Task~bool~
+            }
+
+            class ITicketRepository {
+            &lt;&lt;interface&gt;&gt;
+            +ListAllAsync() Task~IEnumerable~Ticket~~
+            +GetByIdAsync(long) Task~Ticket~
+            +GetByTransactionAsync(string) Task~Ticket~
+            +ListByPersonIdAsync(long) Task~IEnumerable~Ticket~~
+            +ListByEventIdAsync(long) Task~IEnumerable~Ticket~~
+            +AddAsync(Ticket) Task~Ticket~
+            +UpdateAsync(Ticket) Task~Ticket~
+            +DeleteAsync(long) Task~bool~
+            }
+
+            %% ===============================================
+            %% RELATIONSHIPS
+            %% ===============================================
+            Event "1" --> "0..*" Ticket : tem
+            Person "1" --> "0..*" Ticket : possui
+            User "0..1" --> "0..1" Person : referencia
+            Ticket --> Event : pertence a
+            Ticket --> Person : pertence a
+
+            IEventRepository ..> Event : define contrato
+            IPersonRepository ..> Person : define contrato
+            IUserRepository ..> User : define contrato
+            ITicketRepository ..> Ticket : define contrato
+        </div>
+    </div>
+
+    <script>mermaid.initialize({
+            startOnLoad: true,
+            theme: 'default',
+            themeVariables: {
+                primaryColor: '#bbdefb',
+                primaryTextColor: '#000',
+                primaryBorderColor: '#2196f3',
+                lineColor: '#666',
+                secondaryColor: '#c5cae9',
+                tertiaryColor: '#f3e5f5',
+                fontSize: '14px'
+            }
+        });</script>
+</body>
+</html>

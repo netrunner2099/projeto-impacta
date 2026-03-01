@@ -1,0 +1,171 @@
+﻿<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>Web Layer - Sistema de Credenciamento</title>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10.9.5/dist/mermaid.min.js"></script>
+    <link type="text/css" href="../css/diagram.css" rel="stylesheet" />
+</head>
+<body>
+    <div class="container">
+        <h1>🟡 Web Layer</h1>
+        <div class="subtitle">Controllers, ViewModels e DTOs</div>
+
+        <nav class="nav">
+            <a href="domain-diagram.html">Domain</a>
+            <a href="infrastructure-diagram.html">Infrastructure</a>
+            <a href="application-diagram.html">Application</a>
+            <a href="web-diagram.html" class="active">Web</a>
+            <a href="database-diagram.html">Database</a>
+            <a href="usecase-diagram.html">Use Cases</a>
+            <a href="class-diagram.html">Visão Completa</a>
+        </nav>
+
+        <div class="info">
+            <strong>📦 Projeto:</strong> Credenciamento.Web<br>
+            <strong>🎯 Responsabilidade:</strong> Camada de apresentação (Razor Pages/MVC)<br>
+            <strong>✨ Tecnologias:</strong> ASP.NET Core, Bootstrap, jQuery
+        </div>
+
+        <div class="mermaid">
+            classDiagram
+            %% ===============================================
+            %% CONTROLLERS
+            %% ===============================================
+            class HomeController {
+            -IMediator mediator
+            -ILogger logger
+            +Index() Task~IActionResult~
+            +Privacy() IActionResult
+            }
+
+            class StoreController {
+            -IMediator mediator
+            -ILogger logger
+            +Index(long) Task~IActionResult~
+            }
+
+            class OnboardController {
+            -IMediator mediator
+            -IMapper mapper
+            +Index(int) Task~IActionResult~
+            +CreateAsync() Task~IActionResult~
+            }
+
+            class LoginController {
+            -IMediator mediator
+            -ILogger logger
+            +Index() IActionResult
+            +Verify() Task~IActionResult~
+            }
+
+            class CheckoutController {
+            -IMediator mediator
+            -IMapper mapper
+            -ILogger logger
+            +Index(long, long) Task~IActionResult~
+            +CreateTicketAsync() Task~IActionResult~
+            +PayTicketAsync() Task~IActionResult~
+            }
+
+            class TicketController {
+            -IMediator mediator
+            -IMapper mapper
+            -ILogger logger
+            +Index(string) Task~IActionResult~
+            }
+
+            %% ===============================================
+            %% VIEWMODELS
+            %% ===============================================
+            class HomeIndexViewModel {
+            +IEnumerable~EventModel~ Events
+            }
+
+            class StoreIndexViewModel {
+            +EventModel Event
+            +UserModel User
+            }
+
+            class OnboardIndexViewModel {
+            +EventModel Event
+            +PersonModel Person
+            +IEnumerable~string~ Errors
+            }
+
+            class LoginIndexViewModel {
+            +string Login
+            +string Password
+            +string SuccessMessage
+            +string ErrorMessage
+            }
+
+            class CheckoutIndexViewModel {
+            +long EventId
+            +long PersonId
+            +EventModel Event
+            +PersonModel Person
+            }
+
+            class TicketIndexViewModel {
+            +TicketDto Ticket
+            }
+
+            %% ===============================================
+            %% DTOs
+            %% ===============================================
+            class EventDto {
+            +long EventId
+            +string Name
+            +decimal Price
+            +DateTime Begin
+            }
+
+            class PersonDto {
+            +long PersonId
+            +string Name
+            +string Document
+            +string Email
+            }
+
+            class TicketDto {
+            +long TicketId
+            +decimal Price
+            +string Transaction
+            +QRCodeResponse QRCodeResponse
+            +EventDto Event
+            +PersonDto Person
+            }
+
+            %% ===============================================
+            %% RELATIONSHIPS
+            %% ===============================================
+            HomeController ..> HomeIndexViewModel : usa
+            StoreController ..> StoreIndexViewModel : usa
+            OnboardController ..> OnboardIndexViewModel : usa
+            LoginController ..> LoginIndexViewModel : usa
+            CheckoutController ..> CheckoutIndexViewModel : usa
+            TicketController ..> TicketIndexViewModel : usa
+
+            TicketIndexViewModel --> TicketDto : contém
+            TicketDto --> EventDto : contém
+            TicketDto --> PersonDto : contém
+        </div>
+    </div>
+
+    <script>
+    mermaid.initialize({
+            startOnLoad: true,
+            theme: 'default',
+            themeVariables: {
+                primaryColor: '#ffe0b2',
+                primaryTextColor: '#000',
+                primaryBorderColor: '#ff9800',
+                lineColor: '#666',
+                secondaryColor: '#ffccbc',
+                tertiaryColor: '#f3e5f5',
+                fontSize: '14px'
+            }
+        });</script>
+</body>
+</html>

@@ -1,0 +1,309 @@
+﻿<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>Diagrama de Casos de Uso - Sistema de Credenciamento</title>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10.9.5/dist/mermaid.min.js"></script>
+    <link type="text/css" href="../css/diagram.css" rel="stylesheet" />
+</head>
+<body>
+    <div class="container">
+        <h1>🎯 Diagrama de Casos de Uso</h1>
+        <div class="subtitle">Sistema de Credenciamento de Eventos - UML Use Cases</div>
+
+        <nav class="nav">
+            <a href="domain-diagram.html">Domain</a>
+            <a href="infrastructure-diagram.html">Infrastructure</a>
+            <a href="application-diagram.html">Application</a>
+            <a href="web-diagram.html">Web</a>
+            <a href="database-diagram.html">Database</a>
+            <a href="usecase-diagram.html" class="active">Use Cases</a>
+            <a href="class-diagram.html">Visão Completa</a>
+        </nav>
+
+        <div class="info">
+            <strong>📋 Tipo:</strong> Diagrama UML de Casos de Uso<br>
+            <strong>🎯 Objetivo:</strong> Representar as funcionalidades do sistema e interação com atores<br>
+            <strong>✨ Atores:</strong> Visitante, Participante, Administrador, Sistema de Pagamento
+        </div>
+
+        <div class="stats">
+            <div class="stat-card">
+                <div class="stat-number">4</div>
+                <div class="stat-label">Atores</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">12</div>
+                <div class="stat-label">Casos de Uso</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">3</div>
+                <div class="stat-label">Módulos</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">8</div>
+                <div class="stat-label">Relacionamentos</div>
+            </div>
+        </div>
+
+        <div class="mermaid">
+            graph TB
+            subgraph Sistema["Sistema de Credenciamento de Eventos"]
+            subgraph ModuloEventos["Módulo de Eventos"]
+            UC1[("Visualizar Eventos<br />Disponíveis")]
+            UC2[("Pesquisar Eventos")]
+            UC3[("Gerenciar Eventos")]
+            end
+
+            subgraph ModuloCadastro["Módulo de Cadastro e Autenticação"]
+            UC4[("Realizar Cadastro")]
+            UC5[("Fazer Login")]
+            UC6[("Atualizar Perfil")]
+            end
+
+            subgraph ModuloIngressos["Módulo de Ingressos"]
+            UC7[("Comprar Ingresso")]
+            UC8[("Processar Pagamento")]
+            UC9[("Visualizar Ingresso")]
+            UC10[("Imprimir Ingresso")]
+            UC11[("Validar QR Code")]
+            UC12[("Consultar Histórico<br />de Ingressos")]
+            end
+            end
+
+            %% Atores
+            Visitante["👤 Visitante"]
+            Participante["👤 Participante<br />(Usuário Autenticado)"]
+            Admin["👤 Administrador"]
+            SistemaPagamento["🏦 Sistema de<br />Pagamento"]
+
+            %% Relacionamentos - Visitante
+            Visitante --> UC1
+            Visitante --> UC2
+            Visitante --> UC4
+
+            %% Relacionamentos - Participante
+            Participante --> UC5
+            Participante --> UC6
+            Participante --> UC7
+            Participante --> UC9
+            Participante --> UC10
+            Participante --> UC12
+
+            %% Relacionamentos - Admin
+            Admin --> UC3
+            Admin --> UC11
+
+            %% Relacionamentos - Sistema Externo
+            UC8 --> SistemaPagamento
+
+            %% Include/Extend
+            UC7 -.->|include| UC8
+            UC7 -.->|include| UC4
+            UC9 -.->|include| UC5
+            UC10 -.->|extend| UC9
+            UC12 -.->|include| UC5
+
+            %% Estilo
+            classDef atorStyle fill:#e3f2fd,stroke:#2196f3,stroke-width:3px,color:#000
+            classDef usecaseStyle fill:#fff3e0,stroke:#ff9800,stroke-width:2px,color:#000
+            classDef sistemaStyle fill:#f3e5f5,stroke:#9c27b0,stroke-width:2px,color:#000
+
+            class Visitante,Participante,Admin,SistemaPagamento atorStyle
+            class UC1,UC2,UC3,UC4,UC5,UC6,UC7,UC8,UC9,UC10,UC11,UC12 usecaseStyle
+        </div>
+
+        <div class="legend">
+            <h3>📚 Documentação dos Casos de Uso</h3>
+
+            <div class="legend-grid">
+                <div class="legend-section">
+                    <h4>👤 Visitante (Não Autenticado)</h4>
+                    <ul>
+                        <li><strong>UC1:</strong> Visualizar eventos disponíveis na página inicial</li>
+                        <li><strong>UC2:</strong> Pesquisar eventos por data, nome ou local</li>
+                        <li><strong>UC4:</strong> Realizar cadastro no sistema</li>
+                    </ul>
+                </div>
+
+                <div class="legend-section">
+                    <h4>👤 Participante (Autenticado)</h4>
+                    <ul>
+                        <li><strong>UC5:</strong> Fazer login no sistema</li>
+                        <li><strong>UC6:</strong> Atualizar dados do perfil</li>
+                        <li><strong>UC7:</strong> Comprar ingresso para evento</li>
+                        <li><strong>UC9:</strong> Visualizar ingresso adquirido</li>
+                        <li><strong>UC10:</strong> Imprimir ingresso com QR Code</li>
+                        <li><strong>UC12:</strong> Consultar histórico de ingressos</li>
+                    </ul>
+                </div>
+
+                <div class="legend-section">
+                    <h4>👤 Administrador</h4>
+                    <ul>
+                        <li><strong>UC3:</strong> Gerenciar eventos (criar, editar, excluir)</li>
+                        <li><strong>UC11:</strong> Validar QR Code na entrada do evento</li>
+                    </ul>
+                </div>
+
+                <div class="legend-section">
+                    <h4>🏦 Sistema de Pagamento (Ator Externo)</h4>
+                    <ul>
+                        <li><strong>UC8:</strong> Processar pagamento do ingresso</li>
+                        <li>Integração com gateway de pagamento</li>
+                        <li>Validação de cartão de crédito</li>
+                    </ul>
+                </div>
+
+                <div class="legend-section">
+                    <h4>🔗 Relacionamentos Include</h4>
+                    <ul>
+                        <li><strong>UC7 → UC8:</strong> Comprar ingresso inclui processar pagamento</li>
+                        <li><strong>UC7 → UC4:</strong> Comprar ingresso inclui cadastro (se novo)</li>
+                        <li><strong>UC9 → UC5:</strong> Visualizar ingresso inclui autenticação</li>
+                        <li><strong>UC12 → UC5:</strong> Consultar histórico inclui autenticação</li>
+                    </ul>
+                </div>
+
+                <div class="legend-section">
+                    <h4>🔀 Relacionamentos Extend</h4>
+                    <ul>
+                        <li><strong>UC10 → UC9:</strong> Imprimir ingresso estende visualizar ingresso</li>
+                        <li>Funcionalidade opcional</li>
+                        <li>Executada sob demanda do usuário</li>
+                    </ul>
+                </div>
+
+                <div class="legend-section">
+                    <h4>📋 Fluxo Principal - Comprar Ingresso</h4>
+                    <ul>
+                        <li><strong>1.</strong> Participante visualiza eventos</li>
+                        <li><strong>2.</strong> Participante seleciona evento</li>
+                        <li><strong>3.</strong> Sistema verifica autenticação</li>
+                        <li><strong>4.</strong> Participante confirma compra</li>
+                        <li><strong>5.</strong> Sistema processa pagamento</li>
+                        <li><strong>6.</strong> Sistema gera ingresso com QR Code</li>
+                        <li><strong>7.</strong> Sistema envia ingresso por e-mail</li>
+                    </ul>
+                </div>
+
+                <div class="legend-section">
+                    <h4>🎫 Pós-Condições</h4>
+                    <ul>
+                        <li>Ingresso armazenado no banco de dados</li>
+                        <li>QR Code único gerado</li>
+                        <li>E-mail de confirmação enviado</li>
+                        <li>Pagamento confirmado</li>
+                        <li>Status do ticket: Ativo</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="legend">
+            <h3>📝 Descrição Detalhada dos Casos de Uso</h3>
+
+            <div style="background: white; padding: 20px; border-radius: 8px; margin-top: 20px; overflow-x: auto;">
+                <table style="width: 100%; border-collapse: collapse;">
+                    <thead style="background: #00bcd4; color: white;">
+                        <tr>
+                            <th style="padding: 12px; text-align: left; border: 1px solid #ddd;">UC</th>
+                            <th style="padding: 12px; text-align: left; border: 1px solid #ddd;">Nome</th>
+                            <th style="padding: 12px; text-align: left; border: 1px solid #ddd;">Ator Principal</th>
+                            <th style="padding: 12px; text-align: left; border: 1px solid #ddd;">Pré-Condição</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td style="padding: 10px; border: 1px solid #ddd;"><strong>UC1</strong></td>
+                            <td style="padding: 10px; border: 1px solid #ddd;">Visualizar Eventos Disponíveis</td>
+                            <td style="padding: 10px; border: 1px solid #ddd;">Visitante</td>
+                            <td style="padding: 10px; border: 1px solid #ddd;">Nenhuma</td>
+                        </tr>
+                        <tr style="background: #f5f5f5;">
+                            <td style="padding: 10px; border: 1px solid #ddd;"><strong>UC2</strong></td>
+                            <td style="padding: 10px; border: 1px solid #ddd;">Pesquisar Eventos</td>
+                            <td style="padding: 10px; border: 1px solid #ddd;">Visitante</td>
+                            <td style="padding: 10px; border: 1px solid #ddd;">Nenhuma</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 10px; border: 1px solid #ddd;"><strong>UC3</strong></td>
+                            <td style="padding: 10px; border: 1px solid #ddd;">Gerenciar Eventos</td>
+                            <td style="padding: 10px; border: 1px solid #ddd;">Administrador</td>
+                            <td style="padding: 10px; border: 1px solid #ddd;">Autenticado como Admin</td>
+                        </tr>
+                        <tr style="background: #f5f5f5;">
+                            <td style="padding: 10px; border: 1px solid #ddd;"><strong>UC4</strong></td>
+                            <td style="padding: 10px; border: 1px solid #ddd;">Realizar Cadastro</td>
+                            <td style="padding: 10px; border: 1px solid #ddd;">Visitante</td>
+                            <td style="padding: 10px; border: 1px solid #ddd;">Não estar cadastrado</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 10px; border: 1px solid #ddd;"><strong>UC5</strong></td>
+                            <td style="padding: 10px; border: 1px solid #ddd;">Fazer Login</td>
+                            <td style="padding: 10px; border: 1px solid #ddd;">Participante</td>
+                            <td style="padding: 10px; border: 1px solid #ddd;">Estar cadastrado</td>
+                        </tr>
+                        <tr style="background: #f5f5f5;">
+                            <td style="padding: 10px; border: 1px solid #ddd;"><strong>UC6</strong></td>
+                            <td style="padding: 10px; border: 1px solid #ddd;">Atualizar Perfil</td>
+                            <td style="padding: 10px; border: 1px solid #ddd;">Participante</td>
+                            <td style="padding: 10px; border: 1px solid #ddd;">Autenticado</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 10px; border: 1px solid #ddd;"><strong>UC7</strong></td>
+                            <td style="padding: 10px; border: 1px solid #ddd;">Comprar Ingresso</td>
+                            <td style="padding: 10px; border: 1px solid #ddd;">Participante</td>
+                            <td style="padding: 10px; border: 1px solid #ddd;">Autenticado e evento disponível</td>
+                        </tr>
+                        <tr style="background: #f5f5f5;">
+                            <td style="padding: 10px; border: 1px solid #ddd;"><strong>UC8</strong></td>
+                            <td style="padding: 10px; border: 1px solid #ddd;">Processar Pagamento</td>
+                            <td style="padding: 10px; border: 1px solid #ddd;">Sistema de Pagamento</td>
+                            <td style="padding: 10px; border: 1px solid #ddd;">Dados de pagamento válidos</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 10px; border: 1px solid #ddd;"><strong>UC9</strong></td>
+                            <td style="padding: 10px; border: 1px solid #ddd;">Visualizar Ingresso</td>
+                            <td style="padding: 10px; border: 1px solid #ddd;">Participante</td>
+                            <td style="padding: 10px; border: 1px solid #ddd;">Autenticado e possuir ingresso</td>
+                        </tr>
+                        <tr style="background: #f5f5f5;">
+                            <td style="padding: 10px; border: 1px solid #ddd;"><strong>UC10</strong></td>
+                            <td style="padding: 10px; border: 1px solid #ddd;">Imprimir Ingresso</td>
+                            <td style="padding: 10px; border: 1px solid #ddd;">Participante</td>
+                            <td style="padding: 10px; border: 1px solid #ddd;">Visualizando ingresso</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 10px; border: 1px solid #ddd;"><strong>UC11</strong></td>
+                            <td style="padding: 10px; border: 1px solid #ddd;">Validar QR Code</td>
+                            <td style="padding: 10px; border: 1px solid #ddd;">Administrador</td>
+                            <td style="padding: 10px; border: 1px solid #ddd;">Ingresso com QR Code válido</td>
+                        </tr>
+                        <tr style="background: #f5f5f5;">
+                            <td style="padding: 10px; border: 1px solid #ddd;"><strong>UC12</strong></td>
+                            <td style="padding: 10px; border: 1px solid #ddd;">Consultar Histórico de Ingressos</td>
+                            <td style="padding: 10px; border: 1px solid #ddd;">Participante</td>
+                            <td style="padding: 10px; border: 1px solid #ddd;">Autenticado</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script>mermaid.initialize({
+            startOnLoad: true,
+            theme: 'default',
+            themeVariables: {
+                primaryColor: '#b2ebf2',
+                primaryTextColor: '#000',
+                primaryBorderColor: '#00bcd4',
+                lineColor: '#666',
+                secondaryColor: '#ffe0b2',
+                tertiaryColor: '#f3e5f5',
+                fontSize: '14px'
+            }
+        });</script>
+</body>
+</html>
