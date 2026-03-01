@@ -1,19 +1,19 @@
 ﻿using Credenciamento.Application.Queries.User;
 using Credenciamento.Web.Models;
 using Microsoft.AspNetCore.Http;
-using System.Threading.Tasks;
 
 namespace Credenciamento.Web.Controllers;
 
 [Route("[controller]/[action]")]
 public class LoginController : Controller
 {
+    private static string enviromentName = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
     private static readonly CookieOptions authCookieOptions = new CookieOptions
     {
         Expires = DateTimeOffset.UtcNow.AddHours(8), // 8 horas
         HttpOnly = true, // Não acessível via JavaScript (mais seguro)
-        Secure = true,
-        SameSite = SameSiteMode.Strict,
+        Secure = enviromentName != "localhost",
+        SameSite = enviromentName == "localhost" ? SameSiteMode.None : SameSiteMode.Strict,
         Path = "/"
     };
 
@@ -47,6 +47,7 @@ public class LoginController : Controller
         var result = await _mediator.Send(query);
         if(result is null)
         {
+            _logger.LogWarning("Login falhou para o email {Email}", request.Login);
             request.ErrorMessage = "Email ou senha inválidos";
             return View("Index", request);
         }
