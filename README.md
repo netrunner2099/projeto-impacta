@@ -122,6 +122,11 @@ Para dúvidas ou sugestões, abra uma [issue](https://github.com/netrunner2099/p
 O projeto está sendo gerenciado utilizando o Github Projects, e o link deste projeto está abaixo:
 https://github.com/users/netrunner2099/projects/1
 
+## 📄 Documentação Técnica
+
+A documentação técnica está disponível no link:
+https://iingresso.com/diagrams/class-diagram.html
+
 ---
 
 > Status do Projeto: Em Andamento 🚧
