@@ -78,7 +78,7 @@ git clone https://github.com/netrunner2099/projeto-impacta.git cd projeto-impact
 - /database/02-create-objects.sql
 - /database/03-first-load.sql (é uma carga inicial com os eventos de 2026)
 
-1. Os scripts de criação das tabelas estão disponíveis na pasta `database/`:
+Os scripts de criação das tabelas estão disponíveis na pasta `database/`
 
 3. Configure a string de conexão no `appsettings.json`:
 { "ConnectionStrings": { "DefaultConnection": "Server=localhost;Database=CredenciamentoDB;User=impacta_user;Password=(a sua senha aqui);TrustServerCertificate=True;" } }
