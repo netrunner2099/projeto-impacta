@@ -74,9 +74,11 @@ O projeto segue uma arquitetura em camadas (Layered Architecture) com separaçã
 git clone https://github.com/netrunner2099/projeto-impacta.git cd projeto-impacta
 
 2. Execute os scripts de criação dos objetos de banco de dados:
-/database/01-create-database.sql (altere a senha do usuário impacta_user no script)
-/database/02-create-objects.sql
-/database/03-first-load.sql (é uma carga inicial com os eventos de 2026)
+- /database/01-create-database.sql (altere a senha do usuário impacta_user no script)
+- /database/02-create-objects.sql
+- /database/03-first-load.sql (é uma carga inicial com os eventos de 2026)
+
+1. Os scripts de criação das tabelas estão disponíveis na pasta `database/`:
 
 3. Configure a string de conexão no `appsettings.json`:
 { "ConnectionStrings": { "DefaultConnection": "Server=localhost;Database=CredenciamentoDB;User=impacta_user;Password=(a sua senha aqui);TrustServerCertificate=True;" } }
@@ -92,11 +94,9 @@ dotnet run
 ## 📁 Estrutura do Banco de Dados
 
 ### Scripts SQL
-
-Os scripts de criação das tabelas estão disponíveis na pasta `database/`:
-
 - `01-create-database.sql` - Criação da database
 - `02-create-objects.sql` - Criação das tabelas e outros objetos
+- `03-first-load.sql` - Carga inicial com os eventos de 2026
 
 ## 🔐 Funcionalidades de Segurança
 
