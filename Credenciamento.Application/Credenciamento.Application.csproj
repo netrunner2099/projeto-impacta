@@ -1,0 +1,30 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFramework>net8.0</TargetFramework>
+		<SatelliteResourceLanguages>false</SatelliteResourceLanguages>
+		<NoWarn>CS8600,CS8602,CS8632</NoWarn>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+	  <DebugType>none</DebugType>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<Folder Include="Contracts\NewFolder\" />
+		<Folder Include="Interfaces\User\" />
+		<Folder Include="Services\User\" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="AutoMapper" Version="13.0.1" />
+		<PackageReference Include="MailKit" Version="4.15.0" />
+		<PackageReference Include="MediatR" Version="12.5.0" />
+		<PackageReference Include="FluentValidation" Version="11.11.0" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\Credenciamento.Infrastructure\Credenciamento.Infrastructure.csproj" />
+	</ItemGroup>
+
+</Project>

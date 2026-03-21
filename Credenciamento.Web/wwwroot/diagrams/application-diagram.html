@@ -1,0 +1,228 @@
+﻿<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>Application Layer - Sistema de Credenciamento</title>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10.9.5/dist/mermaid.min.js"></script>
+    <link type="text/css" href="../css/diagram.css" rel="stylesheet" />
+</head>
+<body>
+    <div class="container">
+        <h1>🟢 Application Layer</h1>
+        <div class="subtitle">CQRS, Commands, Queries e Handlers (MediatR)</div>
+
+        <nav class="nav">
+            <a href="domain-diagram.html">Domain</a>
+            <a href="infrastructure-diagram.html">Infrastructure</a>
+            <a href="application-diagram.html" class="active">Application</a>
+            <a href="web-diagram.html">Web</a>
+            <a href="database-diagram.html">Database</a>
+            <a href="usecase-diagram.html">Use Cases</a>
+            <a href="class-diagram.html">Visão Completa</a>
+        </nav>
+
+        <div class="info">
+            <strong>📦 Projeto:</strong> Credenciamento.Application<br>
+            <strong>🎯 Responsabilidade:</strong> Lógica de negócio e orquestração (CQRS)<br>
+            <strong>✨ Padrões:</strong> MediatR, CQRS, AutoMapper
+        </div>
+
+        <div class="mermaid">
+            classDiagram
+            %% ===============================================
+            %% MODELS
+            %% ===============================================
+            class EventModel {
+            +long EventId
+            +string Name
+            +string Description
+            +decimal Price
+            +DateTime Begin
+            +DateTime End
+            }
+
+            class PersonModel {
+            +long PersonId
+            +string Name
+            +string Document
+            +string Email
+            }
+
+            class UserModel {
+            +long UserId
+            +string Name
+            +string Email
+            +byte Role
+            }
+
+            class TicketModel {
+            +long TicketId
+            +decimal Price
+            +string Transaction
+            +string Auth
+            }
+
+            class QRCodeResponse {
+            +string Base64
+            +string MimeType
+            +string DataUrl
+            }
+
+            %% ===============================================
+            %% COMMANDS
+            %% ===============================================
+            class CreateTicketCommand {
+            &lt;&lt;IRequest&gt;&gt;
+            +long EventId
+            +long PersonId
+            }
+
+            class PayTicketCommand {
+            &lt;&lt;IRequest&gt;&gt;
+            +long TicketId
+            }
+
+            class CreatePersonCommand {
+            &lt;&lt;IRequest&gt;&gt;
+            +string Name
+            +string Document
+            +string Email
+            }
+
+            %% ===============================================
+            %% QUERIES
+            %% ===============================================
+            class GetEventQuery {
+            &lt;&lt;IRequest&gt;&gt;
+            +long EventId
+            }
+
+            class ListFutureEventQuery {
+            &lt;&lt;IRequest&gt;&gt;
+            }
+
+            class GetTicketQuery {
+            &lt;&lt;IRequest&gt;&gt;
+            +long TicketId
+            +string Transaction
+            }
+
+            %% ===============================================
+            %% HANDLERS
+            %% ===============================================
+            class CreateTicketCommandHandler {
+            &lt;&lt;IRequestHandler&gt;&gt;
+            -ITicketRepository repository
+            -ILogger logger
+            -IMapper mapper
+            +Handle() Task~CreateTicketCommandResponse~
+            }
+
+            class PayTicketCommandHandler {
+            &lt;&lt;IRequestHandler&gt;&gt;
+            -ITicketRepository repository
+            -ILogger logger
+            -IMapper mapper
+            +Handle() Task~PayTicketCommandResponse~
+            }
+
+            class CreatePersonCommandHandler {
+            &lt;&lt;IRequestHandler&gt;&gt;
+            -IPersonRepository repository
+            -ILogger logger
+            -IMapper mapper
+            +Handle() Task~CreatePersonCommandResponse~
+            }
+
+            class GetEventQueryHandler {
+            &lt;&lt;IRequestHandler&gt;&gt;
+            -IEventRepository repository
+            -ILogger logger
+            -IMapper mapper
+            +Handle() Task~EventModel~
+            }
+
+            class ListFutureEventQueryHandler {
+            &lt;&lt;IRequestHandler&gt;&gt;
+            -IEventRepository repository
+            -ILogger logger
+            -IMapper mapper
+            +Handle() Task~ListFutureEventQueryResponse~
+            }
+
+            class GetTicketQueryHandler {
+            &lt;&lt;IRequestHandler&gt;&gt;
+            -ITicketRepository repository
+            -ILogger logger
+            -IMapper mapper
+            +Handle() Task~GetTicketQueryResponse~
+            }
+
+            %% ===============================================
+            %% RESPONSES
+            %% ===============================================
+            class CreateTicketCommandResponse {
+            +long TicketId
+            +IEnumerable~string~ Errors
+            }
+
+            class PayTicketCommandResponse {
+            +string Transaction
+            +string Auth
+            }
+
+            class CreatePersonCommandResponse {
+            +long PersonId
+            +IEnumerable~string~ Errors
+            }
+
+            class GetTicketQueryResponse {
+            +TicketModel Ticket
+            +QRCodeResponse QRCodeResponse
+            }
+
+            class ListFutureEventQueryResponse {
+            +IEnumerable~EventModel~ Events
+            }
+
+            %% ===============================================
+            %% RELATIONSHIPS
+            %% ===============================================
+            CreateTicketCommandHandler ..> CreateTicketCommand : processa
+            CreateTicketCommandHandler ..> CreateTicketCommandResponse : retorna
+
+            PayTicketCommandHandler ..> PayTicketCommand : processa
+            PayTicketCommandHandler ..> PayTicketCommandResponse : retorna
+
+            CreatePersonCommandHandler ..> CreatePersonCommand : processa
+            CreatePersonCommandHandler ..> CreatePersonCommandResponse : retorna
+
+            GetEventQueryHandler ..> GetEventQuery : processa
+            GetEventQueryHandler ..> EventModel : retorna
+
+            ListFutureEventQueryHandler ..> ListFutureEventQuery : processa
+            ListFutureEventQueryHandler ..> ListFutureEventQueryResponse : retorna
+
+            GetTicketQueryHandler ..> GetTicketQuery : processa
+            GetTicketQueryHandler ..> GetTicketQueryResponse : retorna
+
+            GetTicketQueryResponse --> QRCodeResponse : contém
+        </div>
+    </div>
+
+    <script>
+    mermaid.initialize({
+            startOnLoad: true,
+            theme: 'default',
+            themeVariables: {
+                primaryColor: '#c8e6c9',
+                primaryTextColor: '#000',
+                primaryBorderColor: #4caf50',
+                    lineColor: '#666',
+                secondaryColor: '#dcedc8',
+                tertiaryColor: '#f3e5f5',
+                fontSize: '14px'
+            }
+        });</script>
+</body>
+</html>

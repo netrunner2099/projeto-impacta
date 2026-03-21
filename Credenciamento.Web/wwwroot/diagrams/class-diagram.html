@@ -1,0 +1,680 @@
+﻿<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>Diagrama de Classes Completo - Sistema de Credenciamento</title>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10.9.5/dist/mermaid.min.js"></script>
+    <link type="text/css" href="../css/diagram.css" rel="stylesheet" />
+</head>
+<body>
+    <div class="container">
+        <h1>📊 Diagrama de Classes Completo</h1>
+        <div class="subtitle">Sistema de Credenciamento de Eventos - Todas as Camadas</div>
+
+        <nav class="nav">
+            <a href="domain-diagram.html">Domain</a>
+            <a href="infrastructure-diagram.html">Infrastructure</a>
+            <a href="application-diagram.html">Application</a>
+            <a href="web-diagram.html">Web</a>
+            <a href="database-diagram.html">Database</a>
+            <a href="usecase-diagram.html">Use Cases</a>
+            <a href="class-diagram.html" class="active">Visão Completa</a>
+        </nav>
+
+        <div class="info">
+            <strong>🏗️ Arquitetura:</strong> Clean Architecture com padrões CQRS e MediatR<br>
+            <strong>📦 Camadas:</strong> Domain → Infrastructure → Application → Web<br>
+            <strong>🎯 Padrões:</strong> Repository, CQRS, DTO, ViewModel, Dependency Injection
+        </div>
+
+        <div class="stats">
+            <div class="stat-card">
+                <div class="stat-number">4</div>
+                <div class="stat-label">Entidades de Domínio</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">4</div>
+                <div class="stat-label">Repositories</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">8</div>
+                <div class="stat-label">Commands/Queries</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">8</div>
+                <div class="stat-label">Handlers</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">6</div>
+                <div class="stat-label">Controllers</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">6</div>
+                <div class="stat-label">ViewModels</div>
+            </div>
+        </div>
+
+        <div class="mermaid">
+            classDiagram
+            %% ===============================================
+            %% CAMADA DOMAIN - ENTITIES
+            %% ===============================================
+            class Event {
+            +long EventId
+            +string Name
+            +string Description
+            +string Local
+            +DateTime Begin
+            +DateTime End
+            +decimal Price
+            +byte Status
+            +DateTime CreatedAt
+            +DateTime UpdatedAt
+            }
+
+            class Person {
+            +long PersonId
+            +string Name
+            +string Document
+            +string Email
+            +string Phone
+            +DateTime BirthDay
+            +string ZipCode
+            +string Address
+            +string Number
+            +string Complement
+            +string Neighborhood
+            +string City
+            +string State
+            +byte Status
+            +DateTime CreatedAt
+            +DateTime UpdatedAt
+            }
+
+            class User {
+            +long UserId
+            +long PersonId
+            +string Name
+            +string Email
+            +string Password
+            +byte Role
+            +byte Status
+            +DateTime CreatedAt
+            +DateTime UpdatedAt
+            }
+
+            class Ticket {
+            +long TicketId
+            +long PersonId
+            +long EventId
+            +decimal Price
+            +byte Payment
+            +string Transaction
+            +string Auth
+            +byte Status
+            +DateTime CreatedAt
+            +DateTime UpdatedAt
+            }
+
+            %% ===============================================
+            %% CAMADA DOMAIN - REPOSITORY INTERFACES
+            %% ===============================================
+            class IEventRepository {
+            &lt;&lt;interface&gt;&gt;
+            +ListAllAsync()
+            +ListFutureAsync()
+            +GetByIdAsync(long)
+            +AddAsync(Event)
+            +UpdateAsync(Event)
+            +DeleteAsync(long)
+            }
+
+            class IPersonRepository {
+            &lt;&lt;interface&gt;&gt;
+            +ListAllAsync()
+            +GetByIdAsync(long)
+            +GetByDocumentAsync(string)
+            +GetByEmailAsync(string)
+            +AddAsync(Person)
+            +UpdateAsync(Person)
+            +DeleteAsync(long)
+            +DocumentExistsAsync(Person)
+            +PhoneNumberExistsAsync(Person)
+            +EmailExistsAsync(Person)
+            }
+
+            class IUserRepository {
+            &lt;&lt;interface&gt;&gt;
+            +ListAllAsync()
+            +GetByIdAsync(long)
+            +GetByEmailAsync(string)
+            +AddAsync(User)
+            +UpdateAsync(User)
+            +DeleteAsync(long)
+            +EmailExistsAsync(string)
+            }
+
+            class ITicketRepository {
+            &lt;&lt;interface&gt;&gt;
+            +ListAllAsync()
+            +GetByIdAsync(long)
+            +GetByTransactionAsync(string)
+            +ListByPersonIdAsync(long)
+            +ListByEventIdAsync(long)
+            +AddAsync(Ticket)
+            +UpdateAsync(Ticket)
+            +DeleteAsync(long)
+            }
+
+            %% ===============================================
+            %% CAMADA INFRASTRUCTURE - REPOSITORIES
+            %% ===============================================
+            class EventRepository {
+            -IDbContextFactory factory
+            +ListAllAsync()
+            +ListFutureAsync()
+            +GetByIdAsync(long)
+            +AddAsync(Event)
+            +UpdateAsync(Event)
+            +DeleteAsync(long)
+            }
+
+            class PersonRepository {
+            -IDbContextFactory factory
+            +ListAllAsync()
+            +GetByIdAsync(long)
+            +GetByEmailAsync(string)
+            +AddAsync(Person)
+            +UpdateAsync(Person)
+            +DeleteAsync(long)
+            +DocumentExistsAsync(Person)
+            +PhoneNumberExistsAsync(Person)
+            +EmailExistsAsync(Person)
+            }
+
+            class UserRepository {
+            -IDbContextFactory factory
+            +ListAllAsync()
+            +GetByIdAsync(long)
+            +GetByEmailAsync(string)
+            +AddAsync(User)
+            +UpdateAsync(User)
+            +DeleteAsync(long)
+            +EmailExistsAsync(string)
+            }
+
+            class TicketRepository {
+            -IDbContextFactory factory
+            +ListAllAsync()
+            +GetByIdAsync(long)
+            +GetByTransactionAsync(string)
+            +ListByPersonIdAsync(long)
+            +ListByEventIdAsync(long)
+            +AddAsync(Ticket)
+            +UpdateAsync(Ticket)
+            +DeleteAsync(long)
+            }
+
+            %% ===============================================
+            %% CAMADA APPLICATION - MODELS
+            %% ===============================================
+            class EventModel {
+            +long EventId
+            +string Name
+            +string Description
+            +string Local
+            +DateTime Begin
+            +DateTime End
+            +decimal Price
+            +byte Status
+            +DateTime CreatedAt
+            +DateTime UpdatedAt
+            }
+
+            class PersonModel {
+            +long PersonId
+            +string Name
+            +string Document
+            +string Email
+            +string Phone
+            +DateTime BirthDay
+            +string ZipCode
+            +string Address
+            +byte Status
+            }
+
+            class UserModel {
+            +long UserId
+            +long PersonId
+            +string Name
+            +string Email
+            +string Password
+            +byte Role
+            +byte Status
+            +DateTime CreatedAt
+            +DateTime UpdatedAt
+            }
+
+            class TicketModel {
+            +long TicketId
+            +long PersonId
+            +long EventId
+            +decimal Price
+            +byte Status
+            +string Transaction
+            +string Auth
+            +DateTime CreatedAt
+            +DateTime UpdatedAt
+            }
+
+            class QRCodeResponse {
+            +string Base64
+            +string MimeType
+            +string DataUrl
+            }
+
+            %% ===============================================
+            %% CAMADA APPLICATION - COMMANDS
+            %% ===============================================
+            class CreateTicketCommand {
+            &lt;&lt;IRequest&gt;&gt;
+            +long EventId
+            +long PersonId
+            }
+
+            class PayTicketCommand {
+            &lt;&lt;IRequest&gt;&gt;
+            +long TicketId
+            }
+
+            class CreatePersonCommand {
+            &lt;&lt;IRequest&gt;&gt;
+            +string Name
+            +string Document
+            +string Email
+            +string Phone
+            +DateTime BirthDay
+            +string ZipCode
+            +string Address
+            }
+
+            class CreateTicketCommandResponse {
+            +long TicketId
+            +long PersonId
+            +long EventId
+            +decimal Price
+            +byte Status
+            }
+
+            class PayTicketCommandResponse {
+            +long TicketId
+            +string Transaction
+            +string Auth
+            +byte Status
+            }
+
+            class CreatePersonCommandResponse {
+            +long PersonId
+            +string Name
+            +string Email
+            }
+
+            %% ===============================================
+            %% CAMADA APPLICATION - QUERIES
+            %% ===============================================
+            class GetEventQuery {
+            &lt;&lt;IRequest&gt;&gt;
+            +long EventId
+            }
+
+            class ListFutureEventQuery {
+            &lt;&lt;IRequest&gt;&gt;
+            }
+
+            class GetTicketQuery {
+            &lt;&lt;IRequest&gt;&gt;
+            +long TicketId
+            +string Transaction
+            }
+
+            class GetTicketQueryResponse {
+            +long TicketId
+            +QRCodeResponse QRCodeResponse
+            }
+
+            class ListFutureEventQueryResponse {
+            +IEnumerable Events
+            }
+
+            %% ===============================================
+            %% CAMADA APPLICATION - HANDLERS
+            %% ===============================================
+            class CreateTicketCommandHandler {
+            &lt;&lt;IRequestHandler&gt;&gt;
+            -ILogger logger
+            -IMapper mapper
+            -ITicketRepository repository
+            +Handle()
+            }
+
+            class PayTicketCommandHandler {
+            &lt;&lt;IRequestHandler&gt;&gt;
+            -ILogger logger
+            -IMapper mapper
+            -ITicketRepository repository
+            +Handle()
+            }
+
+            class CreatePersonCommandHandler {
+            &lt;&lt;IRequestHandler&gt;&gt;
+            -ILogger logger
+            -IMapper mapper
+            -IPersonRepository repository
+            +Handle()
+            }
+
+            class GetEventQueryHandler {
+            &lt;&lt;IRequestHandler&gt;&gt;
+            -ILogger logger
+            -IMapper mapper
+            -IEventRepository repository
+            +Handle()
+            }
+
+            class ListFutureEventQueryHandler {
+            &lt;&lt;IRequestHandler&gt;&gt;
+            -ILogger logger
+            -IMapper mapper
+            -IEventRepository repository
+            +Handle()
+            }
+
+            class GetTicketQueryHandler {
+            &lt;&lt;IRequestHandler&gt;&gt;
+            -ILogger logger
+            -IMapper mapper
+            -ITicketRepository repository
+            +Handle()
+            }
+
+            %% ===============================================
+            %% CAMADA WEB - DTOs
+            %% ===============================================
+            class EventDto {
+            +long EventId
+            +string Name
+            +string Description
+            +string Local
+            +DateTime Begin
+            +DateTime End
+            +decimal Price
+            +byte Status
+            }
+
+            class PersonDto {
+            +long PersonId
+            +string Name
+            +string Document
+            +string Email
+            +string Phone
+            +DateTime BirthDay
+            }
+
+            class TicketDto {
+            +long TicketId
+            +long PersonId
+            +long EventId
+            +decimal Price
+            +byte Status
+            +string Transaction
+            +string Auth
+            +QRCodeResponse QRCodeResponse
+            }
+
+            %% ===============================================
+            %% CAMADA WEB - VIEWMODELS
+            %% ===============================================
+            class HomeIndexViewModel {
+            +IEnumerable Events
+            }
+
+            class StoreIndexViewModel {
+            +EventModel Event
+            +UserModel User
+            }
+
+            class OnboardIndexViewModel {
+            +EventModel Event
+            +PersonModel Person
+            +IEnumerable Errors
+            }
+
+            class LoginIndexViewModel {
+            +string Login
+            +string Password
+            +string SuccessMessage
+            +string ErrorMessage
+            }
+
+            class CheckoutIndexViewModel {
+            +long EventId
+            +long PersonId
+            +EventModel Event
+            +PersonModel Person
+            }
+
+            class TicketIndexViewModel {
+            +TicketDto Ticket
+            }
+
+            %% ===============================================
+            %% CAMADA WEB - CONTROLLERS
+            %% ===============================================
+            class HomeController {
+            -ILogger logger
+            -IMediator mediator
+            +Index()
+            +Privacy()
+            }
+
+            class StoreController {
+            -ILogger logger
+            -IMediator mediator
+            +Index(long)
+            }
+
+            class OnboardController {
+            -IMediator mediator
+            -IMapper mapper
+            +Index(int)
+            +CreateAsync()
+            }
+
+            class LoginController {
+            -ILogger logger
+            -IMediator mediator
+            +Index()
+            +Verify()
+            }
+
+            class CheckoutController {
+            -ILogger logger
+            -IMapper mapper
+            -IMediator mediator
+            +Index(long, long)
+            +CreateTicketAsync()
+            +PayTicketAsync()
+            }
+
+            class TicketController {
+            -ILogger logger
+            -IMapper mapper
+            -IMediator mediator
+            +Index(string)
+            }
+
+            %% ===============================================
+            %% RELACIONAMENTOS - DOMAIN ENTITIES
+            %% ===============================================
+            Event "1" --> "0..*" Ticket : tem
+            Person "1" --> "0..*" Ticket : possui
+            User "0..1" --> "0..1" Person : referencia
+            Ticket --> Event : pertence a
+            Ticket --> Person : pertence a
+
+            %% ===============================================
+            %% RELACIONAMENTOS - REPOSITORIES
+            %% ===============================================
+            IEventRepository <|.. EventRepository : implementa
+                                  IPersonRepository <|.. PersonRepository : implementa
+            IUserRepository <|.. UserRepository : implementa
+            ITicketRepository <|.. TicketRepository : implementa
+
+            EventRepository ..> Event : gerencia
+            PersonRepository ..> Person : gerencia
+            UserRepository ..> User : gerencia
+            TicketRepository ..> Ticket : gerencia
+
+            %% ===============================================
+            %% RELACIONAMENTOS - HANDLERS COM REPOSITORIES
+            %% ===============================================
+            CreateTicketCommandHandler ..> ITicketRepository : usa
+            PayTicketCommandHandler ..> ITicketRepository : usa
+            CreatePersonCommandHandler ..> IPersonRepository : usa
+            GetEventQueryHandler ..> IEventRepository : usa
+            ListFutureEventQueryHandler ..> IEventRepository : usa
+            GetTicketQueryHandler ..> ITicketRepository : usa
+
+            %% ===============================================
+            %% RELACIONAMENTOS - HANDLERS COM COMMANDS/QUERIES
+            %% ===============================================
+            CreateTicketCommandHandler ..> CreateTicketCommand : processa
+            PayTicketCommandHandler ..> PayTicketCommand : processa
+            CreatePersonCommandHandler ..> CreatePersonCommand : processa
+            GetEventQueryHandler ..> GetEventQuery : processa
+            ListFutureEventQueryHandler ..> ListFutureEventQuery : processa
+            GetTicketQueryHandler ..> GetTicketQuery : processa
+
+            %% ===============================================
+            %% RELACIONAMENTOS - RESPONSES
+            %% ===============================================
+            CreateTicketCommandHandler ..> CreateTicketCommandResponse : retorna
+            PayTicketCommandHandler ..> PayTicketCommandResponse : retorna
+            CreatePersonCommandHandler ..> CreatePersonCommandResponse : retorna
+            GetTicketQueryHandler ..> GetTicketQueryResponse : retorna
+            ListFutureEventQueryHandler ..> ListFutureEventQueryResponse : retorna
+
+            GetTicketQueryResponse --> QRCodeResponse : contém
+            TicketDto --> QRCodeResponse : contém
+
+            %% ===============================================
+            %% RELACIONAMENTOS - CONTROLLERS COM VIEWMODELS
+            %% ===============================================
+            HomeController ..> HomeIndexViewModel : usa
+            StoreController ..> StoreIndexViewModel : usa
+            OnboardController ..> OnboardIndexViewModel : usa
+            LoginController ..> LoginIndexViewModel : usa
+            CheckoutController ..> CheckoutIndexViewModel : usa
+            TicketController ..> TicketIndexViewModel : usa
+
+            %% ===============================================
+            %% RELACIONAMENTOS - VIEWMODELS COM MODELS/DTOS
+            %% ===============================================
+            HomeIndexViewModel --> EventModel : contém
+            StoreIndexViewModel --> EventModel : contém
+            StoreIndexViewModel --> UserModel : contém
+            OnboardIndexViewModel --> EventModel : contém
+            OnboardIndexViewModel --> PersonModel : contém
+            CheckoutIndexViewModel --> EventModel : contém
+            CheckoutIndexViewModel --> PersonModel : contém
+            TicketIndexViewModel --> TicketDto : contém
+            TicketDto --> EventDto : contém
+            TicketDto --> PersonDto : contém
+        </div>
+
+        <div class="legend">
+            <h3>📚 Documentação das Camadas</h3>
+
+            <div class="legend-grid">
+                <div class="legend-section">
+                    <h4>🔵 Domain Layer</h4>
+                    <ul>
+                        <li>Event, Person, User, Ticket (Entidades)</li>
+                        <li>Interfaces de Repositórios</li>
+                        <li>Lógica de negócio central</li>
+                    </ul>
+                </div>
+
+                <div class="legend-section">
+                    <h4>🟣 Infrastructure Layer</h4>
+                    <ul>
+                        <li>Implementações dos Repositories</li>
+                        <li>Persistência de dados</li>
+                        <li>Entity Framework Core</li>
+                    </ul>
+                </div>
+
+                <div class="legend-section">
+                    <h4>🟢 Application Layer</h4>
+                    <ul>
+                        <li>Models (EventModel, PersonModel, UserModel, TicketModel)</li>
+                        <li>Commands e Queries (CQRS)</li>
+                        <li>Handlers (MediatR)</li>
+                        <li>Responses e DTOs de aplicação</li>
+                    </ul>
+                </div>
+
+                <div class="legend-section">
+                    <h4>🟡 Web Layer</h4>
+                    <ul>
+                        <li>Controllers (Home, Store, Checkout, etc.)</li>
+                        <li>ViewModels (apresentação)</li>
+                        <li>DTOs web (EventDto, PersonDto, TicketDto)</li>
+                    </ul>
+                </div>
+
+                <div class="legend-section">
+                    <h4>🔗 Tipos de Relacionamentos</h4>
+                    <ul>
+                        <li><strong>→</strong> Associação/Navegação</li>
+                        <li><strong>..></strong> Dependência</li>
+                        <li><strong>&lt;|..</strong> Implementação de Interface</li>
+                        <li><strong>"1" → "0..*"</strong> Cardinalidade</li>
+                    </ul>
+                </div>
+
+                <div class="legend-section">
+                    <h4>🎯 Padrões Utilizados</h4>
+                    <ul>
+                        <li>Repository Pattern</li>
+                        <li>CQRS (Command Query Responsibility Segregation)</li>
+                        <li>MediatR (Mediator Pattern)</li>
+                        <li>DTO (Data Transfer Object)</li>
+                        <li>Dependency Injection</li>
+                        <li>Clean Architecture</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        mermaid.initialize({
+            startOnLoad: true,
+            theme: 'default',
+            themeVariables: {
+                primaryColor: '#e3f2fd',
+                primaryTextColor: '#000',
+                primaryBorderColor: '#667eea',
+                lineColor: '#666',
+                secondaryColor: '#fff3e0',
+                tertiaryColor: '#f3e5f5',
+                fontSize: '14px'
+            },
+            flowchart: {
+                curve: 'basis'
+            }
+        });
+    </script>
+</body>
+</html>

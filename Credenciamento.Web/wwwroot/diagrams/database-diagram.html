@@ -1,0 +1,262 @@
+﻿<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>Database Schema - Sistema de Credenciamento</title>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10.9.5/dist/mermaid.min.js"></script>
+    <link type="text/css" href="../css/diagram.css" rel="stylesheet" />
+</head>
+<body>
+    <div class="container">
+        <h1>🗄️ Database Schema (ERD)</h1>
+        <div class="subtitle">Modelo Entidade-Relacionamento - SQL Server</div>
+
+        <nav class="nav">
+            <a href="domain-diagram.html">Domain</a>
+            <a href="infrastructure-diagram.html">Infrastructure</a>
+            <a href="application-diagram.html">Application</a>
+            <a href="web-diagram.html">Web</a>
+            <a href="database-diagram.html" class="active">Database</a>
+            <a href="usecase-diagram.html">Use Cases</a>
+            <a href="class-diagram.html">Visão Completa</a>
+        </nav>
+
+        <div class="info">
+            <strong>💾 Banco de Dados:</strong> SQL Server<br>
+            <strong>🎯 ORM:</strong> Entity Framework Core 8.0<br>
+            <strong>✨ Características:</strong> Code First, Migrations, DbContext Factory
+        </div>
+
+        <div class="stats">
+            <div class="stat-card">
+                <div class="stat-number">4</div>
+                <div class="stat-label">Tabelas</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">3</div>
+                <div class="stat-label">Relacionamentos</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">5</div>
+                <div class="stat-label">Chaves Estrangeiras</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">4</div>
+                <div class="stat-label">Primary Keys</div>
+            </div>
+        </div>
+
+        <div class="mermaid">
+            erDiagram
+            EVENTS ||--o{ TICKETS : possui
+            PERSONS ||--o{ TICKETS : compra
+            PERSONS ||--o| USERS : "tem conta"
+
+            EVENTS {
+            bigint EventId PK
+            nvarchar Name
+            nvarchar Description
+            nvarchar Local
+            datetime2 Begin
+            datetime2 End
+            decimal Price
+            tinyint Status
+            datetime2 CreatedAt
+            datetime2 UpdatedAt
+            }
+
+            PERSONS {
+            bigint PersonId PK
+            nvarchar Name
+            nvarchar Document UK
+            nvarchar Email UK
+            nvarchar Phone UK
+            date BirthDay
+            nvarchar ZipCode
+            nvarchar Address
+            nvarchar Number
+            nvarchar Complement
+            nvarchar Neighborhood
+            nvarchar City
+            nvarchar State
+            tinyint Status
+            datetime2 CreatedAt
+            datetime2 UpdatedAt
+            }
+
+            USERS {
+            bigint UserId PK
+            bigint PersonId FK
+            nvarchar Name
+            nvarchar Email UK
+            nvarchar Password
+            tinyint Role
+            tinyint Status
+            datetime2 CreatedAt
+            datetime2 UpdatedAt
+            }
+
+            TICKETS {
+            bigint TicketId PK
+            bigint PersonId FK
+            bigint EventId FK
+            decimal Price
+            tinyint Payment
+            nvarchar Transaction UK
+            nvarchar Auth
+            tinyint Status
+            datetime2 CreatedAt
+            datetime2 UpdatedAt
+            }
+        </div>
+
+        <div class="legend">
+            <h3>📚 Documentação do Schema</h3>
+
+            <div class="legend-grid">
+                <div class="legend-section">
+                    <h4>📋 Tabela: EVENTS</h4>
+                    <ul>
+                        <li><strong>EventId:</strong> PK Identity(1,1)</li>
+                        <li><strong>Name:</strong> nvarchar(255) NOT NULL</li>
+                        <li><strong>Description:</strong> nvarchar(max) NULL</li>
+                        <li><strong>Local:</strong> nvarchar(255) NULL</li>
+                        <li><strong>Begin/End:</strong> datetime2 NOT NULL</li>
+                        <li><strong>Price:</strong> decimal(18,2) NOT NULL</li>
+                        <li><strong>Status:</strong> 1=Ativo, 2=Inativo, 99=Deletado</li>
+                    </ul>
+                </div>
+
+                <div class="legend-section">
+                    <h4>👤 Tabela: PERSONS</h4>
+                    <ul>
+                        <li><strong>PersonId:</strong> PK Identity(1,1)</li>
+                        <li><strong>Document:</strong> nvarchar(14) UNIQUE (CPF)</li>
+                        <li><strong>Email:</strong> nvarchar(255) UNIQUE</li>
+                        <li><strong>Phone:</strong> nvarchar(20) UNIQUE</li>
+                        <li><strong>BirthDay:</strong> date NOT NULL</li>
+                        <li><strong>Status:</strong> 1=Ativo, 2=Inativo, 99=Deletado</li>
+                    </ul>
+                </div>
+
+                <div class="legend-section">
+                    <h4>🔐 Tabela: USERS</h4>
+                    <ul>
+                        <li><strong>UserId:</strong> PK Identity(1,1)</li>
+                        <li><strong>PersonId:</strong> FK UNIQUE (opcional)</li>
+                        <li><strong>Email:</strong> nvarchar(255) UNIQUE</li>
+                        <li><strong>Password:</strong> nvarchar(255) Hashed</li>
+                        <li><strong>Role:</strong> 1=Admin, 2=User</li>
+                        <li><strong>Status:</strong> 1=Ativo, 2=Inativo, 99=Deletado</li>
+                    </ul>
+                </div>
+
+                <div class="legend-section">
+                    <h4>🎫 Tabela: TICKETS</h4>
+                    <ul>
+                        <li><strong>TicketId:</strong> PK Identity(1,1)</li>
+                        <li><strong>PersonId:</strong> FK NOT NULL</li>
+                        <li><strong>EventId:</strong> FK NOT NULL</li>
+                        <li><strong>Transaction:</strong> nvarchar(255) UNIQUE</li>
+                        <li><strong>Auth:</strong> nvarchar(500) (Base64)</li>
+                        <li><strong>Payment:</strong> 0=Pendente, 1=Pago, 2=Cancelado</li>
+                        <li><strong>Status:</strong> 1=Ativo, 2=Usado, 99=Cancelado</li>
+                    </ul>
+                </div>
+
+                <div class="legend-section">
+                    <h4>🔗 Relacionamentos</h4>
+                    <ul>
+                        <li><strong>EVENTS → TICKETS:</strong> Um-para-Muitos (||--o{)</li>
+                        <li><strong>PERSONS → TICKETS:</strong> Um-para-Muitos (||--o{)</li>
+                        <li><strong>PERSONS → USERS:</strong> Um-para-Um opcional (||--o|)</li>
+                    </ul>
+                </div>
+
+                <div class="legend-section">
+                    <h4>📊 Índices Sugeridos</h4>
+                    <ul>
+                        <li><strong>PERSONS:</strong> IX_Document, IX_Email, IX_Phone</li>
+                        <li><strong>USERS:</strong> IX_Email, IX_PersonId</li>
+                        <li><strong>TICKETS:</strong> IX_PersonId, IX_EventId, IX_Transaction</li>
+                        <li><strong>EVENTS:</strong> IX_Status_Begin (filtered)</li>
+                    </ul>
+                </div>
+
+                <div class="legend-section">
+                    <h4>🛡️ Constraints</h4>
+                    <ul>
+                        <li><strong>UNIQUE (UK):</strong> Document, Email, Phone, Transaction</li>
+                        <li><strong>CHECK:</strong> Status IN (1,2,99)</li>
+                        <li><strong>CHECK:</strong> Price >= 0</li>
+                        <li><strong>CHECK:</strong> End >= Begin</li>
+                    </ul>
+                </div>
+
+                <div class="legend-section">
+                    <h4>🔄 Cascading Rules</h4>
+                    <ul>
+                        <li><strong>ON DELETE:</strong> RESTRICT (TICKETS → EVENTS)</li>
+                        <li><strong>ON DELETE:</strong> RESTRICT (TICKETS → PERSONS)</li>
+                        <li><strong>ON DELETE:</strong> SET NULL (USERS → PERSONS)</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="legend">
+            <h3>📝 Scripts SQL Úteis</h3>
+
+            <div style="background: #272822; color: #f8f8f2; padding: 20px; border-radius: 8px; margin-top: 20px; overflow-x: auto;">
+                <pre style="margin: 0;"><code>-- 🔍 Consultar eventos futuros ativos
+SELECT * FROM EVENTS 
+WHERE Status = 1 
+  AND Begin >= CAST(GETDATE() AS DATE)
+ORDER BY Begin;
+
+-- 🎫 Consultar tickets de uma pessoa
+SELECT t.*, e.Name AS EventName, p.Name AS PersonName
+FROM TICKETS t
+INNER JOIN EVENTS e ON t.EventId = e.EventId
+INNER JOIN PERSONS p ON t.PersonId = p.PersonId
+WHERE p.PersonId = @PersonId
+  AND t.Status = 1;
+
+-- 📊 Estatísticas de vendas por evento
+SELECT 
+    e.Name,
+    COUNT(t.TicketId) AS TotalSold,
+    SUM(t.Price) AS TotalRevenue,
+    AVG(t.Price) AS AvgPrice
+FROM EVENTS e
+LEFT JOIN TICKETS t ON e.EventId = t.EventId AND t.Status = 1
+GROUP BY e.EventId, e.Name
+ORDER BY TotalRevenue DESC;
+
+-- 🔐 Verificar usuário por email
+SELECT u.*, p.Name AS PersonName
+FROM USERS u
+LEFT JOIN PERSONS p ON u.PersonId = p.PersonId
+WHERE u.Email = @Email
+  AND u.Status = 1;</code></pre>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        mermaid.initialize({
+            startOnLoad: true,
+            theme: 'default',
+            themeVariables: {
+                primaryColor: '#ffcdd2',
+                primaryTextColor: '#000',
+                primaryBorderColor: '#f44336',
+                lineColor: '#666',
+                secondaryColor: '#f8bbd0',
+                tertiaryColor: '#f3e5f5',
+                fontSize: '14px'
+            }
+        });
+    </script>
+</body>
+</html>

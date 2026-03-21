@@ -1,7 +1,35 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
+﻿<Project Sdk="Microsoft.NET.Sdk.Web">
 
-  <PropertyGroup>
-    <TargetFramework>net5.0</TargetFramework>
-  </PropertyGroup>
+	<PropertyGroup>
+		<TargetFramework>net8.0</TargetFramework>
+		<SatelliteResourceLanguages>false</SatelliteResourceLanguages>
+		<NoWarn>CS8600,CS8602,CS8632</NoWarn>
+		<Version>1.0.0</Version>
+		<Authors>Rodrigo Miranda - rodrigo.miranda@aluno.impacta.edu.br</Authors>
+		<Company>Impacta Tecnologia</Company>
+		<UserSecretsId>416da1de-46c3-42d2-8c77-7be60438e173</UserSecretsId>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
+	  <DebugType>none</DebugType>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\Credenciamento.Application\Credenciamento.Application.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<Folder Include="wwwroot\lib\" />
+		<Folder Include="wwwroot\files\" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <None Include="wwwroot\diagrams\class-diagram.html" />
+	  <None Include="wwwroot\diagrams\domain-diagram.html" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Microsoft.AspNetCore.Mvc.Razor.RuntimeCompilation" Version="8.0.23" />
+	</ItemGroup>
 
 </Project>

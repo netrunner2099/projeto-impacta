@@ -1,0 +1,81 @@
+﻿@model TicketIndexViewModel;
+@{
+    ViewData["Title"] = "Imprima seu ingresso";
+}
+
+@if (Model is not null)
+{
+    <div class="row">
+        <div class="col-mb-2"></div>
+        <div class="col-mb-8">
+            <div class="card mt-3">
+                <div class="card-header bg-purple">
+                    <h5 class="card-title">Ingresso para o Evento: @Model.Ticket.Event.Name</h5>
+                </div>
+
+                <div class="card-body">
+                    <div class="row g-3">
+                        <div class="col-md-8">
+                            <div class="mb-3">
+                                <label for="name" class="form-label">Nome do Participante</label>
+                                <input type="text" asp-for="Ticket.Person.Name" class="form-control" id="name"
+                                    readonly disabled>
+                            </div>
+                            <div class="row g-3">
+                                <div class="col-md-4">
+                                    <label for="date" class="form-label">Data do Evento</label>
+                                    <input type="text" asp-for="Ticket.Event.Begin" asp-format="{0:dd/MM/yyyy}"
+                                        class="form-control" id="date" readonly disabled>
+                                </div>
+                                <div class="col-md-4">
+                                    <label for="price" class="form-label">Valor (R$)</label>
+                                    <input type="text" asp-for="Ticket.Event.Price" asp-format="{0:n2}"
+                                        class="form-control" id="price" readonly disabled>
+                                </div>
+                                <div class="col-md-4">
+                                    <label for="payment" class="form-label">Forma de Pagamento</label>
+                                    <input type="text" asp-for="Ticket.PaymentName" class="form-control" id="payment" readonly disabled>
+                                </div>
+                            </div>
+
+                            <div class="mt-3">
+                                <label for="instructions" class="form-label">Instruções</label>
+                                <textarea class="form-control text-start text-instructions" id="instructions" readonly disabled>
+📱 Apresente este QR Code na entrada do evento. 
+💾 Mantenha seu ingresso salvo ou impresso. 
+⏰ Chegue com antecedência.
+🔒 Não compartilhe este QR Code com ninguém, pois ele é o seu comprovante.
+</textarea>
+                            </div>
+                        </div>
+                        <div class="col-md-4 text-center">
+                            <img src="@Model.Ticket.QRCodeResponse.DataUrl" alt="Leia o QRCode para validar seu ingresso" class="img-qr-code img-fluid" /><br />
+                            <span class="text-small">@Model.Ticket.Transaction</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card-footer">
+                    <div class="row">
+                        <div class="col-md-12 text-center">
+                            <button type="button" class="btn btn-primary btn-print">
+                                🖨️ Imprimir Ingresso
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+        <div class="col-mb-2"></div>
+    </div>
+}
+
+@section Scripts {
+    <script src="~/js/Views/Ticket.Index.js"></script>
+    <script>
+        $(document).ready(function () {
+            new TicketIndex().init();
+        });
+    </script>
+}
