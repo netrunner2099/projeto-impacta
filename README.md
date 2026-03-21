@@ -132,3 +132,4 @@ https://iingresso.com/diagrams/class-diagram.html
 > Status do Projeto: Em Andamento 🚧
 > Última Atualização: 01/03/2026
 > Para mais informações, consulte a documentação técnica do projeto.
+  
