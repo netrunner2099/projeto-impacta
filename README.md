@@ -74,11 +74,14 @@ O projeto segue uma arquitetura em camadas (Layered Architecture) com separaçã
 git clone https://github.com/netrunner2099/projeto-impacta.git cd projeto-impacta
 
 2. Execute os scripts de criação dos objetos de banco de dados:
-/database/01-create-database.sql
-/database/02-create-objects.sql
+- /database/01-create-database.sql (altere a senha do usuário impacta_user no script)
+- /database/02-create-objects.sql
+- /database/03-first-load.sql (é uma carga inicial com os eventos de 2026)
+
+Os scripts de criação das tabelas estão disponíveis na pasta `database/`
 
 3. Configure a string de conexão no `appsettings.json`:
-{ "ConnectionStrings": { "DefaultConnection": "Server=localhost;Database=CredenciamentoDB;User=sa;Password=123456;TrustServerCertificate=True;" } }
+{ "ConnectionStrings": { "DefaultConnection": "Server=localhost;Database=CredenciamentoDB;User=impacta_user;Password=(a sua senha aqui);TrustServerCertificate=True;" } }
 
 5. Inicie o servidor web:
 dotnet run
@@ -91,11 +94,9 @@ dotnet run
 ## 📁 Estrutura do Banco de Dados
 
 ### Scripts SQL
-
-Os scripts de criação das tabelas estão disponíveis na pasta `database/`:
-
 - `01-create-database.sql` - Criação da database
 - `02-create-objects.sql` - Criação das tabelas e outros objetos
+- `03-first-load.sql` - Carga inicial com os eventos de 2026
 
 ## 🔐 Funcionalidades de Segurança
 
@@ -121,8 +122,14 @@ Para dúvidas ou sugestões, abra uma [issue](https://github.com/netrunner2099/p
 O projeto está sendo gerenciado utilizando o Github Projects, e o link deste projeto está abaixo:
 https://github.com/users/netrunner2099/projects/1
 
+## 📄 Documentação Técnica
+
+A documentação técnica está disponível no link:
+https://iingresso.com/diagrams/class-diagram.html
+
 ---
 
 > Status do Projeto: Em Andamento 🚧
-> Última Atualização: 09/02/2026
+> Última Atualização: 01/03/2026
 > Para mais informações, consulte a documentação técnica do projeto.
+  

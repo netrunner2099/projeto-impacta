@@ -1,10 +1,6 @@
-﻿using Credenciamento.Application.Models;
-using Credenciamento.Application.Queries.Ticket;
+﻿using Credenciamento.Application.Queries.Ticket;
 using Credenciamento.Web.Models;
 using Credenciamento.Web.Models.Dto;
-using Microsoft.Extensions.Options;
-using System.Net.Http;
-using System.Text.Json;
 
 namespace Credenciamento.Web.Controllers;
 
