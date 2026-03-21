@@ -1,64 +1,505 @@
-﻿@model StoreIndexViewModel;
+﻿@model StoreIndexViewModel
 @{
-    ViewData["Title"] = "Compre seu ingresso";
+    ViewData["Title"] = "Compre seu Ingresso";
 }
 
-<div class="row">
-    <h4>Compre seu ingresso</h4>
-</div>
-
-@if (Model.Event is not null)
-{
-    <div class="card mt-3 mb-3">
-        <div class="card-header bg-purple">
-            <h5 class="card-title">@Model.Event.Name</h5>
-        </div>
-
-        <div class="card-body">
-            <div class="row">
-                <div class="col-md-12">
-                    <p class="card-text">@Model.Event.Local - @Model.Event.Begin.ToString("dd/MM") a @Model.Event.End.ToString("dd/MM")</p>
-                    <p class="card-text" style="text-align:justify">@Model.Event.Description</p>
-                    <p class="card-text">@Model.Event.Price.ToString("c2")</p>
+<div class="container py-4">
+    <!-- Header -->
+    <div class="row mb-4">
+        <div class="col-12">
+            <a asp-controller="Home" asp-action="Index" class="btn btn-outline-secondary btn-sm mb-3">
+                <i class="bi bi-arrow-left me-2"></i>Voltar aos Eventos
+            </a>
+            <div class="text-center">
+                <div class="mb-3">
+                    <i class="bi bi-ticket-perforated-fill display-3 text-primary pulse"></i>
                 </div>
-            </div>
-        </div>
-
-        <div class="card-footer">
-            <div class="row">
-                @if(Model.User is null)
-                {
-                    <div class="col text-center">
-                        <button type="button" class="btn btn-primary btn-login">Já tenho cadastro</button>
-                    </div>
-                    <div class="col text-center">
-                        <button type="button" class="btn btn-secondary btn-onboard">Preciso me cadastrar</button>
-                    </div>
-                }
-                else
-                {
-                    <div class="col text-center">
-                        <button type="button" class="btn btn-primary btn-checkout">Prosseguir</button>
-                    </div>
-                }
+                <h2 class="display-5 fw-bold mb-2">
+                    Garanta seu Ingresso!
+                </h2>
+                <p class="text-muted lead">
+                    Complete a compra em poucos passos
+                </p>
             </div>
         </div>
     </div>
-}
+
+    @if (Model?.Event is not null)
+    {
+        <!-- Card do Evento -->
+        <div class="row mb-4">
+            <div class="col-lg-8 mx-auto">
+                <div class="card shadow-lg border-0 event-showcase">
+                    <!-- Header do Card -->
+                    <div class="card-header-custom">
+                        <div class="event-header-content">
+                            <div class="event-date-badge-large">
+                                <div class="date-day">@Model.Event.Begin.ToString("dd")</div>
+                                <div class="date-month">@Model.Event.Begin.ToString("MMM").ToUpper()</div>
+                                <div class="date-year">@Model.Event.Begin.ToString("yyyy")</div>
+                            </div>
+                            <div class="event-header-info">
+                                <h3 class="text-white fw-bold mb-2">@Model.Event.Name</h3>
+                                <div class="event-meta">
+                                    <span class="badge bg-white text-primary me-2">
+                                        <i class="bi bi-geo-alt-fill me-1"></i>@Model.Event.Local
+                                    </span>
+                                    <span class="badge bg-white text-primary">
+                                        <i class="bi bi-calendar3 me-1"></i>@Model.Event.Begin.ToString("dd/MM") - @Model.Event.End.ToString("dd/MM")
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Corpo do Card -->
+                    <div class="card-body p-4">
+                        <!-- Descrição do Evento -->
+                        @if (!string.IsNullOrEmpty(Model.Event.Description))
+                        {
+                            <div class="mb-4">
+                                <h5 class="mb-3">
+                                    <i class="bi bi-info-circle me-2 text-primary"></i>Sobre o Evento
+                                </h5>
+                                <p class="text-muted text-justify">
+                                    @Model.Event.Description
+                                </p>
+                            </div>
+                            <hr class="my-4">
+                        }
+
+                        <!-- Informações Detalhadas -->
+                        <div class="row mb-4">
+                            <div class="col-md-6 mb-3">
+                                <div class="info-box">
+                                    <div class="info-icon">
+                                        <i class="bi bi-calendar-event text-primary"></i>
+                                    </div>
+                                    <div class="info-content">
+                                        <small class="text-muted d-block">Data do Evento</small>
+                                        <strong>@Model.Event.Begin.ToString("dd/MM/yyyy")</strong>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <div class="info-box">
+                                    <div class="info-icon">
+                                        <i class="bi bi-clock text-info"></i>
+                                    </div>
+                                    <div class="info-content">
+                                        <small class="text-muted d-block">Horário</small>
+                                        <strong>@Model.Event.Begin.ToString("HH:mm")</strong>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <div class="info-box">
+                                    <div class="info-icon">
+                                        <i class="bi bi-geo-alt text-danger"></i>
+                                    </div>
+                                    <div class="info-content">
+                                        <small class="text-muted d-block">Local</small>
+                                        <strong>@Model.Event.Local</strong>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6 mb-3">
+                                <div class="info-box">
+                                    <div class="info-icon">
+                                        <i class="bi bi-hourglass-split text-warning"></i>
+                                    </div>
+                                    <div class="info-content">
+                                        <small class="text-muted d-block">Duração</small>
+                                        <strong>@Model.Event.Begin.ToString("dd/MM") - @Model.Event.End.ToString("dd/MM")</strong>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <hr class="my-4">
+
+                        <!-- Valor do Ingresso -->
+                        <div class="price-section text-center mb-4">
+                            <div class="price-label mb-2">
+                                <i class="bi bi-ticket-detailed me-2"></i>
+                                <span class="text-muted">Valor do Ingresso</span>
+                            </div>
+                            <div class="price-value">
+                                <h1 class="display-4 text-success fw-bold mb-0">
+                                    @Model.Event.Price.ToString("C2")
+                                </h1>
+                            </div>
+                            <small class="text-muted">
+                                <i class="bi bi-shield-check me-1"></i>
+                                Pagamento seguro e protegido
+                            </small>
+                        </div>
+
+                        <!-- Benefícios -->
+                        <div class="alert alert-success border-0 shadow-sm mb-4">
+                            <h6 class="alert-heading">
+                                <i class="bi bi-check-circle me-2"></i>O que está incluído:
+                            </h6>
+                            <ul class="mb-0 ps-3">
+                                <li>Acesso completo ao evento</li>
+                                <li>Certificado digital de participação</li>
+                                <li>Ingresso com QR Code exclusivo</li>
+                                <li>Suporte durante todo o evento</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <!-- Footer com Ações -->
+                    <div class="card-footer bg-light border-0 p-4">
+                        @if (Model.User is null)
+                        {
+                            <!-- Usuário não logado -->
+                            <div class="text-center mb-3">
+                                <h5 class="mb-3">
+                                    <i class="bi bi-person-circle me-2"></i>
+                                    Para continuar, escolha uma opção:
+                                </h5>
+                            </div>
+                            <div class="row g-3">
+                                <div class="col-md-6">
+                                    <button type="button" class="btn btn-primary btn-lg w-100 shadow btn-login">
+                                        <i class="bi bi-box-arrow-in-right me-2"></i>
+                                        <div>
+                                            <strong>Já tenho Cadastro</strong>
+                                            <small class="d-block">Faça login para continuar</small>
+                                        </div>
+                                    </button>
+                                </div>
+                                <div class="col-md-6">
+                                    <button type="button" class="btn btn-outline-primary btn-lg w-100 btn-onboard">
+                                        <i class="bi bi-person-plus me-2"></i>
+                                        <div>
+                                            <strong>Criar Conta</strong>
+                                            <small class="d-block">Cadastre-se gratuitamente</small>
+                                        </div>
+                                    </button>
+                                </div>
+                            </div>
+                        }
+                        else
+                        {
+                            <!-- Usuário logado -->
+                            <div class="user-info-box mb-3">
+                                <div class="d-flex align-items-center justify-content-center">
+                                    <i class="bi bi-person-check-fill text-success display-6 me-3"></i>
+                                    <div>
+                                        <small class="text-muted d-block">Você está logado como</small>
+                                        <strong class="text-dark">@Model.User.Name</strong>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="d-grid gap-2">
+                                <button type="button" class="btn btn-success btn-lg shadow-lg btn-checkout pulse-btn">
+                                    <i class="bi bi-cart-check me-2"></i>
+                                    <strong>Prosseguir para Pagamento</strong>
+                                </button>
+                                <small class="text-center text-muted mt-2">
+                                    <i class="bi bi-lock me-1"></i>
+                                    Ambiente 100% seguro
+                                </small>
+                            </div>
+                        }
+                    </div>
+                </div>
+
+                <!-- Cards de Informações Adicionais -->
+                <div class="row g-3 mt-4">
+                    <div class="col-md-4">
+                        <div class="feature-card text-center p-3">
+                            <i class="bi bi-shield-check display-5 text-success mb-2"></i>
+                            <h6 class="fw-bold">Compra Segura</h6>
+                            <small class="text-muted">Seus dados protegidos</small>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="feature-card text-center p-3">
+                            <i class="bi bi-qr-code display-5 text-primary mb-2"></i>
+                            <h6 class="fw-bold">QR Code Digital</h6>
+                            <small class="text-muted">Acesso instantâneo</small>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="feature-card text-center p-3">
+                            <i class="bi bi-headset display-5 text-info mb-2"></i>
+                            <h6 class="fw-bold">Suporte 24/7</h6>
+                            <small class="text-muted">Sempre disponível</small>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    }
+    else
+    {
+        <!-- Estado vazio -->
+        <div class="row">
+            <div class="col-lg-6 mx-auto">
+                <div class="alert alert-warning text-center shadow-sm border-0">
+                    <i class="bi bi-exclamation-triangle display-4 d-block mb-3"></i>
+                    <h4>Evento não encontrado</h4>
+                    <p class="mb-3">Não foi possível localizar as informações deste evento.</p>
+                    <a asp-controller="Home" asp-action="Index" class="btn btn-primary">
+                        <i class="bi bi-house me-2"></i>Voltar à Home
+                    </a>
+                </div>
+            </div>
+        </div>
+    }
+</div>
+
+<!-- Estilos Customizados -->
+<style>
+    /* Animações */
+    @@keyframes pulse {
+        0%, 100% {
+            transform: scale(1);
+        }
+
+        50% {
+            transform: scale(1.1);
+        }
+    }
+
+    @@keyframes pulseBtn {
+        0%, 100% {
+            transform: scale(1);
+            box-shadow: 0 0 0 0 rgba(25, 135, 84, 0.7);
+        }
+
+        50% {
+            transform: scale(1.02);
+            box-shadow: 0 0 0 10px rgba(25, 135, 84, 0);
+        }
+    }
+
+    .pulse {
+        animation: pulse 2s infinite;
+    }
+
+    .pulse-btn {
+        animation: pulseBtn 2s infinite;
+    }
+
+    /* Card do Evento */
+    .event-showcase {
+        overflow: hidden;
+        transition: all 0.3s ease;
+    }
+
+        .event-showcase:hover {
+            transform: translateY(-5px);
+        }
+
+    .card-header-custom {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        padding: 2rem;
+        position: relative;
+    }
+
+    .event-header-content {
+        display: flex;
+        align-items: center;
+        gap: 2rem;
+    }
+
+    .event-date-badge-large {
+        background: white;
+        border-radius: 20px;
+        padding: 1.5rem;
+        text-align: center;
+        box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+        min-width: 120px;
+    }
+
+    .date-day {
+        font-size: 3rem;
+        font-weight: bold;
+        color: #667eea;
+        line-height: 1;
+    }
+
+    .date-month {
+        font-size: 1rem;
+        font-weight: 600;
+        color: #764ba2;
+        text-transform: uppercase;
+    }
+
+    .date-year {
+        font-size: 0.875rem;
+        color: #6c757d;
+    }
+
+    .event-header-info h3 {
+        text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+    }
+
+    .event-meta .badge {
+        padding: 0.6rem 1.2rem;
+        font-size: 0.9rem;
+        font-weight: 600;
+    }
+
+    /* Info Boxes */
+    .info-box {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        padding: 1rem;
+        background: #f8f9fa;
+        border-radius: 12px;
+        transition: all 0.3s ease;
+    }
+
+        .info-box:hover {
+            background: #e9ecef;
+            transform: translateX(5px);
+        }
+
+    .info-icon {
+        font-size: 2rem;
+    }
+
+    .info-content strong {
+        font-size: 1.1rem;
+    }
+
+    /* Seção de Preço */
+    .price-section {
+        background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+        border-radius: 15px;
+        padding: 2rem;
+    }
+
+    .price-label {
+        font-size: 1.2rem;
+        font-weight: 600;
+    }
+
+    /* Botões */
+    .btn-login,
+    .btn-onboard {
+        padding: 1.2rem;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 0.5rem;
+        transition: all 0.3s ease;
+    }
+
+        .btn-login:hover,
+        .btn-onboard:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
+        }
+
+        .btn-login small,
+        .btn-onboard small {
+            font-size: 0.75rem;
+            opacity: 0.9;
+        }
+
+    .btn-primary {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        border: none;
+    }
+
+    /* User Info Box */
+    .user-info-box {
+        background: #d1e7dd;
+        border-radius: 12px;
+        padding: 1rem;
+    }
+
+    /* Feature Cards */
+    .feature-card {
+        background: white;
+        border-radius: 15px;
+        border: 1px solid #e9ecef;
+        transition: all 0.3s ease;
+    }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            border-color: #667eea;
+        }
+
+    /* Responsivo */
+    @@media (max-width: 768px) {
+        .event-header-content {
+            flex-direction: column;
+            text-align: center;
+        }
+
+        .event-date-badge-large {
+            margin-bottom: 1rem;
+        }
+
+        .display-5 {
+            font-size: 2rem;
+        }
+
+        .info-box {
+            flex-direction: column;
+            text-align: center;
+        }
+    }
+</style>
 
 <script type="text/javascript">
     $(document).ready(function (){
+        // Login
         $('.btn-login').on('click', function (e){
             e.preventDefault();
             setCookie('store-eventId', '@Model.Event.EventId', 1, true, 'strict');
             window.location.href = '@Url.Action("Index", "Login")';
         });
 
+        // Cadastro
         $('.btn-onboard').on('click', function (e){
             e.preventDefault();
             window.location.href = '@Url.Action("Index", "Onboard", new { id = Model.Event.EventId })';
         });
 
-        $('.btn-checkout').on('click', ()=> globalThis.location.href = '/checkout/index/' + '@Model.Event?.EventId' + '/' + '@Model.User?.PersonId');
+        // Checkout
+        $('.btn-checkout').on('click', function(){
+            globalThis.location.href = '/checkout/index/' + '@Model.Event?.EventId' + '/' + '@Model.User?.PersonId';
+        });
+
+        // Animação de entrada
+        $('.event-showcase').css({
+            'opacity': '0',
+            'transform': 'translateY(30px)'
+        });
+
+        setTimeout(() => {
+            $('.event-showcase').css({
+                'transition': 'all 0.8s ease',
+                'opacity': '1',
+                'transform': 'translateY(0)'
+            });
+        }, 100);
+
+        // Animação dos feature cards
+        $('.feature-card').each(function(index) {
+            $(this).css({
+                'opacity': '0',
+                'transform': 'translateY(20px)'
+            });
+
+            setTimeout(() => {
+                $(this).css({
+                    'transition': 'all 0.6s ease',
+                    'opacity': '1',
+                    'transform': 'translateY(0)'
+                });
+            }, 300 + (index * 100));
+        });
     });
 </script>

@@ -21,5 +21,6 @@ public class MappingProfile : Profile
         CreateMap<LocalBaseViewModel, OnboardIndexViewModel>().ReverseMap();
         CreateMap<LocalBaseViewModel, StoreIndexViewModel>().ReverseMap();
         CreateMap<LocalBaseViewModel, TicketIndexViewModel>().ReverseMap();
+        CreateMap<LocalBaseViewModel, ProfileIndexViewModel>().ReverseMap();
     }
 }

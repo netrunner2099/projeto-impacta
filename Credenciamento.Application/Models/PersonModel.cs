@@ -68,5 +68,7 @@ public class PersonModel
     public DateTime CreatedAt { get; set; }
     public DateTime? UpdatedAt { get; set; }
 
+    public UserModel User { get; set; }
+
     public IEnumerable<TicketModel> Tickets { get; set; }
 }

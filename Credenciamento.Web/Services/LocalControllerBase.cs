@@ -28,6 +28,20 @@ namespace Credenciamento.Web.Services
             return null;
         }
 
+        protected bool Logoff()
+        {
+            if (Request.Cookies.TryGetValue("user-token", out string? token))
+            {
+                var cacheKey = $"user:{StringHelpers.FromBase64(token)}";
+                if (_cache.HasKey(cacheKey))
+                    _cache.RemoveKey(cacheKey);
+
+                return true;
+            }
+
+            return false;
+        }
+
         public LocalBaseViewModel GetLocalBaseViewModel()
         {
             return new LocalBaseViewModel

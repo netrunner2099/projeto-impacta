@@ -1,9 +1,7 @@
-﻿using AutoMapper;
-using Credenciamento.Application.Commands.Person;
+﻿using Credenciamento.Application.Commands.Person;
 using Credenciamento.Application.Models;
 using Credenciamento.Application.Queries.Event;
 using Credenciamento.Web.Models;
-using Credenciamento.Web.Services;
 
 namespace Credenciamento.Web.Controllers;
 

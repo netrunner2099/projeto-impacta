@@ -1,6 +1,4 @@
 ﻿using Credenciamento.Application.Queries.Event;
-using Credenciamento.Web.Models;
-using Credenciamento.Web.Services;
 
 namespace Credenciamento.Web.Controllers;
 
@@ -21,6 +19,7 @@ public class HomeController : LocalControllerBase
         _mediator = mediator;
     }
 
+    [HttpGet]
     public async Task<IActionResult> Index()
     {
         var model = _mapper.Map<HomeIndexViewModel>(GetLocalBaseViewModel());
@@ -36,9 +35,18 @@ public class HomeController : LocalControllerBase
         return View(model);
     }
 
+    [HttpGet]
+    public async Task<IActionResult> LogOff()
+    {
+        var logoff = base.Logoff();
+        return RedirectToAction("Index", "Home", new { area = "" });
+    }
+
+    [HttpGet]
     public IActionResult Privacy()
     {
-        return View();
+        var model = _mapper.Map<HomeIndexViewModel>(GetLocalBaseViewModel());
+        return View(model);
     }
 
     [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]

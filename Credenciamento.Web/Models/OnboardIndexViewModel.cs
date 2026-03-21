@@ -1,5 +1,4 @@
 ﻿using Credenciamento.Application.Models;
-using System.Collections.Generic;
 
 namespace Credenciamento.Web.Models;
 

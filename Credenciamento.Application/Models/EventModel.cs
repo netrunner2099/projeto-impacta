@@ -1,3 +1,5 @@
+using System.Data.SqlTypes;
+
 namespace Credenciamento.Application.Models;
 
 public class EventModel
