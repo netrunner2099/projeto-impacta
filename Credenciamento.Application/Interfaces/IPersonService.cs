@@ -1,4 +1,4 @@
-﻿namespace Credenciamento.Application.Interfaces.Person;
+﻿namespace Credenciamento.Application.Interfaces;
 
 public interface IPersonService
 {

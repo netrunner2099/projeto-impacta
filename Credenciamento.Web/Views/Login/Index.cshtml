@@ -43,7 +43,11 @@
 
                     <div class="row mt-3">
                         <div class="col text-center">
-                            <button type="button" class="btn btn-secondary btn-forgot">Recuperar Senha</button>
+                            <button type="button" class="btn btn-warning btn-onetime btn-action-150">Solicitar OTP</button>
+                        </div>
+
+                        <div class="col text-center">
+                            <button type="button" class="btn btn-secondary btn-forgot btn-action-150">Recuperar Senha</button>
                         </div>
                     </div>
                 </div>
@@ -70,6 +74,9 @@
     <partial name="_ValidationScriptsPartial" />
     <script type="text/javascript">
         $(document).ready(function(){
+            const $loginField = $('#Login');
+            $loginField.val('');
+
             // Configuração de validação
             $.validator.setDefaults({
                 onsubmit: true,
@@ -99,9 +106,7 @@
 
             $(".btn-forgot").off('click').on('click', function(e) {
                 e.preventDefault();
-                
-                var $loginField = $('#Login');
-                var loginValue = $loginField.val().trim();
+                const loginValue = $loginField.val().trim();
                 
                 // Remove classes de validação anteriores
                 $loginField.removeClass('is-invalid is-valid');
@@ -143,6 +148,53 @@
                 // Exemplo: redirecionar para página de recuperação
                 window.location.href = '/Login/Forgot/' + base64Encode(loginValue);
             });
+
+            $(".btn-onetime").off('click').on('click', function(e) {
+                e.preventDefault();
+                const loginValue = $loginField.val().trim();
+
+                // Remove classes de validação anteriores
+                $loginField.removeClass('is-invalid is-valid');
+
+                // Valida se o campo está preenchido
+                if (!loginValue) {
+                    $loginField.addClass('is-invalid');
+
+                    // Remove mensagem de erro anterior se existir
+                    $loginField.next('.text-danger').remove();
+
+                    // Adiciona mensagem de erro
+                    $loginField.after('<span class="text-danger">Por favor, informe o email para solicitar senha de uso único.</span>');
+
+                    $loginField.focus();
+                    return false;
+                }
+
+                // Valida se é um email válido
+                if (!validarEmail(loginValue)) {
+                    // Adiciona a class de invalid.
+                    $loginField.addClass('is-invalid');
+                    // Remove mensagem de erro anterior se existir
+                    $loginField.next('.text-danger').remove();
+                    // Adiciona mensagem de erro
+                    $loginField.after('<span class="text-danger">Por favor, informe um email válido.</span>');
+                    // Foca no campo login
+                    $loginField.focus();
+                    return false;
+                }
+
+                // Remove mensagem de erro se existir
+                $loginField.next('.text-danger').remove();
+                $loginField.addClass('is-valid');
+
+                // Aqui você pode redirecionar ou abrir modal de recuperação
+                console.info('Solicitar senha de uso único para:', loginValue);
+
+                // Exemplo: redirecionar para página de recuperação
+                window.location.href = '/Login/OneTime/' + base64Encode(loginValue);
+            });
+
+
         });
     </script>
 }

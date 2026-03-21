@@ -3,16 +3,18 @@ using Credenciamento.Application.Commands.Person;
 using Credenciamento.Application.Models;
 using Credenciamento.Application.Queries.Event;
 using Credenciamento.Web.Models;
+using Credenciamento.Web.Services;
 
 namespace Credenciamento.Web.Controllers;
 
-public class OnboardController : Controller
+public class OnboardController : LocalControllerBase
 {
     private readonly IMediator _mediator;
     private readonly IMapper _mapper;
     public OnboardController(
         IMediator mediator,
-        IMapper mapper)
+        IMapper mapper,
+        IServiceProvider services) : base(services)
     {
         _mediator = mediator;
         _mapper = mapper;
@@ -20,7 +22,7 @@ public class OnboardController : Controller
 
     public async Task<IActionResult> Index(int id)
     {
-        var model = new OnboardIndexViewModel();
+        var model = _mapper.Map<OnboardIndexViewModel>(GetLocalBaseViewModel());
         var result = await _mediator.Send(new GetEventQuery { EventId = id });
         model.Event = result ?? new EventModel();
         model.Person = new PersonModel();

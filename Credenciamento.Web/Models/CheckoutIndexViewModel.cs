@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Credenciamento.Web.Models;
 
-public class CheckoutIndexViewModel
+public class CheckoutIndexViewModel : LocalBaseViewModel
 {
     public string BaseUrl { get; set; }
     public long? TicketId { get; set; }

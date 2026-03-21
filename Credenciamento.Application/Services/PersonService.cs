@@ -4,7 +4,7 @@ using MailKit.Net.Smtp;
 using Microsoft.Extensions.Options;
 using MimeKit;
 
-namespace Credenciamento.Application.Services.Person;
+namespace Credenciamento.Application.Services;
 
 public class PersonService : IPersonService
 {
@@ -41,7 +41,7 @@ public class PersonService : IPersonService
             model.Status = (byte)PersonStatus.Active;
             model.Document = model.Document.MaskRemove();
             model.ZipCode = model.ZipCode.MaskRemove();
-            var personResult = await _repository.AddAsync(_mapper.Map<Domain.Entities.Person>(model));
+            var personResult = await _repository.AddAsync(_mapper.Map<Person>(model));
             if (personResult is null)
             {
                 _logger.LogWarning("Falha ao criar pessoa para {0}", model.Email);
@@ -112,7 +112,7 @@ public class PersonService : IPersonService
             {
                 mime.To.Add(new MailboxAddress("", to));
             }   
-            mime.Subject = "Credenciamento - Senha de Acesso";
+            mime.Subject = "IIngresso: Senha de Acesso";
 
             var message = new StringBuilder();
             message.AppendLine("Seguem abaixo os dados de acesso a sua conta:<br>");
@@ -132,7 +132,7 @@ public class PersonService : IPersonService
                 {
                     return true;
                 };
-                client.Connect(_options.Host, _options.Port, false);
+                await client.ConnectAsync(_options.Host, _options.Port, false);
                 await client.SendAsync(mime);
                 await client.DisconnectAsync(true);
 

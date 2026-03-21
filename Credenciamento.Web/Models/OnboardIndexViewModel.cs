@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Credenciamento.Web.Models;
 
-public class OnboardIndexViewModel
+public class OnboardIndexViewModel : LocalBaseViewModel
 {
     public EventModel Event { get; set; }
     public PersonModel Person { get; set; }

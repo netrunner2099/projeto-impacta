@@ -11,16 +11,16 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<Folder Include="Contracts\NewFolder\" />
-		<Folder Include="Interfaces\User\" />
-		<Folder Include="Services\User\" />
+	  <Compile Remove="Contracts\NewFolder\**" />
+	  <EmbeddedResource Remove="Contracts\NewFolder\**" />
+	  <None Remove="Contracts\NewFolder\**" />
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="AutoMapper" Version="13.0.1" />
-		<PackageReference Include="MailKit" Version="4.15.0" />
-		<PackageReference Include="MediatR" Version="12.5.0" />
-		<PackageReference Include="FluentValidation" Version="11.11.0" />
+		<PackageReference Include="AutoMapper" Version="16.1.1" />
+		<PackageReference Include="MailKit" Version="4.15.1" />
+		<PackageReference Include="MediatR" Version="14.1.0" />
+		<PackageReference Include="FluentValidation" Version="12.1.1" />
 	</ItemGroup>
 
 	<ItemGroup>

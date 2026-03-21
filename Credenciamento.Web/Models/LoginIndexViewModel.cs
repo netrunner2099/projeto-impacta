@@ -2,7 +2,7 @@
 
 namespace Credenciamento.Web.Models;
 
-public class LoginIndexViewModel
+public class LoginIndexViewModel : LocalBaseViewModel
 {
     [Display(Name = "Email")]
     [Required(ErrorMessage = "Informar email")]

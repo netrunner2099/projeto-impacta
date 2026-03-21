@@ -1,32 +1,40 @@
-﻿using Credenciamento.Application.Services.QrCode;
+﻿using Credenciamento.Application.Interfaces.Global;
+using Credenciamento.Application.Services;
 
 namespace Credenciamento.Application;
 
 public static class ApplicationRegistration
 {
-    public static IServiceCollection AddApplicationServices(this IServiceCollection services, Profile? profile, IConfiguration configuration)
+    public static IServiceCollection AddApplicationServices(
+        this IServiceCollection services, 
+        Profile? profile, 
+        IConfiguration configuration)
     {
         // Adding Mediator
         services.AddMediatR(cfg =>
         {
+            cfg.LicenseKey = $"{configuration["LuckyPenny:LicenseKey"]}"; 
             cfg.RegisterServicesFromAssembly(Assembly.GetExecutingAssembly());
-        });      
+        });
 
         #region "AutoMapper"
-        var _mapperconf = new MapperConfiguration(mc => {
-            mc.AddProfile(new MappingProfile());
+        // Forma moderna - registra automaticamente todos os profiles
+        services.AddAutoMapper(cfg =>
+        {
+            cfg.LicenseKey = $"{configuration["LuckyPenny:LicenseKey"]}";
+            cfg.AddProfile<MappingProfile>();
             if (profile is not null)
             {
-                mc.AddProfile(profile);
+                cfg.AddProfile(profile);
             }
-        });
-        IMapper _mapper = _mapperconf.CreateMapper();
-        services.AddSingleton(_mapper);
+        }, Assembly.GetExecutingAssembly());
         #endregion
 
         // Services
         services.AddScoped<IPersonService, PersonService>();
         services.AddScoped<IQrCodeClient, QrCodeClient>();
+        services.AddScoped<ICacheService, CacheService>();
+        services.AddScoped<IUserService, UserService>();
 
         // Validators
         services.AddScoped<IValidator<CreatePersonCommand>, CreatePersonCommandValidator>();

@@ -2,7 +2,7 @@
 
 namespace Credenciamento.Web.Models;
 
-public class TicketIndexViewModel
+public class TicketIndexViewModel : LocalBaseViewModel
 {
     public TicketDto Ticket { get; set; }
 }
