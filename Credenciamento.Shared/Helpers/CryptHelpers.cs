@@ -113,6 +113,49 @@ public static class CryptHelpers
         return ByteArraysEqual(storedSubkey, generatedSubkey);
     }
 
+    public static String HashGenerate(String input, String algorithm)
+    {
+        StringBuilder sb = new StringBuilder();
+
+        byte[] buffer = bufferHashGenerate(Encoding.UTF8.GetBytes(input), algorithm);
+        for (int i = 0; i < buffer.Length; i++)
+        {
+            sb.Append(buffer[i].ToString("X2"));
+        }
+
+        return sb.ToString();
+    }
+
+    private static byte[] bufferHashGenerate(byte[] input, string algorithm)
+    {
+        byte[] returns = { };
+
+        switch (algorithm.ToUpper())
+        {
+            case "MD5":
+                using (var csp = MD5.Create())
+                {
+                    return csp.ComputeHash(input);
+                }
+            case "SHA1":
+                using (var csp = SHA1.Create())
+                {
+                    return csp.ComputeHash(input);
+                }
+            case "SHA256":
+                using (var csp = SHA256.Create())
+                {
+                    return csp.ComputeHash(input);
+                }
+            case "SHA512":
+                using (var csp = SHA512.Create())
+                {
+                    return csp.ComputeHash(input);
+                }
+            default:
+                return Array.Empty<byte>();
+        }
+    }
     private static bool ByteArraysEqual(byte[] a, byte[] b)
     {
         if (ReferenceEquals(a, b)) return true;

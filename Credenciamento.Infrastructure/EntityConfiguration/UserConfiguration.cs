@@ -45,5 +45,9 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
         builder.Property(u => u.UpdatedAt)
             .HasColumnName("updatedat")
             .HasColumnType("datetime");
+
+        builder.HasOne(m => m.Person)
+           .WithOne(u => u.User)
+           .HasForeignKey<Person>(u => u.PersonId);
     }
 }

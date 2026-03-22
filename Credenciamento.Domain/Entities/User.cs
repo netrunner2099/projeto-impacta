@@ -11,4 +11,5 @@ public class User
     public byte Status { get; set; }
     public DateTime CreatedAt { get; set; }
     public DateTime? UpdatedAt { get; set; }
+    public Person Person { get; set; }
 }

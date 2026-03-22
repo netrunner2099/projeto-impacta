@@ -8,7 +8,6 @@ public class UserRepository : IUserRepository
     {
         _factory = factory;
     }
-
     public async Task<IEnumerable<User>> ListAllAsync()
     {
         using var db = await _factory.CreateDbContextAsync();

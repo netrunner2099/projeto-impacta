@@ -1,0 +1,357 @@
+﻿@model ProfileIndexViewModel
+@{
+    ViewData["Title"] = "Meu Perfil";
+    var avatarHash = CryptHelpers.HashGenerate(Model.User?.Email ?? string.Empty, "md5").ToLower();
+}
+
+<div class="container py-4">
+    <div class="row">
+        <div class="col-12">
+            <h2 class="mb-4">
+                <i class="bi bi-person-circle me-2"></i>Meu Perfil
+            </h2>
+        </div>
+    </div>
+
+    <!-- Card do Usuário -->
+    <div class="row mb-4">
+        <div class="col-md-12">
+            <div class="card shadow-sm">
+                <div class="card-body d-flex align-items-center">
+                    <img src="https://www.gravatar.com/avatar/@avatarHash" alt="@Model.User?.Name" class="rounded-circle me-3" style="width: 80px; height: 80px; object-fit: cover;" />
+                    <div>
+                        <h4 class="mb-1">@Model.User?.Name</h4>
+                        <p class="text-muted mb-0">
+                            <i class="bi bi-envelope me-2"></i>@Model.User?.Email
+                        </p>
+                        @if (Model.Person != null)
+                        {
+                            <p class="text-muted mb-0">
+                                <i class="bi bi-telephone me-2"></i>@Model.Person.Phone
+                            </p>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Tabs -->
+    <ul class="nav nav-tabs" id="profileTabs" role="tablist">
+        <li class="nav-item" role="presentation">
+            <button class="nav-link active" id="info-tab" data-bs-toggle="tab" data-bs-target="#info" type="button" role="tab" aria-controls="info" aria-selected="true">
+                <i class="bi bi-person-lines-fill me-2"></i>Informações Pessoais
+            </button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="tickets-tab" data-bs-toggle="tab" data-bs-target="#tickets" type="button" role="tab" aria-controls="tickets" aria-selected="false">
+                <i class="bi bi-ticket-perforated me-2"></i>Meus Ingressos
+            </button>
+        </li>
+        <li class="nav-item" role="presentation">
+            <button class="nav-link" id="security-tab" data-bs-toggle="tab" data-bs-target="#security" type="button" role="tab" aria-controls="security" aria-selected="false">
+                <i class="bi bi-shield-lock me-2"></i>Segurança
+            </button>
+        </li>
+    </ul>
+
+    <div class="tab-content border border-top-0 p-4 bg-white" id="profileTabsContent">
+        <!-- Aba: Informações Pessoais -->
+        <div class="tab-pane fade show active" id="info" role="tabpanel" aria-labelledby="info-tab">
+            @if (Model.Person != null)
+            {
+                <form asp-action="Update" asp-controller="Profile" method="post" id="formProfile">
+                    <input type="hidden" asp-for="Person.PersonId" />
+
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-8">
+                            <label asp-for="Person.Name" class="form-label fw-bold"></label>
+                            <input type="text" asp-for="Person.Name" class="form-control" readonly>
+                            <span asp-validation-for="Person.Name" class="text-danger"></span>
+                        </div>
+                        <div class="col-md-4">
+                            <label asp-for="Person.Document" class="form-label fw-bold"></label>
+                            <input type="text" asp-for="Person.Document" class="form-control" readonly>
+                            <span asp-validation-for="Person.Document" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-6">
+                            <label asp-for="Person.Email" class="form-label fw-bold"></label>
+                            <input type="email" asp-for="Person.Email" class="form-control" readonly>
+                            <span asp-validation-for="Person.Email" class="text-danger"></span>
+                        </div>
+                        <div class="col-md-4">
+                            <label asp-for="Person.Phone" class="form-label fw-bold"></label>
+                            <input type="tel" asp-for="Person.Phone" class="form-control">
+                            <span asp-validation-for="Person.Phone" class="text-danger"></span>
+                        </div>
+                        <div class="col-md-2">
+                            <label asp-for="Person.BirthDay" class="form-label fw-bold"></label>
+                            <input type="date" asp-for="Person.BirthDay" class="form-control" readonly>
+                            <span asp-validation-for="Person.BirthDay" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="row mb-3"><hr /></div>
+                    <h5 class="mb-3"><i class="bi bi-geo-alt me-2"></i>Endereço</h5>
+
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-3">
+                            <label asp-for="Person.ZipCode" class="form-label fw-bold"></label>
+                            <input type="text" asp-for="Person.ZipCode" class="form-control">
+                            <span asp-validation-for="Person.ZipCode" class="text-danger"></span>
+                        </div>
+                        <div class="col-md-7">
+                            <label asp-for="Person.Address" class="form-label fw-bold"></label>
+                            <input type="text" asp-for="Person.Address" class="form-control">
+                            <span asp-validation-for="Person.Address" class="text-danger"></span>
+                        </div>
+                        <div class="col-md-2">
+                            <label asp-for="Person.Number" class="form-label fw-bold"></label>
+                            <input type="text" asp-for="Person.Number" class="form-control">
+                            <span asp-validation-for="Person.Number" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-4">
+                            <label asp-for="Person.Complement" class="form-label fw-bold"></label>
+                            <input type="text" asp-for="Person.Complement" class="form-control">
+                            <span asp-validation-for="Person.Complement" class="text-danger"></span>
+                        </div>
+                        <div class="col-md-4">
+                            <label asp-for="Person.Neighborhood" class="form-label fw-bold"></label>
+                            <input type="text" asp-for="Person.Neighborhood" class="form-control">
+                            <span asp-validation-for="Person.Neighborhood" class="text-danger"></span>
+                        </div>
+                        <div class="col-md-3">
+                            <label asp-for="Person.City" class="form-label fw-bold"></label>
+                            <input type="text" asp-for="Person.City" class="form-control">
+                            <span asp-validation-for="Person.City" class="text-danger"></span>
+                        </div>
+                        <div class="col-md-1">
+                            <label asp-for="Person.State" class="form-label fw-bold"></label>
+                            <input type="text" asp-for="Person.State" class="form-control" maxlength="2">
+                            <span asp-validation-for="Person.State" class="text-danger"></span>
+                        </div>
+                    </div>
+
+                    <div class="row mt-4">
+                        <div class="col-12">
+                            <button type="submit" class="btn btn-primary">
+                                <i class="bi bi-save me-2"></i>Salvar Alterações
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            }
+            else
+            {
+                <div class="alert alert-warning">
+                    <i class="bi bi-exclamation-triangle me-2"></i>
+                    Nenhuma informação pessoal cadastrada.
+                </div>
+            }
+        </div>
+
+        <!-- Aba: Meus Ingressos -->
+        <div class="tab-pane fade" id="tickets" role="tabpanel" aria-labelledby="tickets-tab">
+            <h5 class="mb-3">Ingressos Adquiridos</h5>
+
+            @if (Model.Person?.Tickets != null && Model.Person.Tickets.Any())
+            {
+                <div class="row g-3">
+                    @foreach (var ticket in Model.Person.Tickets)
+                    {
+                        <div class="col-md-6">
+                            <div class="card h-100">
+                                <div class="card-body">
+                                    <div class="d-flex justify-content-between align-items-start mb-3">
+                                        <h5 class="card-title mb-0">@ticket.Event?.Name</h5>
+                                        @if (ticket.Status == 1)
+                                        {
+                                            <span class="badge bg-success">Pago</span>
+                                        }
+                                        else if (ticket.Status == 0)
+                                        {
+                                            <span class="badge bg-warning text-dark">Pendente</span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge bg-danger">Cancelado</span>
+                                        }
+                                    </div>
+
+                                    <p class="card-text text-muted mb-2">
+                                        <i class="bi bi-calendar-event me-2"></i>
+                                        @ticket.Event?.Begin.ToString("dd/MM/yyyy")
+                                    </p>
+                                    <p class="card-text text-muted mb-2">
+                                        <i class="bi bi-geo-alt me-2"></i>
+                                        @ticket.Event?.Local
+                                    </p>
+                                    <p class="card-text fw-bold mb-3">
+                                        <i class="bi bi-cash me-2"></i>
+                                        @ticket.Event?.Price.ToString("C2")
+                                    </p>
+
+                                    <div class="d-flex gap-2">
+                                        <a href="/Ticket/Index/@ticket.Transaction" class="btn btn-sm btn-outline-primary">
+                                            <i class="bi bi-eye me-1"></i>Ver Detalhes
+                                        </a>
+                                        @if (ticket.Status == 1)
+                                        {
+                                            <button type="button" class="btn btn-sm btn-outline-success btn-show-qrcode"
+                                                    data-ticket-id="@ticket.TicketId"
+                                                    data-transaction="@ticket.Transaction"
+                                                    data-event-name="@ticket.Event?.Name">
+                                                <i class="bi bi-qr-code me-1"></i>QR Code
+                                            </button>
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+            }
+            else
+            {
+                <div class="alert alert-info">
+                    <i class="bi bi-info-circle me-2"></i>
+                    Você ainda não possui ingressos. <a asp-controller="Home" asp-action="Index" class="alert-link">Compre seu primeiro ingresso!</a>
+                </div>
+            }
+        </div>
+
+        <!-- Aba: Segurança -->
+        <div class="tab-pane fade" id="security" role="tabpanel" aria-labelledby="security-tab">
+            <h5 class="mb-3">Alterar Senha</h5>
+
+            <form asp-action="ChangePassword" asp-controller="Profile" method="post">
+                <div class="row g-3 mb-3">
+                    <div class="col-md-6">
+                        <label for="currentPassword" class="form-label fw-bold">Senha Atual</label>
+                        <input type="password" id="currentPassword" name="CurrentPassword" class="form-control" required>
+                    </div>
+                </div>
+
+                <div class="row g-3 mb-3">
+                    <div class="col-md-6">
+                        <label for="newPassword" class="form-label fw-bold">Nova Senha</label>
+                        <input type="password" id="newPassword" name="NewPassword" class="form-control" required>
+                        <small class="text-muted">Mínimo 8 caracteres</small>
+                    </div>
+                    <div class="col-md-6">
+                        <label for="confirmPassword" class="form-label fw-bold">Confirmar Nova Senha</label>
+                        <input type="password" id="confirmPassword" name="ConfirmPassword" class="form-control" required>
+                    </div>
+                </div>
+
+                <div class="row mt-4">
+                    <div class="col-12">
+                        <button type="submit" class="btn btn-warning">
+                            <i class="bi bi-key me-2"></i>Alterar Senha
+                        </button>
+                    </div>
+                </div>
+            </form>
+
+            <hr class="my-4">
+
+            <h5 class="mb-3 text-danger">Zona de Perigo</h5>
+            <div class="alert alert-danger">
+                <h6 class="alert-heading">Excluir Conta</h6>
+                <p class="mb-2">Uma vez excluída, não há como voltar atrás. Por favor, tenha certeza.</p>
+                <button type="button" class="btn btn-danger btn-sm" data-bs-toggle="modal" data-bs-target="#deleteAccountModal">
+                    <i class="bi bi-trash me-2"></i>Excluir Minha Conta
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal de Confirmação de Exclusão -->
+<div class="modal fade" id="deleteAccountModal" tabindex="-1" aria-labelledby="deleteAccountModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-danger text-white">
+                <h5 class="modal-title" id="deleteAccountModalLabel">Confirmar Exclusão de Conta</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <p>Tem certeza que deseja excluir sua conta?</p>
+                <p class="text-danger fw-bold">Esta ação não pode ser desfeita!</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <form asp-action="DeleteAccount" asp-controller="Profile" method="post" class="d-inline">
+                    <button type="submit" class="btn btn-danger">Sim, Excluir Conta</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal de QR Code -->
+<div class="modal fade" id="qrcodeModal" tabindex="-1" aria-labelledby="qrcodeModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow-lg">
+            <div class="modal-header bg-gradient-success text-white border-0">
+                <h5 class="modal-title" id="qrcodeModalLabel">
+                    <i class="bi bi-qr-code me-2"></i>QR Code do Ingresso
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body p-4 text-center">
+                <div id="qrcodeLoading" class="py-5">
+                    <div class="spinner-border text-primary mb-3" role="status">
+                        <span class="visually-hidden">Carregando...</span>
+                    </div>
+                    <p class="text-muted">Carregando QR Code...</p>
+                </div>
+
+                <div id="qrcodeContent" class="d-none">
+                    <h6 class="mb-3" id="qrcodeEventName"></h6>
+
+                    <div class="qrcode-container bg-light p-4 rounded mb-3">
+                        <img id="qrcodeImage" src="" alt="QR Code" class="img-fluid" style="max-width: 300px;">
+                    </div>
+
+                    <div class="mb-3">
+                        <small class="text-muted d-block mb-1">Código da Transação</small>
+                        <code id="qrcodeTransaction" class="d-block p-2 bg-light rounded"></code>
+                    </div>
+
+                    <div class="alert alert-info border-0 mb-0">
+                        <small>
+                            <i class="bi bi-info-circle me-2"></i>
+                            Apresente este QR Code na entrada do evento
+                        </small>
+                    </div>
+                </div>
+
+                <div id="qrcodeError" class="d-none">
+                    <div class="text-danger mb-3">
+                        <i class="bi bi-exclamation-triangle display-4"></i>
+                    </div>
+                    <p class="text-muted">Erro ao carregar QR Code. Tente novamente.</p>
+                </div>
+            </div>
+            <div class="modal-footer border-0 bg-light">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fechar</button>
+                <button type="button" class="btn btn-primary" id="btnDownloadQRCode">
+                    <i class="bi bi-download me-2"></i>Baixar QR Code
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="~/lib/jquery-validation/dist/jquery.validate.min.js" asp-append-version="true"></script>
+    <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js" asp-append-version="true"></script>
+    <script type="text/javascript" src="~/wwwroot/js/Views/Profile.Index.js" asp-append-version="true"></script>
+}

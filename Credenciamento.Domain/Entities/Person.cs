@@ -20,4 +20,6 @@ public class Person
     public DateTime? UpdatedAt { get; set; }
 
     public IEnumerable<Ticket> Tickets { get; set; }
+
+    public User User { get; set; }
 }
