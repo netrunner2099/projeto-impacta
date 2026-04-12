@@ -1,15 +1,3 @@
-using Credenciamento.Domain.Entities;
-using Credenciamento.Domain.Enums;
-using Credenciamento.Infrastructure.Repositories;
-using Credenciamento.Tests.Fixtures;
-using Credenciamento.Tests.Helpers;
-using FluentAssertions;
-using Microsoft.EntityFrameworkCore;
-using Xunit;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-
 namespace Credenciamento.Tests.Integration.Repositories;
 
 public class EventRepositoryTests : TestBase

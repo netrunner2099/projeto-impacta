@@ -71,7 +71,7 @@
 
     $('#confirmForgot').on('click', function () {
         const loginValue = $loginField.val().trim();
-        window.location.href = '/Login/Forgot/' + base64Encode(loginValue);
+        globalThis.location.href = '/Login/Forgot/' + base64Encode(loginValue);
     });
 
     // Botão OTP

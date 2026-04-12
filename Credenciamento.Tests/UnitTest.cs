@@ -1,40 +1,36 @@
-using FluentAssertions;
-using Xunit;
+namespace Credenciamento.Tests;
 
-namespace Credenciamento.Tests
+public class UnitTest
 {
-    public class UnitTest
+    [Fact]
+    public void TestInfrastructure_ShouldPass()
     {
-        [Fact]
-        public void TestInfrastructure_ShouldPass()
-        {
-            // Arrange
-            var expected = true;
+        // Arrange
+        var expected = true;
 
-            // Act
-            var result = expected;
+        // Act
+        var result = expected;
 
-            // Assert
-            result.Should().BeTrue();
-        }
+        // Assert
+        result.Should().BeTrue();
+    }
 
-        [Fact]
-        public void FluentAssertions_ShouldWork()
-        {
-            // Arrange
-            var number = 42;
+    [Fact]
+    public void FluentAssertions_ShouldWork()
+    {
+        // Arrange
+        var number = 42;
 
-            // Act & Assert
-            number.Should().Be(42);
-            number.Should().BeGreaterThan(0);
-            number.Should().BeLessThan(100);
-        }
+        // Act & Assert
+        number.Should().Be(42);
+        number.Should().BeGreaterThan(0);
+        number.Should().BeLessThan(100);
+    }
 
-        [Fact]
-        public void Xunit_ShouldDiscoverThisTest()
-        {
-            // Este teste serve apenas para verificar que o xUnit está funcionando
-            Assert.True(true);
-        }
+    [Fact]
+    public void Xunit_ShouldDiscoverThisTest()
+    {
+        // Este teste serve apenas para verificar que o xUnit está funcionando
+        Assert.True(true);
     }
 }
