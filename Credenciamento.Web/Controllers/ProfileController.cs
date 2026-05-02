@@ -1,4 +1,5 @@
-﻿using Credenciamento.Application.Models;
+﻿using Credenciamento.Application.Commands.User;
+using Credenciamento.Application.Models;
 using Credenciamento.Application.Queries.Person;
 
 namespace Credenciamento.Web.Controllers;
@@ -21,7 +22,7 @@ public class ProfileController : LocalControllerBase
     }
 
     [HttpGet]
-    public async Task<IActionResult> Index()
+    public async Task<IActionResult> IndexAsync()
     {
         var model = _mapper.Map<ProfileIndexViewModel>(GetLocalBaseViewModel());
 
@@ -47,7 +48,7 @@ public class ProfileController : LocalControllerBase
     }
 
     [HttpPost]
-    public async Task<IActionResult> Update(ProfileIndexViewModel model)
+    public async Task<IActionResult> UpdateAsync(ProfileIndexViewModel model)
     {
         if (!ModelState.IsValid)
         {
@@ -58,7 +59,7 @@ public class ProfileController : LocalControllerBase
         {
             // TODO: Implementar comando de atualização de Person
             TempData["SuccessMessage"] = "Perfil atualizado com sucesso!";
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction(nameof(IndexAsync));
         }
         catch (Exception ex)
         {
@@ -69,25 +70,31 @@ public class ProfileController : LocalControllerBase
     }
 
     [HttpPost]
-    public async Task<IActionResult> ChangePassword(string currentPassword, string newPassword, string confirmPassword)
+    public async Task<IActionResult> ChangePasswordAsync(ProfileIndexViewModel model)
     {
-        if (newPassword != confirmPassword)
-        {
-            TempData["ErrorMessage"] = "As senhas não coincidem.";
-            return RedirectToAction(nameof(Index));
-        }
-
+        if (model.Password != model.PasswordConfirm)
+            return Problem(statusCode: 400, title: "Error", detail: "Senhas não coincidem");
         try
         {
-            // TODO: Implementar alteração de senha
-            TempData["SuccessMessage"] = "Senha alterada com sucesso!";
-            return RedirectToAction(nameof(Index));
+            var user = GetUserFromToken();
+            ChangeUserPasswordCommand command = new()
+            {
+                Email = user.Email,
+                Password = model.Password,
+                PasswordConfirm = model.PasswordConfirm
+            };
+
+            var result = await _mediator.Send(command);
+            if(result.Success)
+                TempData["SuccessMessage"] = "Senha alterada com sucesso!";
+            else
+                TempData["ErrorMessage"] = "Não foi possível alterar a senha!";
+
+            return Ok(true);
         }
         catch (Exception ex)
         {
-            _logger.LogError(ex, "Erro ao alterar senha");
-            TempData["ErrorMessage"] = "Erro ao alterar senha. Tente novamente.";
-            return RedirectToAction(nameof(Index));
+            return Problem(statusCode: 500, title: "Server error", detail: ex.Message);
         }
     }
 
@@ -104,7 +111,7 @@ public class ProfileController : LocalControllerBase
         {
             _logger.LogError(ex, "Erro ao excluir conta");
             TempData["ErrorMessage"] = "Erro ao excluir conta. Tente novamente.";
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction(nameof(IndexAsync));
         }
     }
 }

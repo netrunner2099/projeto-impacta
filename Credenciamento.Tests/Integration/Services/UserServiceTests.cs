@@ -6,6 +6,7 @@ public class UserServiceTests : TestBase
     private readonly Mock<ICacheService> _cacheServiceMock;
     private readonly Mock<IUserRepository> _repositoryMock;
     private readonly Mock<IOptions<SmtpOptions>> _smtpOptionsMock;
+    private readonly Mock<IConfiguration> _configurationMock;
     private readonly UserService _service;
 
     public UserServiceTests()
@@ -14,6 +15,7 @@ public class UserServiceTests : TestBase
         _cacheServiceMock = new Mock<ICacheService>();
         _repositoryMock = new Mock<IUserRepository>();
         _smtpOptionsMock = new Mock<IOptions<SmtpOptions>>();
+        _configurationMock = new Mock<IConfiguration>();
 
         var smtpOptions = new SmtpOptions
         {
@@ -28,7 +30,8 @@ public class UserServiceTests : TestBase
             _loggerMock.Object,
             _cacheServiceMock.Object,
             _repositoryMock.Object,
-            _smtpOptionsMock.Object);
+            _smtpOptionsMock.Object,
+            _configurationMock.Object);
     }
 
     [Fact]

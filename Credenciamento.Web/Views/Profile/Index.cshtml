@@ -230,31 +230,39 @@
         <div class="tab-pane fade" id="security" role="tabpanel" aria-labelledby="security-tab">
             <h5 class="mb-3">Alterar Senha</h5>
 
-            <form asp-action="ChangePassword" asp-controller="Profile" method="post">
+            <form asp-action="" asp-controller="" method="post" id="formChangePassword">
                 <div class="row g-3 mb-3">
                     <div class="col-md-6">
-                        <label for="currentPassword" class="form-label fw-bold">Senha Atual</label>
-                        <input type="password" id="currentPassword" name="CurrentPassword" class="form-control" required>
-                    </div>
-                </div>
-
-                <div class="row g-3 mb-3">
-                    <div class="col-md-6">
-                        <label for="newPassword" class="form-label fw-bold">Nova Senha</label>
-                        <input type="password" id="newPassword" name="NewPassword" class="form-control" required>
+                        <label for="Password" class="form-label fw-bold">Nova Senha</label>
+                        <input type="password" id="Password" name="Password" class="form-control" required>
                         <small class="text-muted">Mínimo 8 caracteres</small>
                     </div>
+
                     <div class="col-md-6">
-                        <label for="confirmPassword" class="form-label fw-bold">Confirmar Nova Senha</label>
-                        <input type="password" id="confirmPassword" name="ConfirmPassword" class="form-control" required>
+                        <label for="PasswordConfirm" class="form-label fw-bold">Confirmar Nova Senha</label>
+                        <input type="password" id="PasswordConfirm" name="PasswordConfirm" class="form-control" required>
                     </div>
                 </div>
 
                 <div class="row mt-4">
                     <div class="col-12">
-                        <button type="submit" class="btn btn-warning">
+                        <button type="button" class="btn btn-warning" id="btPasswordChange">
                             <i class="bi bi-key me-2"></i>Alterar Senha
                         </button>
+                    </div>
+                </div>
+
+                <div class="row mt-4 d-none div-alert-success">
+                    <div class="alert alert-success alert-dismissible fade show" role="alert">
+                        <strong>Senha alterada com sucesso</strong>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                </div>
+
+                <div class="row mt-4 d-none div-alert-error">
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        <strong>Não foi possível alterar a senha</strong>
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                     </div>
                 </div>
             </form>
@@ -351,7 +359,13 @@
 </div>
 
 @section Scripts {
-    <script src="~/lib/jquery-validation/dist/jquery.validate.min.js" asp-append-version="true"></script>
+    <script src="~/lib/jquery-validate/jquery.validate.min.js" asp-append-version="true"></script>
     <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js" asp-append-version="true"></script>
-    <script type="text/javascript" src="~/wwwroot/js/Views/Profile.Index.js" asp-append-version="true"></script>
+    <script type="text/javascript" src="~/js/Views/Profile.Index.js" asp-append-version="true"></script>
 }
+
+<script type="text/javascript">
+    $(document).ready({
+
+    });
+</script>

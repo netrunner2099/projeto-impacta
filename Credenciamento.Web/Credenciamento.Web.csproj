@@ -15,6 +15,10 @@
 	</PropertyGroup>
 
 	<ItemGroup>
+	  <Content Remove="bundleconfig.json" />
+	</ItemGroup>
+
+	<ItemGroup>
 		<ProjectReference Include="..\Credenciamento.Application\Credenciamento.Application.csproj" />
 	</ItemGroup>
 
@@ -24,6 +28,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <None Include="bundleconfig.json" />
 	  <None Include="wwwroot\diagrams\class-diagram.html" />
 	  <None Include="wwwroot\diagrams\domain-diagram.html" />
 	</ItemGroup>
