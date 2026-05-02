@@ -105,6 +105,9 @@ public class PersonService : IPersonService
     {
         try
         {
+            if (string.IsNullOrEmpty(email))
+                return false;
+
             var mime = new MimeMessage();
             mime.From.Add(new MailboxAddress("", _options.Sender));
             string[] toAddresses = email.Replace(" ", "").Split(';');
@@ -145,4 +148,6 @@ public class PersonService : IPersonService
         }
         return false;
     }
+
+
 }

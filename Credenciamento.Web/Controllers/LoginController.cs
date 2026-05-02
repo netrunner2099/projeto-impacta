@@ -1,4 +1,5 @@
-﻿using Credenciamento.Application.Queries.User;
+﻿using Credenciamento.Application.Commands.User;
+using Credenciamento.Application.Queries.User;
 using Credenciamento.Shared.Helpers;
 using Credenciamento.Web.Models;
 using Credenciamento.Web.Services;
@@ -67,22 +68,44 @@ public class LoginController : LocalControllerBase
     }
 
     [HttpGet("{login}")]
-    public IActionResult Forgot(string login)
+    public async Task<IActionResult> Forgot(string login)
     {
         var model = new LoginIndexViewModel();
         model.Login = !string.IsNullOrEmpty(login) ? StringHelpers.FromBase64(login) : "";
+        await _mediator.Send(new RecoverUserPasswordCommand { Email = model.Login });
         model.SuccessMessage = "Foi enviado um email com a nova senha para você.<br/>Caso não encontre, verifique a sua caixa de Spam, por favor.";
 
         return View("Index", model);
+    }
+
+    [HttpGet("{token}")]
+    public async Task<IActionResult> ResetPassword(string token)
+    {
+        var model = new LoginResetViewModel();
+        model.Token = token;
+        return View(model);
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> ResetPassword(LoginResetViewModel model)
+    {
+        
+        return View(model);
     }
 
     [HttpGet("{login}")]
     public async Task<IActionResult> OneTime(string login)
     {
         var model = new LoginIndexViewModel();
-        await _mediator.Send(new GetOtpCodeQuery { Email = StringHelpers.FromBase64(login) });
-        model.SuccessMessage = "Código OTP gerado com sucesso. Verifique seu email.";
+        model.Login = !string.IsNullOrEmpty(login) ? StringHelpers.FromBase64(login) : "";
+        var result = await _mediator.Send(new GetOtpCodeQuery { Email = model.Login });
+        if (result.Success)
+            model.SuccessMessage = "Código OTP gerado com sucesso. Verifique seu email.";
+        else 
+            model.ErrorMessage = "Não foi possível gerar o código OTP. Tente novamente mais tarde.";
 
         return View("Index", model);
     }
+
+
 }

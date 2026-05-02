@@ -11,7 +11,8 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
         builder.Property(u => u.UserId)
             .HasColumnType("bigint")
             .HasColumnName("userid")
-            .ValueGeneratedOnAdd();
+            .ValueGeneratedOnAdd()
+            .UseIdentityColumn(); 
 
         builder.Property(u => u.PersonId)
             .HasColumnName("personid")

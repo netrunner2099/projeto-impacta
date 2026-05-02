@@ -221,9 +221,8 @@ public class CacheService : ICacheService
     private static IMemoryCache GetCache()
     {
         if (null == _memoryCache)
-        {
             _memoryCache = new MemoryCache(new MemoryCacheOptions());
-        }
+        
         return _memoryCache;
     }
     #endregion

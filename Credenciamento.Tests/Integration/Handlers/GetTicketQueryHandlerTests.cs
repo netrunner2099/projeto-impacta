@@ -63,7 +63,7 @@ public class GetTicketQueryHandlerTests : TestBase
             .ReturnsAsync(ticketEntity);
 
         _qrCodeClientMock
-            .Setup(x => x.GenerateAsync(It.Is<QrCodeRequest>(r => 
+            .Setup(x => x.GenerateAsync(It.Is<QrCodeRequest>(r =>
                 r.Data == $"{BaseUrl}/ticket/index/{transaction}")))
             .ReturnsAsync(qrCodeResponse);
 
@@ -76,6 +76,7 @@ public class GetTicketQueryHandlerTests : TestBase
 
         // Assert
         result.Should().NotBeNull();
+        result.Success.Should().BeTrue();
         result.TicketId.Should().Be(ticketId);
         result.Transaction.Should().Be(transaction);
         result.QRCodeResponse.Should().NotBeNull();
@@ -127,6 +128,7 @@ public class GetTicketQueryHandlerTests : TestBase
 
         // Assert
         result.Should().NotBeNull();
+        result.Success.Should().BeTrue();
         result.Transaction.Should().Be(transaction);
         result.QRCodeResponse.Should().Be(qrCodeResponse);
 
@@ -135,7 +137,7 @@ public class GetTicketQueryHandlerTests : TestBase
     }
 
     [Fact]
-    public async Task Handle_ShouldReturnNull_WhenTicketDoesNotExist()
+    public async Task Handle_ShouldReturnFailure_WhenTicketDoesNotExist()
     {
         // Arrange
         var ticketId = 999L;
@@ -153,7 +155,9 @@ public class GetTicketQueryHandlerTests : TestBase
         var result = await _handler.Handle(query, CancellationToken.None);
 
         // Assert
-        result.Should().BeNull();
+        result.Should().NotBeNull();
+        result.Success.Should().BeFalse();
+        result.Message.Should().Be("Ticket not found");
         _repositoryMock.Verify(x => x.GetByIdAsync(ticketId), Times.Once);
         _repositoryMock.Verify(x => x.GetByTransactionAsync(null), Times.Once);
         _qrCodeClientMock.Verify(x => x.GenerateAsync(It.IsAny<QrCodeRequest>()), Times.Never);
@@ -220,12 +224,12 @@ public class GetTicketQueryHandlerTests : TestBase
         await _handler.Handle(query, CancellationToken.None);
 
         // Assert
-        _qrCodeClientMock.Verify(x => x.GenerateAsync(It.Is<QrCodeRequest>(r => 
+        _qrCodeClientMock.Verify(x => x.GenerateAsync(It.Is<QrCodeRequest>(r =>
             r.Data == expectedUrl)), Times.Once);
     }
 
     [Fact]
-    public async Task Handle_ShouldReturnNull_WhenExceptionIsThrown()
+    public async Task Handle_ShouldReturnFailure_WhenExceptionIsThrown()
     {
         // Arrange
         var ticketId = 1L;
@@ -240,7 +244,10 @@ public class GetTicketQueryHandlerTests : TestBase
         var result = await _handler.Handle(query, CancellationToken.None);
 
         // Assert
-        result.Should().BeNull();
+        result.Should().NotBeNull();
+        result.Success.Should().BeFalse();
+        result.Message.Should().Contain("Error:");
+        result.Message.Should().Contain("Database error");
     }
 
     [Fact]
@@ -385,31 +392,80 @@ public class GetTicketQueryHandlerTests : TestBase
 
         // Assert
         result.Should().NotBeNull();
-        result.Should().BeEquivalentTo(expectedResponse, options => options.Excluding(x => x.QRCodeResponse));
+        result.Success.Should().BeTrue();
+        result.Should().BeEquivalentTo(expectedResponse, options => options
+            .Excluding(x => x.QRCodeResponse)
+            .Excluding(x => x.Success)
+            .Excluding(x => x.Message));
         result.QRCodeResponse.Should().Be(qrCodeResponse);
     }
 
-    [Theory]
-    [InlineData(null, null)]
-    [InlineData(0, null)]
-    [InlineData(null, "")]
-    public async Task Handle_ShouldReturnNull_WhenBothTicketIdAndTransactionAreInvalid(long? ticketId, string transaction)
+    [Fact]
+    public async Task Handle_ShouldReturnFailure_WhenTicketIdIsNull()
     {
         // Arrange
-        var query = new GetTicketQuery { TicketId = ticketId, Transaction = transaction };
+        var query = new GetTicketQuery { TicketId = null, Transaction = null };
 
         _repositoryMock
-            .Setup(x => x.GetByIdAsync(ticketId ?? 0))
+            .Setup(x => x.GetByIdAsync(0))
             .ReturnsAsync((Ticket)null);
 
         _repositoryMock
-            .Setup(x => x.GetByTransactionAsync(transaction))
+            .Setup(x => x.GetByTransactionAsync(null))
             .ReturnsAsync((Ticket)null);
 
         // Act
         var result = await _handler.Handle(query, CancellationToken.None);
 
         // Assert
-        result.Should().BeNull();
+        result.Should().NotBeNull();
+        result.Success.Should().BeFalse();
+        result.Message.Should().Be("Ticket not found");
+    }
+
+    [Fact]
+    public async Task Handle_ShouldReturnFailure_WhenTicketIdIsZero()
+    {
+        // Arrange
+        var query = new GetTicketQuery { TicketId = 0L, Transaction = null };
+
+        _repositoryMock
+            .Setup(x => x.GetByIdAsync(0L))
+            .ReturnsAsync((Ticket)null);
+
+        _repositoryMock
+            .Setup(x => x.GetByTransactionAsync(null))
+            .ReturnsAsync((Ticket)null);
+
+        // Act
+        var result = await _handler.Handle(query, CancellationToken.None);
+
+        // Assert
+        result.Should().NotBeNull();
+        result.Success.Should().BeFalse();
+        result.Message.Should().Be("Ticket not found");
+    }
+
+    [Fact]
+    public async Task Handle_ShouldReturnFailure_WhenTransactionIsEmpty()
+    {
+        // Arrange
+        var query = new GetTicketQuery { TicketId = null, Transaction = "" };
+
+        _repositoryMock
+            .Setup(x => x.GetByIdAsync(0))
+            .ReturnsAsync((Ticket)null);
+
+        _repositoryMock
+            .Setup(x => x.GetByTransactionAsync(""))
+            .ReturnsAsync((Ticket)null);
+
+        // Act
+        var result = await _handler.Handle(query, CancellationToken.None);
+
+        // Assert
+        result.Should().NotBeNull();
+        result.Success.Should().BeFalse();
+        result.Message.Should().Be("Ticket not found");
     }
 }

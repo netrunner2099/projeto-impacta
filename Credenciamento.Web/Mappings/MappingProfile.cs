@@ -1,6 +1,5 @@
 ﻿using Credenciamento.Application.Contracts.Ticket;
 using Credenciamento.Application.Models;
-using Credenciamento.Web.Models;
 using Credenciamento.Web.Models.Dto;
 
 namespace Credenciamento.Web.Mappings;
@@ -18,6 +17,7 @@ public class MappingProfile : Profile
         CreateMap<LocalBaseViewModel, ErrorViewModel>().ReverseMap();
         CreateMap<LocalBaseViewModel, HomeIndexViewModel>().ReverseMap();
         CreateMap<LocalBaseViewModel, LoginIndexViewModel>().ReverseMap();
+        CreateMap<LocalBaseViewModel, LoginResetViewModel>().ReverseMap();
         CreateMap<LocalBaseViewModel, OnboardIndexViewModel>().ReverseMap();
         CreateMap<LocalBaseViewModel, StoreIndexViewModel>().ReverseMap();
         CreateMap<LocalBaseViewModel, TicketIndexViewModel>().ReverseMap();

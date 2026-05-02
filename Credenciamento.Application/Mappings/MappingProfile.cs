@@ -1,4 +1,6 @@
-﻿namespace Credenciamento.Application.Mappings;
+﻿using Credenciamento.Application.Commands.User;
+
+namespace Credenciamento.Application.Mappings;
 
 public class MappingProfile : Profile
 {
@@ -21,6 +23,7 @@ public class MappingProfile : Profile
         CreateMap<Ticket, GetTicketQueryResponse>().ReverseMap();
 
         CreateMap<User, UserModel>().ReverseMap();
+        CreateMap<ChangeUserPasswordCommand, UserModel>().ReverseMap();
 
         CreateMap<CreatePersonCommand, Person>().ReverseMap();
         CreateMap<CreatePersonCommand, PersonModel>().ReverseMap();

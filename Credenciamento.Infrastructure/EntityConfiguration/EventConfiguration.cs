@@ -11,7 +11,8 @@ public class EventConfiguration : IEntityTypeConfiguration<Event>
         builder.Property(e => e.EventId)
             .HasColumnName("eventid")
             .HasColumnType("bigint")
-            .ValueGeneratedOnAdd();
+            .ValueGeneratedOnAdd()
+            .UseIdentityColumn(); 
 
         builder.Property(e => e.Name)
             .HasColumnName("name")

@@ -196,7 +196,9 @@ public class CreatePersonCommandHandlerTests : TestBase
         // Assert
         result.Should().NotBeNull();
         result.PersonId.Should().Be(0);
-        result.Errors.Should().BeNull();
+        result.Errors.Should().NotBeNull();
+        result.Errors.Should().HaveCount(1);
+        result.Errors.Should().Contain($"Error: {exceptionMessage}");
     }
 
     [Fact]
