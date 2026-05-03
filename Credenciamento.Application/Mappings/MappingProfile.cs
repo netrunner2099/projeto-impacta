@@ -24,6 +24,7 @@ public class MappingProfile : Profile
 
         CreateMap<User, UserModel>().ReverseMap();
         CreateMap<ChangeUserPasswordCommand, UserModel>().ReverseMap();
+        CreateMap<ResetUserPasswordCommand, UserModel>().ReverseMap();
 
         CreateMap<CreatePersonCommand, Person>().ReverseMap();
         CreateMap<CreatePersonCommand, PersonModel>().ReverseMap();

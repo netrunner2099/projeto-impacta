@@ -1,4 +1,5 @@
-﻿using Credenciamento.Application.Contracts.Ticket;
+﻿using Credenciamento.Application.Commands.User;
+using Credenciamento.Application.Contracts.Ticket;
 using Credenciamento.Application.Models;
 using Credenciamento.Web.Models.Dto;
 
@@ -22,5 +23,7 @@ public class MappingProfile : Profile
         CreateMap<LocalBaseViewModel, StoreIndexViewModel>().ReverseMap();
         CreateMap<LocalBaseViewModel, TicketIndexViewModel>().ReverseMap();
         CreateMap<LocalBaseViewModel, ProfileIndexViewModel>().ReverseMap();
+
+        CreateMap<LoginResetViewModel, ResetUserPasswordCommand>().ReverseMap();
     }
 }

@@ -42,6 +42,7 @@ public static class ApplicationRegistration
         services.AddScoped<IValidator<CreatePersonCommand>, CreatePersonCommandValidator>();
         services.AddScoped<IValidator<CreateTicketCommand>, CreateTicketCommandValidator>();
         services.AddScoped<IValidator<ChangeUserPasswordCommand>, ChangeUserPasswordCommandValidator>();
+        services.AddScoped<IValidator<ResetUserPasswordCommand>, ResetUserPasswordCommandValidator>();
 
         InfrastructureRegistration.AddInfrastructure(services, configuration);
 

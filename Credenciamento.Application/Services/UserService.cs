@@ -234,7 +234,7 @@ public class UserService : IUserService
 
             var message = new StringBuilder();
             message.AppendLine("Segue abaixo o link para redefinição de senha:<br>");
-            message.AppendLine($"Link: <a href=\"{baseUrl}/login/reset/{token}\">{baseUrl}/login/reset/{token}</a><br><br>");
+            message.AppendLine($"Link: <a href=\"{baseUrl}/login/resetpassword?token={token}\">{baseUrl}/login/resetpassword?token={token}</a><br><br>");
             message.AppendLine("Não compartilhe com niguém.");
 
             var bodyBuilder = new BodyBuilder

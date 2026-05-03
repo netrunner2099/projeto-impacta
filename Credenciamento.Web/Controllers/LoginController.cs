@@ -71,14 +71,15 @@ public class LoginController : LocalControllerBase
     public async Task<IActionResult> Forgot(string login)
     {
         var model = new LoginIndexViewModel();
-        model.Login = !string.IsNullOrEmpty(login) ? StringHelpers.FromBase64(login) : "";
-        await _mediator.Send(new RecoverUserPasswordCommand { Email = model.Login });
+        login = !string.IsNullOrEmpty(login) ? StringHelpers.FromBase64(login) : "";
+        await _mediator.Send(new RecoverUserPasswordCommand { Email = login });
+        model.Login = "";
         model.SuccessMessage = "Foi enviado um email com a nova senha para você.<br/>Caso não encontre, verifique a sua caixa de Spam, por favor.";
 
         return View("Index", model);
     }
 
-    [HttpGet("{token}")]
+    [HttpGet]
     public async Task<IActionResult> ResetPassword(string token)
     {
         var model = new LoginResetViewModel();
@@ -89,7 +90,15 @@ public class LoginController : LocalControllerBase
     [HttpPost]
     public async Task<IActionResult> ResetPassword(LoginResetViewModel model)
     {
-        
+        var result = await _mediator.Send(_mapper.Map<ResetUserPasswordCommand>(model));
+        if(result.Success)
+        {
+            model.SuccessMessage = "Senha alterada com sucesso. Você já pode fazer login com a nova senha.";
+        }
+        else
+        {
+            model.ErrorMessage = "Não foi possível alterar a senha. Tente novamente mais tarde.";
+        }
         return View(model);
     }
 

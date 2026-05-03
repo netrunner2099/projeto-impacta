@@ -6,12 +6,12 @@ public class LoginIndexViewModel : LocalBaseViewModel
 {
     [Display(Name = "Email")]
     [Required(ErrorMessage = "Informar email")]
-    public string Login { get; set; }
+    public string Login { get; set; } = string.Empty;
 
     [Display(Name = "Senha"), DataType(DataType.Password)]
     [Required(ErrorMessage = "Informar senha")]
-    public string Password { get; set; }
+    public string Password { get; set; } = string.Empty;
 
-    public string SuccessMessage { get; set; }
-    public string ErrorMessage { get; set; }
+    public string SuccessMessage { get; set; } = string.Empty;
+    public string ErrorMessage { get; set; } = string.Empty;
 }
