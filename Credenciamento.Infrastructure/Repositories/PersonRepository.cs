@@ -36,7 +36,10 @@ public class PersonRepository : IPersonRepository
         using var db = await _factory.CreateDbContextAsync();
         db.Persons.Add(entity);
         await db.SaveChangesAsync();
-        return entity;
+
+        // Busca a entidade recém-criada para garantir que o ID foi gerado
+        // Isso funciona tanto com banco real quanto InMemory
+        return await db.Persons.FirstOrDefaultAsync(p => p.Email == entity.Email);
     }
 
     public async Task<Person> UpdateAsync(Person entity)
@@ -59,25 +62,24 @@ public class PersonRepository : IPersonRepository
         entity.UpdatedAt = DateTime.Now;
         db.Entry(entity).State = EntityState.Modified;
         await db.SaveChangesAsync();
-
         return true;
     }
 
     public async Task<bool> DocumentExistsAsync(Person entity)
     {
-        var db = await _factory.CreateDbContextAsync();
+        using var db = await _factory.CreateDbContextAsync();
         return await db.Persons.AnyAsync(p => p.Document == entity.Document && p.PersonId != entity.PersonId && p.Status != (byte)PersonStatus.Deleted);
     }
 
     public async Task<bool> PhoneNumberExistsAsync(Person entity)
     {
-        var db = await _factory.CreateDbContextAsync();
+        using var db = await _factory.CreateDbContextAsync();
         return await db.Persons.AnyAsync(p => p.Phone == entity.Phone && p.PersonId != entity.PersonId && p.Status != (byte)PersonStatus.Deleted);
     }
 
     public async Task<bool> EmailExistsAsync(Person entity)
     {
-        var db = await _factory.CreateDbContextAsync();
+        using var db = await _factory.CreateDbContextAsync();
         return await db.Persons.AnyAsync(p => p.Email == entity.Email && p.PersonId != entity.PersonId && p.Status != (byte)PersonStatus.Deleted);
     }
 }

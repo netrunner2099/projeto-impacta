@@ -1,6 +1,4 @@
 using Bogus;
-using Credenciamento.Domain.Entities;
-using System;
 
 namespace Credenciamento.Tests.Fixtures;
 
@@ -11,6 +9,7 @@ public static class PersonFixture
         .RuleFor(p => p.Document, f => f.Random.ReplaceNumbers("###########"))
         .RuleFor(p => p.Email, f => f.Person.Email)
         .RuleFor(p => p.Phone, f => f.Phone.PhoneNumber("(##) #####-####"))
+        .RuleFor(p => p.BirthDay, f => f.Person.DateOfBirth)
         .RuleFor(p => p.ZipCode, f => f.Address.ZipCode("#####-###"))
         .RuleFor(p => p.Address, f => f.Address.StreetAddress())
         .RuleFor(p => p.Number, f => f.Random.Number(1, 9999).ToString())

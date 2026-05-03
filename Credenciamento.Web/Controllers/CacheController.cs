@@ -18,5 +18,4 @@ public class CacheController : ControllerBase
         var result = _cache.GetCacheSnapshot();
         return Ok(result);
     }
-
 }

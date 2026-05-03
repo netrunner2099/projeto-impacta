@@ -16,4 +16,19 @@ public interface IUserService
     /// <param name="email">Email do usuário</param>
     /// <returns>Senha gerada e enviada</returns>
     Task<bool> GenerateOnetTimePasswordAsync(string email);
+
+    /// <summary>
+    /// Envia um email para o usuário com um link para redefinir a senha. 
+    /// O link contém um token de segurança que é validado no momento da redefinição da senha.
+    /// </summary>
+    /// <param name="email">Email do usuário</param>
+    /// <returns></returns>
+    Task<bool> SendForgotPasswordAsync(string email);
+
+    /// <summary>
+    /// Altera a senha do usuário. 
+    /// </summary>
+    /// <param name="model">Model com os dados de login e senha</param>
+    /// <returns></returns>
+    Task<bool> ChangePasswordAsync(UserModel model);
 }

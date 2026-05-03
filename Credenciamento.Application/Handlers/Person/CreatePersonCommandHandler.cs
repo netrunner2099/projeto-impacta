@@ -1,4 +1,6 @@
-﻿namespace Credenciamento.Application.Handlers.Person;
+﻿using static Microsoft.EntityFrameworkCore.DbLoggerCategory.Model;
+
+namespace Credenciamento.Application.Handlers.Person;
 
 public class CreatePersonCommandHandler : IRequestHandler<CreatePersonCommand, CreatePersonCommandResponse>
 {
@@ -20,14 +22,15 @@ public class CreatePersonCommandHandler : IRequestHandler<CreatePersonCommand, C
 
     public async Task<CreatePersonCommandResponse> Handle(CreatePersonCommand request, CancellationToken cancellationToken)
     {
-        CreatePersonCommandResponse returns = new();
+        CreatePersonCommandResponse response = new();
         try
         {
             var validation = await _validator.ValidateAsync(request);
             if (!validation.IsValid)
             {
-                returns.Errors = validation.Errors.Select(e => e.ErrorMessage).ToArray();
-                _logger.LogWarning("Handle: validation errors {0}", string.Join(", ", returns.Errors));
+                response.Errors = validation.Errors.Select(e => e.ErrorMessage).ToArray();
+                _logger.LogWarning("Handle: validation errors {0}", string.Join(", ", response.Errors));
+                return response;
             }
 
             var model = _mapper.Map<PersonModel>(request);
@@ -36,9 +39,9 @@ public class CreatePersonCommandHandler : IRequestHandler<CreatePersonCommand, C
         catch (Exception ex)
         {
             _logger.LogError(ex, "Handle: error {0}", ex.Message);
+            response.Errors = new List<string> { $"Error: {ex.Message}" };
+            return response;
         }
-
-        return returns;
     }
 }
 

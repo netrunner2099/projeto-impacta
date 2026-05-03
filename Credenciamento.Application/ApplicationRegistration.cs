@@ -1,5 +1,7 @@
-﻿using Credenciamento.Application.Interfaces.Global;
+﻿using Credenciamento.Application.Commands.User;
+using Credenciamento.Application.Interfaces.Global;
 using Credenciamento.Application.Services;
+using Credenciamento.Application.Validators.User;
 
 namespace Credenciamento.Application;
 
@@ -39,6 +41,8 @@ public static class ApplicationRegistration
         // Validators
         services.AddScoped<IValidator<CreatePersonCommand>, CreatePersonCommandValidator>();
         services.AddScoped<IValidator<CreateTicketCommand>, CreateTicketCommandValidator>();
+        services.AddScoped<IValidator<ChangeUserPasswordCommand>, ChangeUserPasswordCommandValidator>();
+        services.AddScoped<IValidator<ResetUserPasswordCommand>, ResetUserPasswordCommandValidator>();
 
         InfrastructureRegistration.AddInfrastructure(services, configuration);
 

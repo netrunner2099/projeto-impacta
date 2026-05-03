@@ -73,4 +73,44 @@
         $('#qrcodeContent').addClass('d-none');
         $('#qrcodeError').removeClass('d-none');
     }
+
+    const $ChangePasswordForm = $("#formChangePassword");
+    const $btPasswordChange = $ChangePasswordForm.find("#btPasswordChange");
+
+    $ChangePasswordForm.on('submit', (e) => {
+        e.preventDefault();
+        return false;
+    });
+
+    $btPasswordChange.on('click', () => {
+        const $password = $ChangePasswordForm.find("#Password");
+        const $passwordConfirm = $ChangePasswordForm.find("#PasswordConfirm");
+        const $success = $ChangePasswordForm.find(".div-alert-success");
+        const $error = $ChangePasswordForm.find(".div-alert-error");
+
+        if ($password.val() != $passwordConfirm.val()) {
+            alert("Senhas não coincidem");
+            return false;
+        }
+
+        $.ajax({
+            url: '/profile/changepassword',
+            type: 'post',
+            data: { Password: $password.val(), PasswordConfirm: $passwordConfirm.val() },
+            success: (data) => {
+                if (data !== null && data)
+                    $success.removeClass("d-none");
+                else
+                    $error.removeClass("d-none");
+            },
+            error: (error) => {
+                $error.removeClass("d-none");
+            }
+        });
+
+        $password.val('');
+        $passwordConfirm.val('');
+
+        return false;
+    });
 });

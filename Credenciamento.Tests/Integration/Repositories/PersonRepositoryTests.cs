@@ -1,13 +1,4 @@
-using Credenciamento.Domain.Entities;
-using Credenciamento.Domain.Enums;
-using Credenciamento.Infrastructure.Repositories;
-using Credenciamento.Tests.Fixtures;
-using Credenciamento.Tests.Helpers;
-using FluentAssertions;
 using Microsoft.EntityFrameworkCore;
-using Xunit;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 
 namespace Credenciamento.Tests.Integration.Repositories;
 
@@ -35,9 +26,12 @@ public class PersonRepositoryTests : TestBase
         result.PersonId.Should().BeGreaterThan(0);
         result.Name.Should().Be(person.Name);
 
+        // Recarrega do banco para confirmar que foi salvo
         Context.ChangeTracker.Clear();
-        var savedPerson = await Context.Persons.FindAsync(result.PersonId);
+        var savedPerson = await Context.Persons.FirstOrDefaultAsync(p => p.Email == person.Email);
         savedPerson.Should().NotBeNull();
+        savedPerson.PersonId.Should().BeGreaterThan(0);
+        savedPerson.Name.Should().Be(person.Name);
     }
 
     [Fact]
@@ -85,35 +79,50 @@ public class PersonRepositoryTests : TestBase
         Context.Persons.Add(person);
         await Context.SaveChangesAsync();
 
+        Context.ChangeTracker.Clear();
+        var savedPerson = await Context.Persons.FirstOrDefaultAsync(p => p.Email == person.Email);
+        savedPerson.Should().NotBeNull();
+
         var newName = "Updated Name";
-        person.Name = newName;
+        savedPerson.Name = newName;
 
         // Act
-        var result = await _repository.UpdateAsync(person);
+        var result = await _repository.UpdateAsync(savedPerson);
 
         // Assert
         result.Should().NotBeNull();
         result.Name.Should().Be(newName);
         result.UpdatedAt.Should().NotBeNull();
+        
+        // Verifica no banco
+        Context.ChangeTracker.Clear();
+        var updatedPerson = await Context.Persons.FindAsync(savedPerson.PersonId);
+        updatedPerson.Name.Should().Be(newName);
     }
 
     [Fact]
-    public async Task DeleteAsync_ShouldMarkPersonAsDeleted()
+    public async Task DeleteAsync_ShouldSoftDeletePerson()
     {
         // Arrange
         var person = PersonFixture.CreateValid();
         Context.Persons.Add(person);
         await Context.SaveChangesAsync();
 
+        // Debug: verificar se o ID foi gerado
+        Context.ChangeTracker.Clear();
+        var savedPerson = await Context.Persons.FirstOrDefaultAsync(p => p.Email == person.Email);
+        savedPerson.Should().NotBeNull();
+        savedPerson.PersonId.Should().BeGreaterThan(0);
+
         // Act
-        var result = await _repository.DeleteAsync(person.PersonId);
+        var result = await _repository.DeleteAsync(savedPerson.PersonId);
 
         // Assert
         result.Should().BeTrue();
-        
+
         Context.ChangeTracker.Clear();
-        var deletedPerson = await Context.Persons.FindAsync(person.PersonId);
-        deletedPerson.Should().NotBeNull("soft delete deve manter o registro no banco");
+        var deletedPerson = await Context.Persons.FindAsync(savedPerson.PersonId);
+        deletedPerson.Should().NotBeNull();
         deletedPerson.Status.Should().Be((byte)PersonStatus.Deleted);
         deletedPerson.UpdatedAt.Should().NotBeNull();
     }
@@ -129,7 +138,7 @@ public class PersonRepositoryTests : TestBase
     }
 
     [Fact]
-    public async Task ExistsAsync_ShouldReturnTrue_WhenPersonExists()
+    public async Task GetByEmailAsync_ShouldReturnPerson_WhenExists()
     {
         // Arrange
         var person = PersonFixture.CreateValid();
@@ -137,17 +146,135 @@ public class PersonRepositoryTests : TestBase
         await Context.SaveChangesAsync();
 
         // Act
-        var result = await _repository.GetByIdAsync(person.PersonId) is not null;
+        var result = await _repository.GetByEmailAsync(person.Email);
+
+        // Assert
+        result.Should().NotBeNull();
+        result.PersonId.Should().Be(person.PersonId);
+        result.Email.Should().Be(person.Email);
+    }
+
+    [Fact]
+    public async Task GetByEmailAsync_ShouldReturnNull_WhenNotExists()
+    {
+        // Act
+        var result = await _repository.GetByEmailAsync("nonexistent@example.com");
+
+        // Assert
+        result.Should().BeNull();
+    }
+
+    [Fact]
+    public async Task DocumentExistsAsync_ShouldReturnTrue_WhenDocumentExists()
+    {
+        // Arrange
+        var person = PersonFixture.CreateValid();
+        Context.Persons.Add(person);
+        await Context.SaveChangesAsync();
+
+        var checkPerson = new Person { Document = person.Document, PersonId = 0 };
+
+        // Act
+        var result = await _repository.DocumentExistsAsync(checkPerson);
 
         // Assert
         result.Should().BeTrue();
     }
 
     [Fact]
-    public async Task ExistsAsync_ShouldReturnFalse_WhenPersonDoesNotExist()
+    public async Task DocumentExistsAsync_ShouldReturnFalse_WhenDocumentNotExists()
     {
+        // Arrange
+        var checkPerson = new Person { Document = "99999999999", PersonId = 0 };
+
         // Act
-        var result = await _repository.GetByIdAsync(999999) is not null;
+        var result = await _repository.DocumentExistsAsync(checkPerson);
+
+        // Assert
+        result.Should().BeFalse();
+    }
+
+    [Fact]
+    public async Task DocumentExistsAsync_ShouldReturnFalse_WhenSamePerson()
+    {
+        // Arrange
+        var person = PersonFixture.CreateValid();
+        Context.Persons.Add(person);
+        await Context.SaveChangesAsync();
+
+        // Recarrega a pessoa para obter o ID gerado
+        Context.ChangeTracker.Clear();
+        var savedPerson = await Context.Persons.FirstOrDefaultAsync(p => p.Email == person.Email);
+        savedPerson.Should().NotBeNull();
+
+        // Act
+        var result = await _repository.DocumentExistsAsync(savedPerson);
+
+        // Assert
+        result.Should().BeFalse();
+    }
+
+    [Fact]
+    public async Task PhoneNumberExistsAsync_ShouldReturnTrue_WhenPhoneExists()
+    {
+        // Arrange
+        var person = PersonFixture.CreateValid();
+        Context.Persons.Add(person);
+        await Context.SaveChangesAsync();
+
+        Context.ChangeTracker.Clear();
+        var savedPerson = await Context.Persons.FirstOrDefaultAsync(p => p.Email == person.Email);
+
+        var checkPerson = new Person { Phone = savedPerson.Phone, PersonId = 0 };
+
+        // Act
+        var result = await _repository.PhoneNumberExistsAsync(checkPerson);
+
+        // Assert
+        result.Should().BeTrue();
+    }
+
+    [Fact]
+    public async Task PhoneNumberExistsAsync_ShouldReturnFalse_WhenPhoneNotExists()
+    {
+        // Arrange
+        var checkPerson = new Person { Phone = "(99) 99999-9999", PersonId = 0 };
+
+        // Act
+        var result = await _repository.PhoneNumberExistsAsync(checkPerson);
+
+        // Assert
+        result.Should().BeFalse();
+    }
+
+    [Fact]
+    public async Task EmailExistsAsync_ShouldReturnTrue_WhenEmailExists()
+    {
+        // Arrange
+        var person = PersonFixture.CreateValid();
+        Context.Persons.Add(person);
+        await Context.SaveChangesAsync();
+
+        Context.ChangeTracker.Clear();
+        var savedPerson = await Context.Persons.FirstOrDefaultAsync(p => p.Email == person.Email);
+
+        var checkPerson = new Person { Email = savedPerson.Email, PersonId = 0 };
+
+        // Act
+        var result = await _repository.EmailExistsAsync(checkPerson);
+
+        // Assert
+        result.Should().BeTrue();
+    }
+
+    [Fact]
+    public async Task EmailExistsAsync_ShouldReturnFalse_WhenEmailNotExists()
+    {
+        // Arrange
+        var checkPerson = new Person { Email = "nonexistent@example.com", PersonId = 0 };
+
+        // Act
+        var result = await _repository.EmailExistsAsync(checkPerson);
 
         // Assert
         result.Should().BeFalse();

@@ -11,7 +11,8 @@ public class TicketConfiguration : IEntityTypeConfiguration<Ticket>
         builder.Property(t => t.TicketId)
             .HasColumnName("ticketid")
             .HasColumnType("bigint")
-            .ValueGeneratedOnAdd();
+            .ValueGeneratedOnAdd()
+            .UseIdentityColumn();
 
         builder.Property(t => t.PersonId)
             .HasColumnName("personid")
