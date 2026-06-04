@@ -37,4 +37,12 @@ global using Credenciamento.Application.Interfaces.Global;
 global using Credenciamento.Application.Services;
 global using Credenciamento.Shared.Helpers;
 global using Microsoft.Extensions.Options;
+global using Credenciamento.Application.Commands.Event;
+global using Credenciamento.Application.Contracts.Event;
+global using Credenciamento.Application.Handlers.Event;
+global using Credenciamento.Application.Commands.User;
+global using Credenciamento.Application.Contracts.User;
+global using Credenciamento.Application.Handlers.User;
+global using Credenciamento.Application.Queries.User;
+global using Credenciamento.Domain.Interfaces;
 
