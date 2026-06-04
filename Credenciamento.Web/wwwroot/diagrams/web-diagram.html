@@ -76,6 +76,17 @@
             }
 
             %% ===============================================
+            %% ADMIN CONTROLLERS
+            %% ===============================================
+            class AdminTicketsController {
+            -IMediator mediator
+            -IMapper mapper
+            -IEventRepository eventRepository
+            +Index(long? filterEventId, byte? filterStatus, byte? filterPayment) Task~IActionResult~
+            +Voucher(long id) Task~IActionResult~
+            }
+
+            %% ===============================================
             %% VIEWMODELS
             %% ===============================================
             class HomeIndexViewModel {
@@ -109,6 +120,14 @@
 
             class TicketIndexViewModel {
             +TicketDto Ticket
+            }
+
+            class AdminTicketViewModel {
+            +long? FilterEventId
+            +byte? FilterStatus
+            +byte? FilterPayment
+            +IEnumerable~TicketModel~ Tickets
+            +IEnumerable~EventModel~ Events
             }
 
             %% ===============================================
@@ -146,10 +165,13 @@
             LoginController ..> LoginIndexViewModel : usa
             CheckoutController ..> CheckoutIndexViewModel : usa
             TicketController ..> TicketIndexViewModel : usa
+            AdminTicketsController ..> AdminTicketViewModel : usa
 
             TicketIndexViewModel --> TicketDto : contém
             TicketDto --> EventDto : contém
             TicketDto --> PersonDto : contém
+            AdminTicketViewModel --> TicketModel : contém
+            AdminTicketViewModel --> EventModel : contém
         </div>
     </div>
 

@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>Application - Persons - Sistema de Credenciamento</title>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10.9.5/dist/mermaid.min.js"></script>
+    <link type="text/css" href="../css/diagram.css" rel="stylesheet" />
+</head>
+<body>
+    <div class="container">
+        <h1>🟢 Application Layer — Persons</h1>
+        <div class="subtitle">CQRS: Commands, Queries e Handlers do módulo de Participantes</div>
+
+        <nav class="nav">
+            <a href="domain-diagram.html">Domain</a>
+            <a href="infrastructure-diagram.html">Infrastructure</a>
+            <a href="application-diagram.html">Application</a>
+            <a href="web-diagram.html">Web</a>
+            <a href="database-diagram.html">Database</a>
+            <a href="usecase-diagram.html">Use Cases</a>
+            <a href="class-diagram.html">Visão Completa</a>
+        </nav>
+
+        <div class="nav" style="margin-top:6px;">
+            <a href="application-diagram.html">↩ Voltar ao Índice Application</a>
+            <a href="application-events-diagram.html">Events</a>
+            <a href="application-tickets-diagram.html">Tickets</a>
+            <a href="application-users-diagram.html">Users</a>
+            <a href="application-persons-diagram.html" class="active">Persons</a>
+        </div>
+
+        <div class="info">
+            <strong>📦 Projeto:</strong> Credenciamento.Application<br>
+            <strong>🎯 Responsabilidade:</strong> Cadastro e consulta de participantes (Person)<br>
+            <strong>✨ Padrões:</strong> MediatR, CQRS, AutoMapper
+        </div>
+
+        <div class="mermaid">
+            classDiagram
+            %% ===============================================
+            %% MODEL
+            %% ===============================================
+            class PersonModel {
+            +long PersonId
+            +long UserId
+            +string Name
+            +string Document
+            +string Email
+            +string Phone
+            +DateTime CreatedAt
+            +DateTime UpdatedAt
+            }
+
+            %% ===============================================
+            %% COMMANDS
+            %% ===============================================
+            class CreatePersonCommand {
+            &lt;&lt;IRequest&gt;&gt;
+            +long UserId
+            +string Name
+            +string Document
+            +string Email
+            +string Phone
+            }
+
+            class UpdatePersonCommand {
+            &lt;&lt;IRequest&gt;&gt;
+            +long PersonId
+            +string Name
+            +string Document
+            +string Email
+            +string Phone
+            }
+
+            %% ===============================================
+            %% QUERIES
+            %% ===============================================
+            class GetPersonByUserIdQuery {
+            &lt;&lt;IRequest&gt;&gt;
+            +long UserId
+            }
+
+            %% ===============================================
+            %% HANDLERS
+            %% ===============================================
+            class CreatePersonCommandHandler {
+            &lt;&lt;IRequestHandler&gt;&gt;
+            -IPersonRepository repository
+            -ILogger logger
+            -IMapper mapper
+            +Handle() Task~CreatePersonCommandResponse~
+            }
+
+            class UpdatePersonCommandHandler {
+            &lt;&lt;IRequestHandler&gt;&gt;
+            -IPersonRepository repository
+            -ILogger logger
+            -IMapper mapper
+            +Handle() Task~UpdatePersonCommandResponse~
+            }
+
+            class GetPersonByUserIdQueryHandler {
+            &lt;&lt;IRequestHandler&gt;&gt;
+            -IPersonRepository repository
+            -ILogger logger
+            -IMapper mapper
+            +Handle() Task~PersonModel~
+            }
+
+            %% ===============================================
+            %% RESPONSES
+            %% ===============================================
+            class CreatePersonCommandResponse {
+            +long PersonId
+            +IEnumerable~string~ Errors
+            }
+
+            class UpdatePersonCommandResponse {
+            +IEnumerable~string~ Errors
+            }
+
+            %% ===============================================
+            %% RELATIONSHIPS
+            %% ===============================================
+            CreatePersonCommandHandler ..> CreatePersonCommand : processa
+            CreatePersonCommandHandler ..> CreatePersonCommandResponse : retorna
+
+            UpdatePersonCommandHandler ..> UpdatePersonCommand : processa
+            UpdatePersonCommandHandler ..> UpdatePersonCommandResponse : retorna
+
+            GetPersonByUserIdQueryHandler ..> GetPersonByUserIdQuery : processa
+            GetPersonByUserIdQueryHandler ..> PersonModel : retorna
+        </div>
+    </div>
+
+    <script>
+    mermaid.initialize({
+        startOnLoad: true,
+        theme: 'default',
+        themeVariables: {
+            primaryColor: '#c8e6c9',
+            primaryTextColor: '#000',
+            primaryBorderColor: '#4caf50',
+            lineColor: '#666',
+            secondaryColor: '#dcedc8',
+            tertiaryColor: '#f3e5f5',
+            fontSize: '14px'
+        }
+    });
+    </script>
+</body>
+</html>

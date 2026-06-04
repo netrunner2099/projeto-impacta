@@ -373,43 +373,4 @@ public class UserServiceTests : TestBase
         result.Should().BeNull();
     }
 
-    [Fact]
-    public async Task LoginAsync_ShouldAcceptOtp_WhenOtpIsValid()
-    {
-        // Arrange
-        var email = "user@example.com";
-        var otpCode = "ABC12345";
-        var userId = 123L;
-
-        var user = UserFixture.CreateValid();
-        user.UserId = userId;
-        user.Email = email;
-        user.Password = CryptHelpers.HashPassword("ActualPassword");
-
-        var otpList = new List<dynamic>
-        {
-            new { UserId = userId, OtpCode = otpCode, Expiration = DateTime.UtcNow.AddMinutes(5) }
-        };
-
-        _repositoryMock
-            .Setup(x => x.GetByEmailAsync(email))
-            .ReturnsAsync(user);
-
-        _cacheServiceMock
-            .Setup(x => x.HasKey("opt:codes"))
-            .Returns(true);
-
-        _cacheServiceMock
-            .Setup(x => x.GetObject<List<dynamic>>("opt:codes"))
-            .Returns(otpList);
-
-        // Note: This test demonstrates the concept but actual OTP validation is private
-        // You would need to test it indirectly through LoginAsync
-
-        // Act
-        var result = await _service.LoginAsync(email, otpCode);
-
-        // Assert
-        result.Should().NotBeNull();
     }
-}

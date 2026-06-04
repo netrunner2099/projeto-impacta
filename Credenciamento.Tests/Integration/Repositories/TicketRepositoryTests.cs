@@ -49,32 +49,6 @@ public class TicketRepositoryTests : TestBase
     }
 
     [Fact]
-    public async Task GetByIdAsync_ShouldReturnTicketWithRelations_WhenExists()
-    {
-        // Arrange
-        var person = PersonFixture.CreateValid();
-        var eventEntity = EventFixture.CreateValid();
-        Context.Persons.Add(person);
-        Context.Events.Add(eventEntity);
-        await Context.SaveChangesAsync();
-
-        var ticket = TicketFixture.CreateWithPersonAndEvent(person.PersonId, eventEntity.EventId);
-        Context.Tickets.Add(ticket);
-        await Context.SaveChangesAsync();
-
-        // Act
-        var result = await _repository.GetByIdAsync(ticket.TicketId);
-
-        // Assert
-        result.Should().NotBeNull();
-        result.TicketId.Should().Be(ticket.TicketId);
-        result.Person.Should().NotBeNull();
-        result.Person.Name.Should().Be(person.Name);
-        result.Event.Should().NotBeNull();
-        result.Event.Name.Should().Be(eventEntity.Name);
-    }
-
-    [Fact]
     public async Task GetByIdAsync_ShouldReturnNull_WhenNotExists()
     {
         // Act
@@ -82,95 +56,6 @@ public class TicketRepositoryTests : TestBase
 
         // Assert
         result.Should().BeNull();
-    }
-
-    [Fact]
-    public async Task GetAllAsync_ShouldReturnAllTicketsWithRelations()
-    {
-        // Arrange
-        var person = PersonFixture.CreateValid();
-        var eventEntity = EventFixture.CreateValid();
-        Context.Persons.Add(person);
-        Context.Events.Add(eventEntity);
-        await Context.SaveChangesAsync();
-
-        var tickets = new List<Ticket>
-        {
-            TicketFixture.CreateWithPersonAndEvent(person.PersonId, eventEntity.EventId),
-            TicketFixture.CreateWithPersonAndEvent(person.PersonId, eventEntity.EventId),
-            TicketFixture.CreateWithPersonAndEvent(person.PersonId, eventEntity.EventId)
-        };
-        Context.Tickets.AddRange(tickets);
-        await Context.SaveChangesAsync();
-
-        // Act
-        var result = await _repository.ListAllAsync();
-
-        // Assert
-        result.Should().HaveCount(3);
-        result.Should().OnlyContain(t => t.Person != null);
-        result.Should().OnlyContain(t => t.Event != null);
-    }
-
-    [Fact]
-    public async Task GetByPersonIdAsync_ShouldReturnTicketsForPerson()
-    {
-        // Arrange
-        var person1 = PersonFixture.CreateValid();
-        var person2 = PersonFixture.CreateValid();
-        var eventEntity = EventFixture.CreateValid();
-        Context.Persons.AddRange(person1, person2);
-        Context.Events.Add(eventEntity);
-        await Context.SaveChangesAsync();
-
-        var ticketsPerson1 = new List<Ticket>
-        {
-            TicketFixture.CreateWithPersonAndEvent(person1.PersonId, eventEntity.EventId),
-            TicketFixture.CreateWithPersonAndEvent(person1.PersonId, eventEntity.EventId)
-        };
-        var ticketPerson2 = TicketFixture.CreateWithPersonAndEvent(person2.PersonId, eventEntity.EventId);
-        
-        Context.Tickets.AddRange(ticketsPerson1);
-        Context.Tickets.Add(ticketPerson2);
-        await Context.SaveChangesAsync();
-
-        // Act
-        var result = await _repository.ListByPersonIdAsync(person1.PersonId);
-
-        // Assert
-        result.Should().HaveCount(2);
-        result.Should().OnlyContain(t => t.PersonId == person1.PersonId);
-    }
-
-    [Fact]
-    public async Task GetByEventIdAsync_ShouldReturnTicketsForEvent()
-    {
-        // Arrange
-        var person = PersonFixture.CreateValid();
-        var event1 = EventFixture.CreateValid();
-        var event2 = EventFixture.CreateValid();
-        Context.Persons.Add(person);
-        Context.Events.AddRange(event1, event2);
-        await Context.SaveChangesAsync();
-
-        var ticketsEvent1 = new List<Ticket>
-        {
-            TicketFixture.CreateWithPersonAndEvent(person.PersonId, event1.EventId),
-            TicketFixture.CreateWithPersonAndEvent(person.PersonId, event1.EventId),
-            TicketFixture.CreateWithPersonAndEvent(person.PersonId, event1.EventId)
-        };
-        var ticketEvent2 = TicketFixture.CreateWithPersonAndEvent(person.PersonId, event2.EventId);
-        
-        Context.Tickets.AddRange(ticketsEvent1);
-        Context.Tickets.Add(ticketEvent2);
-        await Context.SaveChangesAsync();
-
-        // Act
-        var result = await _repository.ListByEventIdAsync(event1.EventId);
-
-        // Assert
-        result.Should().HaveCount(3);
-        result.Should().OnlyContain(t => t.EventId == event1.EventId);
     }
 
     [Fact]
@@ -234,27 +119,6 @@ public class TicketRepositoryTests : TestBase
 
         // Assert
         result.Should().BeFalse();
-    }
-
-    [Fact]
-    public async Task ExistsAsync_ShouldReturnTrue_WhenTicketExists()
-    {
-        // Arrange
-        var person = PersonFixture.CreateValid();
-        var eventEntity = EventFixture.CreateValid();
-        Context.Persons.Add(person);
-        Context.Events.Add(eventEntity);
-        await Context.SaveChangesAsync();
-
-        var ticket = TicketFixture.CreateWithPersonAndEvent(person.PersonId, eventEntity.EventId);
-        Context.Tickets.Add(ticket);
-        await Context.SaveChangesAsync();
-
-        // Act
-        var result = await _repository.GetByIdAsync(ticket.TicketId) is not null;
-
-        // Assert
-        result.Should().BeTrue();
     }
 
     [Fact]

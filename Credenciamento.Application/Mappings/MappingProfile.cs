@@ -1,4 +1,5 @@
-﻿using Credenciamento.Application.Commands.User;
+﻿using Credenciamento.Application.Commands.Event;
+using Credenciamento.Application.Commands.User;
 
 namespace Credenciamento.Application.Mappings;
 
@@ -25,6 +26,8 @@ public class MappingProfile : Profile
         CreateMap<User, UserModel>().ReverseMap();
         CreateMap<ChangeUserPasswordCommand, UserModel>().ReverseMap();
         CreateMap<ResetUserPasswordCommand, UserModel>().ReverseMap();
+        CreateMap<CreateUserCommand, User>().ReverseMap();
+        CreateMap<UpdateUserCommand, User>().ReverseMap();
 
         CreateMap<CreatePersonCommand, Person>().ReverseMap();
         CreateMap<CreatePersonCommand, PersonModel>().ReverseMap();
@@ -35,5 +38,7 @@ public class MappingProfile : Profile
 
         CreateMap<Event, GetEventQueryResponse>().ReverseMap();
         CreateMap<EventModel, GetEventQueryResponse>().ReverseMap();
+        CreateMap<CreateEventCommand, Credenciamento.Domain.Entities.Event>().ReverseMap();
+        CreateMap<UpdateEventCommand, Credenciamento.Domain.Entities.Event>().ReverseMap();
     }
 }

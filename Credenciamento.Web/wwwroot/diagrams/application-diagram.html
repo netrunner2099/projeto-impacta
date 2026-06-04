@@ -3,13 +3,39 @@
 <head>
     <meta charset="UTF-8">
     <title>Application Layer - Sistema de Credenciamento</title>
-    <script src="https://cdn.jsdelivr.net/npm/mermaid@10.9.5/dist/mermaid.min.js"></script>
     <link type="text/css" href="../css/diagram.css" rel="stylesheet" />
+    <style>
+        .modules-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 20px;
+            margin-top: 28px;
+        }
+        .module-card {
+            background: #fff;
+            border: 2px solid #4caf50;
+            border-radius: 12px;
+            padding: 28px 20px;
+            text-align: center;
+            text-decoration: none;
+            color: #222;
+            transition: box-shadow 0.2s, transform 0.2s;
+            box-shadow: 0 2px 8px rgba(76,175,80,.12);
+        }
+        .module-card:hover {
+            box-shadow: 0 6px 24px rgba(76,175,80,.28);
+            transform: translateY(-3px);
+            text-decoration: none;
+        }
+        .module-card .icon { font-size: 2.4rem; margin-bottom: 10px; }
+        .module-card h3 { margin: 8px 0 6px; font-size: 1.15rem; }
+        .module-card p  { font-size: .85rem; color: #555; margin: 0; }
+    </style>
 </head>
 <body>
     <div class="container">
         <h1>🟢 Application Layer</h1>
-        <div class="subtitle">CQRS, Commands, Queries e Handlers (MediatR)</div>
+        <div class="subtitle">CQRS, Commands, Queries e Handlers (MediatR) — selecione um módulo</div>
 
         <nav class="nav">
             <a href="domain-diagram.html">Domain</a>
@@ -27,7 +53,31 @@
             <strong>✨ Padrões:</strong> MediatR, CQRS, AutoMapper
         </div>
 
-        <div class="mermaid">
+        <div class="modules-grid">
+            <a href="application-events-diagram.html" class="module-card">
+                <div class="icon">📅</div>
+                <h3>Events</h3>
+                <p>Criação, edição, ativação e listagem de eventos</p>
+            </a>
+            <a href="application-tickets-diagram.html" class="module-card">
+                <div class="icon">🎫</div>
+                <h3>Tickets</h3>
+                <p>Emissão, pagamento, listagem admin e impressão de 2ª via</p>
+            </a>
+            <a href="application-users-diagram.html" class="module-card">
+                <div class="icon">👤</div>
+                <h3>Users</h3>
+                <p>Autenticação, CRUD e gestão de papéis de usuários</p>
+            </a>
+            <a href="application-persons-diagram.html" class="module-card">
+                <div class="icon">🧑‍🤝‍🧑</div>
+                <h3>Persons</h3>
+                <p>Cadastro e consulta de dados dos participantes</p>
+            </a>
+        </div>
+
+        <!-- diagrama oculto: mantido para compatibilidade com Visão Completa -->
+        <div class="mermaid" style="display:none">
             classDiagram
             %% ===============================================
             %% MODELS
@@ -107,6 +157,13 @@
             +string Transaction
             }
 
+            class ListTicketAdminQuery {
+            &lt;&lt;IRequest&gt;&gt;
+            +long? EventId
+            +byte? Status
+            +byte? Payment
+            }
+
             %% ===============================================
             %% HANDLERS
             %% ===============================================
@@ -158,6 +215,14 @@
             +Handle() Task~GetTicketQueryResponse~
             }
 
+            class ListTicketAdminQueryHandler {
+            &lt;&lt;IRequestHandler&gt;&gt;
+            -ITicketRepository repository
+            -ILogger logger
+            -IMapper mapper
+            +Handle() Task~ListTicketAdminQueryResponse~
+            }
+
             %% ===============================================
             %% RESPONSES
             %% ===============================================
@@ -179,6 +244,14 @@
             class GetTicketQueryResponse {
             +TicketModel Ticket
             +QRCodeResponse QRCodeResponse
+            +bool Success
+            +string Message
+            }
+
+            class ListTicketAdminQueryResponse {
+            +IEnumerable~TicketModel~ Tickets
+            +bool Success
+            +string Message
             }
 
             class ListFutureEventQueryResponse {
@@ -206,6 +279,9 @@
             GetTicketQueryHandler ..> GetTicketQuery : processa
             GetTicketQueryHandler ..> GetTicketQueryResponse : retorna
 
+            ListTicketAdminQueryHandler ..> ListTicketAdminQuery : processa
+            ListTicketAdminQueryHandler ..> ListTicketAdminQueryResponse : retorna
+
             GetTicketQueryResponse --> QRCodeResponse : contém
         </div>
     </div>
@@ -217,7 +293,7 @@
             themeVariables: {
                 primaryColor: '#c8e6c9',
                 primaryTextColor: '#000',
-                primaryBorderColor: #4caf50',
+                primaryBorderColor: '#4caf50',
                     lineColor: '#666',
                 secondaryColor: '#dcedc8',
                 tertiaryColor: '#f3e5f5',

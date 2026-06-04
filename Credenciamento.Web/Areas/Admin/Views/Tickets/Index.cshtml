@@ -1,0 +1,192 @@
+@model AdminTicketViewModel
+@using Credenciamento.Domain.Enums
+@using System.ComponentModel
+@{
+    ViewData["Title"] = "Tickets";
+    Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
+
+    string StatusBadge(byte status) => (TicketStatus)status switch
+    {
+        TicketStatus.Paid => "badge bg-success",
+        TicketStatus.Canceled => "badge bg-danger",
+        TicketStatus.Deleted => "badge bg-secondary",
+        _ => "badge bg-warning text-dark"
+    };
+
+    string StatusLabel(byte status) => (TicketStatus)status switch
+    {
+        TicketStatus.Paid => "Pago",
+        TicketStatus.Canceled => "Cancelado",
+        TicketStatus.Deleted => "Excluído",
+        _ => "Criado"
+    };
+
+    string PaymentLabel(byte payment) => (TicketPayment)payment switch
+    {
+        TicketPayment.Pix => "QRCode Pix",
+        TicketPayment.CreditCard => "Cartão de Crédito",
+        TicketPayment.Boleto => "Boleto Bancário",
+        _ => "—"
+    };
+
+    string PaymentIcon(byte payment) => (TicketPayment)payment switch
+    {
+        TicketPayment.Pix => "bi-qr-code",
+        TicketPayment.CreditCard => "bi-credit-card",
+        TicketPayment.Boleto => "bi-receipt",
+        _ => "bi-dash"
+    };
+}
+
+<div class="container-fluid py-4">
+
+    @if (TempData["Error"] is string err)
+    {
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <i class="bi bi-exclamation-triangle me-2"></i>@err
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h3 class="mb-0"><i class="bi bi-ticket-detailed me-2"></i>Tickets Emitidos</h3>
+        <span class="badge bg-primary fs-6">@Model.Tickets.Count() ticket(s)</span>
+    </div>
+
+    <!-- Filtros -->
+    <div class="card shadow-sm mb-4">
+        <div class="card-body">
+            <form method="get" asp-action="Index">
+                <div class="row g-3 align-items-end">
+                    <div class="col-md-4">
+                        <label class="form-label text-muted small mb-1">Evento</label>
+                        <select name="filterEventId" class="form-select">
+                            <option value="">Todos os eventos</option>
+                            @foreach (var evt in Model.Events)
+                            {
+                                <option value="@evt.EventId" selected="@(Model.FilterEventId == evt.EventId)">
+                                    @evt.Name
+                                </option>
+                            }
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label text-muted small mb-1">Status</label>
+                        <select name="filterStatus" class="form-select">
+                            <option value="">Todos os status</option>
+                            @foreach (TicketStatus s in Enum.GetValues(typeof(TicketStatus)))
+                            {
+                                <option value="@((byte)s)" selected="@(Model.FilterStatus == (byte)s)">
+                                    @StatusLabel((byte)s)
+                                </option>
+                            }
+                        </select>
+                    </div>
+                    <div class="col-md-2">
+                        <label class="form-label text-muted small mb-1">Forma de Pagamento</label>
+                        <select name="filterPayment" class="form-select">
+                            <option value="">Todas as formas</option>
+                            @foreach (TicketPayment p in Enum.GetValues(typeof(TicketPayment)))
+                            {
+                                <option value="@((byte)p)" selected="@(Model.FilterPayment == (byte)p)">
+                                    @PaymentLabel((byte)p)
+                                </option>
+                            }
+                        </select>
+                    </div>
+                    <div class="col offset-2 d-flex gap-2">
+                        <button type="submit" class="btn btn-primary w-100">
+                            <i class="bi bi-funnel me-1"></i>Filtrar
+                        </button>
+                        <a asp-action="Index" class="btn btn-outline-secondary">
+                            <i class="bi bi-x-lg"></i>
+                        </a>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Tabela -->
+    <div class="card shadow-sm">
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover align-middle mb-0">
+                    <thead class="table-light">
+                        <tr>
+                            <th class="ps-3">#</th>
+                            <th>Participante</th>
+                            <th>Evento</th>
+                            <th class="text-end">Valor</th>
+                            <th class="text-center">Forma de Pagamento</th>
+                            <th class="text-center">Status</th>
+                            <th>Transação</th>
+                            <th>Emitido em</th>
+                            <th class="text-center">Ações</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (!Model.Tickets.Any())
+                        {
+                            <tr>
+                                <td colspan="9" class="text-center py-4 text-muted">
+                                    <i class="bi bi-inbox fs-4 d-block mb-2"></i>
+                                    Nenhum ticket encontrado para os filtros selecionados.
+                                </td>
+                            </tr>
+                        }
+                        else
+                        {
+                            @foreach (var ticket in Model.Tickets)
+                            {
+                                <tr>
+                                    <td class="ps-3 text-muted small">@ticket.TicketId</td>
+                                    <td>
+                                        <div class="fw-semibold">@ticket.Person?.Name</div>
+                                        <div class="text-muted small">@ticket.Person?.Email</div>
+                                    </td>
+                                    <td>
+                                        <div class="fw-semibold">@ticket.Event?.Name</div>
+                                        <div class="text-muted small">@ticket.Event?.Begin.ToString("dd/MM/yyyy")</div>
+                                    </td>
+                                    <td class="text-end fw-semibold">
+                                        R$ @ticket.Price.ToString("N2")
+                                    </td>
+                                    <td class="text-center">
+                                        @if (ticket.Payment > 0)
+                                        {
+                                            <span title="@PaymentLabel(ticket.Payment)">
+                                                <i class="bi @PaymentIcon(ticket.Payment) me-1"></i>
+                                                <span class="d-none d-xl-inline">@PaymentLabel(ticket.Payment)</span>
+                                            </span>
+                                        }
+                                        else
+                                        {
+                                            <span class="text-muted">—</span>
+                                        }
+                                    </td>
+                                    <td class="text-center">
+                                        <span class="@StatusBadge(ticket.Status)">@StatusLabel(ticket.Status)</span>
+                                    </td>
+                                    <td>
+                                        <span class="font-monospace small text-muted">@ticket.Transaction</span>
+                                    </td>
+                                    <td class="text-muted small">
+                                        @ticket.CreatedAt.ToString("dd/MM/yyyy HH:mm")
+                                    </td>
+                                    <td class="text-center">
+                                        <a asp-action="Voucher" asp-route-id="@ticket.TicketId"
+                                           class="btn btn-sm btn-outline-primary" title="Imprimir Segunda Via"
+                                           target="_blank">
+                                            <i class="bi bi-printer me-1"></i>2ª Via
+                                        </a>
+                                    </td>
+                                </tr>
+                            }
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

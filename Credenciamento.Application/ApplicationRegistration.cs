@@ -1,6 +1,8 @@
-﻿using Credenciamento.Application.Commands.User;
+﻿using Credenciamento.Application.Commands.Event;
+using Credenciamento.Application.Commands.User;
 using Credenciamento.Application.Interfaces.Global;
 using Credenciamento.Application.Services;
+using Credenciamento.Application.Validators.Event;
 using Credenciamento.Application.Validators.User;
 
 namespace Credenciamento.Application;
@@ -43,6 +45,10 @@ public static class ApplicationRegistration
         services.AddScoped<IValidator<CreateTicketCommand>, CreateTicketCommandValidator>();
         services.AddScoped<IValidator<ChangeUserPasswordCommand>, ChangeUserPasswordCommandValidator>();
         services.AddScoped<IValidator<ResetUserPasswordCommand>, ResetUserPasswordCommandValidator>();
+        services.AddScoped<IValidator<CreateUserCommand>, CreateUserCommandValidator>();
+        services.AddScoped<IValidator<UpdateUserCommand>, UpdateUserCommandValidator>();
+        services.AddScoped<IValidator<CreateEventCommand>, CreateEventCommandValidator>();
+        services.AddScoped<IValidator<UpdateEventCommand>, UpdateEventCommandValidator>();
 
         InfrastructureRegistration.AddInfrastructure(services, configuration);
 

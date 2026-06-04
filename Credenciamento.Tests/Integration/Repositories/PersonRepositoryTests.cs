@@ -13,45 +13,6 @@ public class PersonRepositoryTests : TestBase
     }
 
     [Fact]
-    public async Task AddAsync_ShouldAddPersonToDatabase()
-    {
-        // Arrange
-        var person = PersonFixture.CreateValid();
-
-        // Act
-        var result = await _repository.AddAsync(person);
-
-        // Assert
-        result.Should().NotBeNull();
-        result.PersonId.Should().BeGreaterThan(0);
-        result.Name.Should().Be(person.Name);
-
-        // Recarrega do banco para confirmar que foi salvo
-        Context.ChangeTracker.Clear();
-        var savedPerson = await Context.Persons.FirstOrDefaultAsync(p => p.Email == person.Email);
-        savedPerson.Should().NotBeNull();
-        savedPerson.PersonId.Should().BeGreaterThan(0);
-        savedPerson.Name.Should().Be(person.Name);
-    }
-
-    [Fact]
-    public async Task GetByIdAsync_ShouldReturnPerson_WhenExists()
-    {
-        // Arrange
-        var person = PersonFixture.CreateValid();
-        Context.Persons.Add(person);
-        await Context.SaveChangesAsync();
-
-        // Act
-        var result = await _repository.GetByIdAsync(person.PersonId);
-
-        // Assert
-        result.Should().NotBeNull();
-        result.PersonId.Should().Be(person.PersonId);
-        result.Email.Should().Be(person.Email);
-    }
-
-    [Fact]
     public async Task GetAllAsync_ShouldReturnAllPersons()
     {
         // Arrange

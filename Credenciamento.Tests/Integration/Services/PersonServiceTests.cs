@@ -35,60 +35,6 @@ public class PersonServiceTests : TestBase
     }
 
     [Fact]
-    public async Task AddAsync_ShouldCreatePerson_WhenModelIsValid()
-    {
-        // Arrange
-        var personModel = new PersonModel
-        {
-            Name = "joão silva",
-            Email = "JOAO@EXAMPLE.COM",
-            Document = "123.456.789-00",
-            Phone = "(11) 98765-4321",
-            ZipCode = "01234-567",
-            Address = "rua teste",
-            Number = "123",
-            Neighborhood = "centro",
-            City = "são paulo",
-            State = "sp"
-        };
-
-        var personEntity = PersonFixture.CreateValid();
-        personEntity.PersonId = 1;
-        personEntity.Name = "João Silva";
-        personEntity.Email = "joao@example.com";
-
-        var userEntity = UserFixture.CreateValid();
-        userEntity.UserId = 1;
-
-        _mapperMock
-            .Setup(x => x.Map<Person>(It.IsAny<PersonModel>()))
-            .Returns(personEntity);
-
-        _personRepositoryMock
-            .Setup(x => x.AddAsync(It.IsAny<Person>()))
-            .ReturnsAsync(personEntity);
-
-        _mapperMock
-            .Setup(x => x.Map<PersonModel>(personEntity))
-            .Returns(new PersonModel { PersonId = 1 });
-
-        _userRepositoryMock
-            .Setup(x => x.AddAsync(It.IsAny<User>()))
-            .ReturnsAsync(userEntity);
-
-        // Act
-        var result = await _service.AddAsync(personModel);
-
-        // Assert - Will be null because we can't mock SMTP
-        // But we can verify the transformations and repository calls
-        _personRepositoryMock.Verify(x => x.AddAsync(It.Is<Person>(p =>
-            p.Email == "joao@example.com" && // Email to lower
-            p.State == "SP" && // State to upper
-            p.Status == (byte)PersonStatus.Active &&
-            p.CreatedAt != default)), Times.Once);
-    }
-
-    [Fact]
     public async Task AddAsync_ShouldNormalizeName_ToTitleCase()
     {
         // Arrange

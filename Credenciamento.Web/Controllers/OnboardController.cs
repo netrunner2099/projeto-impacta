@@ -35,7 +35,7 @@ public class OnboardController : LocalControllerBase
             return View("Index", model);
 
         var result = await _mediator.Send(new GetEventQuery { EventId = model.Event.EventId });
-        if (result == null)
+        if (result == null && model.Event.EventId > 0)
             return View("Index", model);
 
         var command = _mapper.Map<CreatePersonCommand>(model.Person);
