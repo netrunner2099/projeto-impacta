@@ -1,20 +1,24 @@
-﻿using System.Text.Json;
+﻿using Credenciamento.Application.Interfaces.Global;
+using System.Text.Json;
 
 namespace Credenciamento.Application.Handlers.User;
 
 public class VerifyLoginQueryHandler : IRequestHandler<VerifyLoginQuery, VerifyLoginQueryResponse>
 {
     private readonly ILogger _logger;
-    private readonly IUserRepository _repository;
+    private readonly IUserService _userService;
     private readonly IPersonRepository _personRepository;
+    private readonly ICacheService _cache;
     public VerifyLoginQueryHandler(
         ILogger<VerifyLoginQueryHandler> logger,
-        IUserRepository repository,
-        IPersonRepository personRepository)
+        IUserService userService,
+        IPersonRepository personRepository,
+        ICacheService cache)
     {
         _logger = logger;
-        _repository = repository;
+        _userService = userService;
         _personRepository = personRepository;
+        _cache = cache;
     }
 
     public async Task<VerifyLoginQueryResponse> Handle(VerifyLoginQuery request, CancellationToken cancellationToken)
@@ -24,26 +28,23 @@ public class VerifyLoginQueryHandler : IRequestHandler<VerifyLoginQuery, VerifyL
         try
         {
             // Consultando usuário
-            var user = await _repository.GetByEmailAsync(request.Email);
+            var user = await _userService.LoginAsync(request.Email, request.Password);
             if (user is null)
-                return returns;
-
-            // Verificando se a senha confere
-            if (!CryptHelpers.VerifyHashedPassword(user.Password, request.Password))
                 return returns;
 
             var person = await _personRepository.GetByEmailAsync(user.Email);
 
-            // Criando o token
-            var token = JsonSerializer.Serialize(new UserModel
+            var userModel = new UserModel
             {
                 UserId = user.UserId,
                 PersonId = user.PersonId ?? 0,
                 Name = user.Name,
                 Email = user.Email,
                 Role = user.Role
-            }, new JsonSerializerOptions { DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingDefault });
-            token = Convert.ToBase64String(Encoding.UTF8.GetBytes(token));
+            };
+            var content = JsonSerializer.Serialize(userModel, new JsonSerializerOptions { DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingDefault });
+            var token = StringHelpers.ToBase64(CryptHelpers.HashGenerate(content, "md5").ToLower());
+            _cache.SetObject($"user:{CryptHelpers.HashGenerate(content, "md5").ToLower()}", userModel, 30);
             returns = new() { Token = token, PersonId = person.PersonId };
 
             return returns;

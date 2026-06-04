@@ -11,7 +11,8 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
         builder.Property(u => u.UserId)
             .HasColumnType("bigint")
             .HasColumnName("userid")
-            .ValueGeneratedOnAdd();
+            .ValueGeneratedOnAdd()
+            .UseIdentityColumn(); 
 
         builder.Property(u => u.PersonId)
             .HasColumnName("personid")
@@ -45,5 +46,9 @@ public class UserConfiguration : IEntityTypeConfiguration<User>
         builder.Property(u => u.UpdatedAt)
             .HasColumnName("updatedat")
             .HasColumnType("datetime");
+
+        builder.HasOne(m => m.Person)
+           .WithOne(u => u.User)
+           .HasForeignKey<Person>(u => u.PersonId);
     }
 }

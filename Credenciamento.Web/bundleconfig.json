@@ -1,0 +1,8 @@
+[
+  {
+    "outputFileName": "wwwroot/js/Views/Profile.Index.min.js",
+    "inputFiles": [
+      "wwwroot/js/Views/Profile.Index.js"
+    ]
+  }
+]

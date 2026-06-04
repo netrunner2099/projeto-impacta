@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Credenciamento.Web.Models;
 
-public class HomeIndexViewModel
+public class HomeIndexViewModel : LocalBaseViewModel
 {
     public IEnumerable<EventModel> Events { get; set; }
 }

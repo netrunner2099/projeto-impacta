@@ -2,7 +2,7 @@ using System;
 
 namespace Credenciamento.Web.Models
 {
-    public class ErrorViewModel
+    public class ErrorViewModel : LocalBaseViewModel
     {
         public string RequestId { get; set; }
 

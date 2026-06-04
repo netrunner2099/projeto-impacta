@@ -11,7 +11,8 @@ public class PersonConfiguration : IEntityTypeConfiguration<Person>
         builder.Property(p => p.PersonId)
             .HasColumnName("personid")
             .HasColumnType("bigint")
-            .ValueGeneratedOnAdd();
+            .ValueGeneratedOnAdd()
+            .UseIdentityColumn(); 
 
         builder.Property(p => p.Name)
             .HasColumnName("name")
@@ -72,5 +73,9 @@ public class PersonConfiguration : IEntityTypeConfiguration<Person>
         builder.HasMany(m => m.Tickets)
             .WithOne(t => t.Person)
             .HasForeignKey(t => t.PersonId);
+
+        builder.HasOne(m => m.User)
+            .WithOne(u => u.Person)
+            .HasForeignKey<User>(u => u.PersonId);
     }
 }

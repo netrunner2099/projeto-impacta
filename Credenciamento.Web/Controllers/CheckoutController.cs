@@ -4,19 +4,24 @@ using Credenciamento.Application.Queries.Event;
 using Credenciamento.Application.Queries.Person;
 using Credenciamento.Web.Models;
 using Credenciamento.Web.Models.Dto;
+using Credenciamento.Web.Services;
 using Microsoft.Extensions.Configuration;
 
 namespace Credenciamento.Web.Controllers;
 
 [Route("[controller]/[action]")]
-public class CheckoutController : Controller
+public class CheckoutController : LocalControllerBase
 {
+    private readonly IMapper _mapper;
     private readonly IMediator _mediator;
     private readonly string baseUrl;
     public CheckoutController(
+        IMapper mapper,
         IMediator mediator,
-        IConfiguration configuration)
+        IConfiguration configuration,
+        IServiceProvider services) : base(services)
     {
+        _mapper = mapper;
         _mediator = mediator;
         baseUrl = $"{configuration["Environment:BaseUrl"]}/ticket/index/";
     }
@@ -24,7 +29,7 @@ public class CheckoutController : Controller
     [HttpGet("{id}/{personId}")]
     public async Task<IActionResult> Index(int id, int personId)
     {
-        var model = new CheckoutIndexViewModel();
+        var model = _mapper.Map<CheckoutIndexViewModel>(GetLocalBaseViewModel());
         var result = await _mediator.Send(new GetEventQuery { EventId = id });
         model.Event = result ?? new EventModel();
         model.Person = new PersonModel();

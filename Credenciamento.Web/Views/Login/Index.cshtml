@@ -1,148 +1,187 @@
-﻿@model LoginIndexViewModel;
+﻿@model LoginIndexViewModel
 @{
-    ViewData["Title"] = "Acesse sua conta";
+    ViewData["Title"] = "Acesse sua Conta";
 }
 
-<div class="row">
-    <div class="col-md-3"></div>
-    <div class="col-md-6">
-        <form asp-action="verify" asp-controller="Login" method="post" id="formLogin">
-            <div class="card">
-                <div class="card-header bg-purple">
-                    <h5 class="card-title">Acesse sua conta</h5>
-                </div>
-
-                <div class="card-body">
-                    <div class="row">
-                        <div class="form-group">
-                            <label asp-for="Login" class="form-label fw-medium">Email</label>
-                            <input type="text" asp-for="Login" class="form-control" />
-                            <span asp-validation-for="Login" class="text-danger"></span>
+<div class="login-container">
+    <div class="row g-0 min-vh-100">
+        <!-- Coluna Esquerda - Banner -->
+        <div class="col-lg-6 d-none d-lg-block login-banner">
+            <div class="login-banner-content">
+                <div class="text-center">
+                    <img src="~/img/top-logo.png" alt="IIngresso" class="login-logo mb-4">
+                    <h1 class="text-white fw-bold mb-3">Bem-vindo de volta!</h1>
+                    <p class="text-white lead mb-4">
+                        Acesse sua conta e descubra os melhores eventos
+                    </p>
+                    <div class="login-features">
+                        <div class="feature-item">
+                            <i class="bi bi-ticket-perforated-fill"></i>
+                            <span>Ingressos Digitais</span>
                         </div>
-                    </div>
-
-                    <div class="row">
-                        <div class="form-group">
-                            <label asp-for="Password" class="form-label fw-medium">Senha</label>
-                            <input type="password" asp-for="Password" class="form-control" />
-                            <span asp-validation-for="Password" class="text-danger"></span>
+                        <div class="feature-item">
+                            <i class="bi bi-qr-code"></i>
+                            <span>QR Code Instantâneo</span>
                         </div>
-                    </div>
-                </div>
-
-                <div class="card-footer">
-                    <div class="row">
-                        <div class="col text-center">
-                            <button type="submit" class="btn btn-primary btn-action btn-login">Entrar</button>
-                        </div>
-
-                        <div class="col text-center">
-                            <button type="reset" class="btn btn-danger btn-action btn-cancel">Cancelar</button>
-                        </div>
-                    </div>
-
-                    <div class="row mt-3">
-                        <div class="col text-center">
-                            <button type="button" class="btn btn-secondary btn-forgot">Recuperar Senha</button>
+                        <div class="feature-item">
+                            <i class="bi bi-shield-check"></i>
+                            <span>100% Seguro</span>
                         </div>
                     </div>
                 </div>
             </div>
-        </form>
+        </div>
 
-        @if(!string.IsNullOrEmpty(Model.SuccessMessage)){
-            <div class="alert alert-success mt-3" role="alert">
-                @Model.SuccessMessage
+        <!-- Coluna Direita - Formulário -->
+        <div class="col-lg-6 d-flex align-items-center">
+            <div class="login-form-container">
+                <div class="text-center mb-4 d-lg-none">
+                    <img src="~/img/top-logo.png" alt="IIngresso" style="max-width: 150px;" class="mb-3">
+                </div>
+
+                <div class="text-center mb-4">
+                    <h2 class="fw-bold mb-2">Acesse sua Conta</h2>
+                    <p class="text-muted">Entre com suas credenciais para continuar</p>
+                </div>
+
+                <!-- Mensagens de Sucesso/Erro -->
+                @if (!string.IsNullOrEmpty(Model.SuccessMessage))
+                {
+                    <div class="alert alert-success alert-dismissible fade show" role="alert">
+                        <i class="bi bi-check-circle me-2"></i>
+                        @Html.Raw(Model.SuccessMessage)
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                }
+
+                @if (!string.IsNullOrEmpty(Model.ErrorMessage))
+                {
+                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                        <i class="bi bi-exclamation-triangle me-2"></i>
+                        @Model.ErrorMessage
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>
+                }
+
+                <!-- Formulário de Login -->
+                <form asp-action="Verify" asp-controller="Login" method="post" id="formLogin">
+                    <div class="mb-4">
+                        <label asp-for="Login" class="form-label fw-bold">
+                            <i class="bi bi-envelope me-2 text-primary"></i>E-mail
+                        </label>
+                        <input type="email" asp-for="Login" class="form-control form-control-lg" placeholder="seu@email.com" value="" autofocus>
+                        <span asp-validation-for="Login" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-4">
+                        <label asp-for="Password" class="form-label fw-bold">
+                            <i class="bi bi-lock me-2 text-primary"></i>Senha
+                        </label>
+                        <div class="input-group input-group-lg">
+                            <input type="password" asp-for="Password" class="form-control" placeholder="••••••••" id="passwordField">
+                            <button class="btn btn-outline-secondary" type="button" id="togglePassword">
+                                <i class="bi bi-eye" id="toggleIcon"></i>
+                            </button>
+                        </div>
+                        <span asp-validation-for="Password" class="text-danger"></span>
+                    </div>
+
+                    <div class="mb-4">
+                        <button type="submit" class="btn btn-primary btn-lg w-100 shadow btn-login">
+                            <i class="bi bi-box-arrow-in-right me-2"></i>Entrar
+                        </button>
+                    </div>
+
+                    <div class="row g-2 mb-4">
+                        <div class="col-md-6">
+                            <button type="button" class="btn btn-outline-warning w-100 btn-onetime">
+                                <i class="bi bi-key me-2"></i>Senha Única (OTP)
+                            </button>
+                        </div>
+                        <div class="col-md-6">
+                            <button type="button" class="btn btn-outline-secondary w-100 btn-forgot">
+                                <i class="bi bi-question-circle me-2"></i>Esqueci a Senha
+                            </button>
+                        </div>
+                    </div>
+
+                    <hr class="my-4">
+
+                    <div class="text-center">
+                        <p class="text-muted mb-3">Ainda não tem uma conta?</p>
+                        <a asp-controller="Home" asp-action="Index" class="btn btn-outline-primary w-100">
+                            <i class="bi bi-person-plus me-2"></i>Criar Conta Gratuita
+                        </a>
+                    </div>
+                </form>
+
+                <!-- Footer -->
+                <div class="text-center mt-4">
+                    <small class="text-muted">
+                        <i class="bi bi-shield-lock me-1"></i>
+                        Seus dados estão protegidos com criptografia SSL
+                    </small>
+                </div>
             </div>
-        }
-        
-        @if (!string.IsNullOrEmpty(Model.ErrorMessage))
-        {
-            <div class="alert alert-danger mt-3" role="alert">
-                @Model.ErrorMessage
-            </div>
-        }
+        </div>
     </div>
-    <div class="col-md-3"></div>
+</div>
+
+<!-- Modal de OTP -->
+<div class="modal fade" id="otpModal" tabindex="-1" aria-labelledby="otpModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow-lg">
+            <div class="modal-header bg-gradient-purple text-white border-0">
+                <h5 class="modal-title" id="otpModalLabel">
+                    <i class="bi bi-key me-2"></i>Senha de Uso Único (OTP)
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body p-4">
+                <p class="mb-3">Uma senha temporária será enviada para o seu e-mail.</p>
+                <div class="alert alert-info border-0">
+                    <i class="bi bi-info-circle me-2"></i>
+                    <small>A senha OTP é válida por 10 minutos e pode ser usada apenas uma vez.</small>
+                </div>
+            </div>
+            <div class="modal-footer border-0">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-warning" id="confirmOTP">
+                    <i class="bi bi-send me-2"></i>Enviar OTP
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal de Recuperação de Senha -->
+<div class="modal fade" id="forgotModal" tabindex="-1" aria-labelledby="forgotModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content border-0 shadow-lg">
+            <div class="modal-header bg-gradient-purple text-white border-0">
+                <h5 class="modal-title" id="forgotModalLabel">
+                    <i class="bi bi-question-circle me-2"></i>Recuperar Senha
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body p-4">
+                <p class="mb-3">Uma nova senha será enviada para o seu e-mail cadastrado.</p>
+                <div class="alert alert-warning border-0">
+                    <i class="bi bi-exclamation-triangle me-2"></i>
+                    <small>Lembre-se de alterar sua senha após o primeiro acesso.</small>
+                </div>
+            </div>
+            <div class="modal-footer border-0">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-primary" id="confirmForgot">
+                    <i class="bi bi-send me-2"></i>Enviar Nova Senha
+                </button>
+            </div>
+        </div>
+    </div>
 </div>
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
-    <script type="text/javascript">
-        $(document).ready(function(){
-            // Configuração de validação
-            $.validator.setDefaults({
-                onsubmit: true,
-                onfocusout: function(element) {
-                    // Não valida inputs, mas permite validar selects
-                    if ($(element).is('select')) {
-                        return false;
-                    }
-                    return false;
-                },
-                onkeyup: false,
-                onclick: false,
-                highlight: function(element) {
-                    $(element).addClass('is-invalid').removeClass('is-valid');
-                },
-                unhighlight: function(element) {
-                    $(element).removeClass('is-invalid').addClass('is-valid');
-                },
-                errorElement: 'div',
-                errorClass: 'invalid-feedback',
-                errorPlacement: function(error, element) {
-                    error.insertAfter(element);
-                },
-                // Ignora erros em tempo real
-                ignore: []
-            });
-
-            $(".btn-forgot").off('click').on('click', function(e) {
-                e.preventDefault();
-                
-                var $loginField = $('#Login');
-                var loginValue = $loginField.val().trim();
-                
-                // Remove classes de validação anteriores
-                $loginField.removeClass('is-invalid is-valid');
-                
-                // Valida se o campo está preenchido
-                if (!loginValue) {
-                    $loginField.addClass('is-invalid');
-                    
-                    // Remove mensagem de erro anterior se existir
-                    $loginField.next('.text-danger').remove();
-                    
-                    // Adiciona mensagem de erro
-                    $loginField.after('<span class="text-danger">Por favor, informe o email para recuperar a senha.</span>');
-                    
-                    $loginField.focus();
-                    return false;
-                }
-                
-                // Valida se é um email válido
-                if (!validarEmail(loginValue)) {
-                    // Adiciona a class de invalid.
-                    $loginField.addClass('is-invalid');                   
-                    // Remove mensagem de erro anterior se existir
-                    $loginField.next('.text-danger').remove();
-                    // Adiciona mensagem de erro
-                    $loginField.after('<span class="text-danger">Por favor, informe um email válido.</span>');
-                    // Foca no campo login
-                    $loginField.focus();
-                    return false;
-                }
-                
-                // Remove mensagem de erro se existir
-                $loginField.next('.text-danger').remove();
-                $loginField.addClass('is-valid');
-                
-                // Aqui você pode redirecionar ou abrir modal de recuperação
-                console.info('Recuperar senha para:', loginValue);
-                
-                // Exemplo: redirecionar para página de recuperação
-                window.location.href = '/Login/Forgot/' + base64Encode(loginValue);
-            });
-        });
-    </script>
+    <script type="text/javascript" src="~/js/Views/Login.Index.js" asp-append-version="true"></script>
 }

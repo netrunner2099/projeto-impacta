@@ -26,7 +26,7 @@ public class GetTicketQueryHandler : IRequestHandler<GetTicketQuery, GetTicketQu
 
     public async Task<GetTicketQueryResponse> Handle(GetTicketQuery request, CancellationToken cancellationToken)
     {
-        GetTicketQueryResponse returns = null;
+        GetTicketQueryResponse returns = new();
         try
         {
             var ticket = await _repository.GetByIdAsync(request.TicketId ?? 0);
@@ -36,20 +36,23 @@ public class GetTicketQueryHandler : IRequestHandler<GetTicketQuery, GetTicketQu
             if(ticket is null)
             {
                 _logger.LogWarning("Handle: Ticket not found. TicketId: {0}, Transaction: {1}", request.TicketId, request.Transaction);
-                return null;
+                returns.Message = $"Ticket not found";
+                return returns;
             }
 
             var url = string.Format(baseUrl, ticket.Transaction);
             var qrcode = await _qrcode.GenerateAsync(new QrCodeRequest { Data = url });
             returns = _mapper.Map<GetTicketQueryResponse>(ticket);
             returns.QRCodeResponse = qrcode;
+            returns.Success = true;
+            return returns;
         }
         catch (Exception ex)
         {
             _logger.LogError(ex, "Handle: {0}", ex.Message);
+            returns.Message = $"Error: {ex.Message}";
+            return returns;
         }
-
-        return returns;
     }
 }
 

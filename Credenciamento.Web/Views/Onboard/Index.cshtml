@@ -1,220 +1,302 @@
-﻿@model OnboardIndexViewModel;
+﻿@model OnboardIndexViewModel
 @{
-    ViewData["Title"] = "Faça seu cadastro";
+    ViewData["Title"] = "Complete seu Cadastro";
 }
 
-<div class="row">
-    <h4>Faça seu cadastro</h4>
-</div>
+<div class="container py-4">
+    <!-- Header -->
+    <div class="row mb-4">
+        <div class="col-12 text-center">
+            <div class="mb-3">
+                <i class="bi bi-person-plus-fill display-3 text-primary"></i>
+            </div>
+            <h2 class="display-5 fw-bold mb-2">
+                Complete seu Cadastro
+            </h2>
+            <p class="text-muted lead">
+                Preencha seus dados para garantir seu ingresso
+            </p>
+        </div>
+    </div>
 
-@if (Model.Event is not null)
-{
-    <form asp-action="Create" asp-controller="Onboard" method="post" id="formOnboard">
-        <input type="hidden" asp-for="Event.EventId" />
-        <div class="card mt-3 mb-3">
-            <div class="card-header bg-purple">
-                <h5 class="card-title">@Model.Event.Name</h5>
+    @if (Model?.Event is not null)
+    {
+        <span></span>
+
+        @if(Model?.Event.EventId > 0)
+        {
+            <!-- Card do Evento -->
+            <div class="row mb-4">
+                <div class="col-12">
+                    <div class="card shadow-sm border-0 event-highlight">
+                        <div class="card-body p-4">
+                            <div class="row align-items-center">
+                                <div class="col-md-1 text-center mb-3 mb-md-0">
+                                    <div class="event-icon">
+                                        <i class="bi bi-calendar-event display-4 text-primary"></i>
+                                    </div>
+                                </div>
+                                <div class="col-md-7 mb-3 mb-md-0">
+                                    <h4 class="mb-2 fw-bold">@Model.Event.Name</h4>
+                                    <div class="event-details">
+                                        <span class="badge bg-primary me-2">
+                                            <i class="bi bi-geo-alt me-1"></i>@Model.Event.Local
+                                        </span>
+                                        <span class="badge bg-info text-dark me-2">
+                                            <i class="bi bi-calendar3 me-1"></i>@Model.Event.Begin.ToString("dd/MM") a @Model.Event.End.ToString("dd/MM")
+                                        </span>
+                                    </div>
+                                </div>
+                                <div class="col-md-4 text-md-end">
+                                    <small class="text-muted d-block mb-1">Valor do Ingresso</small>
+                                    <h3 class="text-success fw-bold mb-0">@Model.Event.Price.ToString("C2")</h3>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+        
+
+        <!-- Formulário de Cadastro -->
+        <form asp-action="Create" asp-controller="Onboard" method="post" id="formOnboard">
+            <input type="hidden" asp-for="Event.EventId" />
+
+            <!-- Dados Pessoais -->
+            <div class="card shadow-sm border-0 mb-4">
+                <div class="card-header bg-gradient-purple text-white py-3">
+                    <h5 class="mb-0">
+                        <i class="bi bi-person-badge me-2"></i>Dados Pessoais
+                    </h5>
+                </div>
+                <div class="card-body p-4">
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-8">
+                            <label asp-for="Person.Name" class="form-label">
+                                <i class="bi bi-person me-1 text-primary"></i>
+                                <span class="fw-bold">Nome Completo</span>
+                                <span class="text-danger">*</span>
+                            </label>
+                            <input type="text" asp-for="Person.Name" class="form-control form-control-lg" placeholder="Digite seu nome completo">
+                            <span asp-validation-for="Person.Name" class="text-danger small"></span>
+                        </div>
+                        <div class="col-md-4">
+                            <label asp-for="Person.Document" class="form-label">
+                                <i class="bi bi-card-text me-1 text-primary"></i>
+                                <span class="fw-bold">CPF</span>
+                                <span class="text-danger">*</span>
+                            </label>
+                            <input type="text" asp-for="Person.Document" class="form-control form-control-lg" placeholder="000.000.000-00">
+                            <span asp-validation-for="Person.Document" class="text-danger small"></span>
+                        </div>
+                    </div>
+
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-6">
+                            <label asp-for="Person.Email" class="form-label">
+                                <i class="bi bi-envelope me-1 text-primary"></i>
+                                <span class="fw-bold">E-mail</span>
+                                <span class="text-danger">*</span>
+                            </label>
+                            <input type="email" asp-for="Person.Email" class="form-control form-control-lg" placeholder="seu@email.com">
+                            <span asp-validation-for="Person.Email" class="text-danger small"></span>
+                        </div>
+                        <div class="col-md-4">
+                            <label asp-for="Person.Phone" class="form-label">
+                                <i class="bi bi-telephone me-1 text-primary"></i>
+                                <span class="fw-bold">Celular</span>
+                                <span class="text-danger">*</span>
+                            </label>
+                            <input type="tel" asp-for="Person.Phone" class="form-control form-control-lg" placeholder="(00) 00000-0000">
+                            <span asp-validation-for="Person.Phone" class="text-danger small"></span>
+                        </div>
+                        <div class="col-md-2">
+                            <label asp-for="Person.BirthDay" class="form-label">
+                                <i class="bi bi-calendar-heart me-1 text-primary"></i>
+                                <span class="fw-bold">Nascimento</span>
+                                <span class="text-danger">*</span>
+                            </label>
+                            <input type="text" asp-for="Person.BirthDay" class="form-control form-control-lg" placeholder="dd/MM/yyyy" asp-format="{0:dd/MM/yyyy}">
+                            <span asp-validation-for="Person.BirthDay" class="text-danger small"></span>
+                        </div>
+                    </div>
+                </div>
             </div>
 
-            <div class="card-body">
-                <div class="row">
-                    <div class="col-md-8">
-                        <p class="card-text">@Model.Event.Local - @Model.Event.Begin.ToString("dd/MM") a @Model.Event.End.ToString("dd/MM")</p>
-                        <p class="card-text">@Model.Event.Price.ToString("c2")</p>
+            <!-- Endereço -->
+            <div class="card shadow-sm border-0 mb-4">
+                <div class="card-header bg-gradient-purple text-white py-3">
+                    <h5 class="mb-0">
+                        <i class="bi bi-geo-alt me-2"></i>Endereço
+                    </h5>
+                </div>
+                <div class="card-body p-4">
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-4">
+                            <label asp-for="Person.ZipCode" class="form-label">
+                                <i class="bi bi-mailbox me-1 text-primary"></i>
+                                <span class="fw-bold">CEP</span>
+                                <span class="text-danger">*</span>
+                            </label>
+                            <div class="input-group input-group-lg">
+                                <input type="text" asp-for="Person.ZipCode" class="form-control" placeholder="00000-000">
+                                <button type="button" class="btn btn-outline-primary" id="btnConsultaCep" title="Consultar CEP">
+                                    <i class="bi bi-search"></i>
+                                </button>
+                            </div>
+                            <span asp-validation-for="Person.ZipCode" class="text-danger small"></span>
+                            <small class="text-muted">Pressione Enter ou clique na lupa</small>
+                        </div>
+                        <div class="col-md-8">
+                            <label asp-for="Person.Address" class="form-label">
+                                <i class="bi bi-signpost me-1 text-primary"></i>
+                                <span class="fw-bold">Endereço</span>
+                                <span class="text-danger">*</span>
+                            </label>
+                            <input type="text" asp-for="Person.Address" class="form-control form-control-lg" placeholder="Rua, Avenida, etc.">
+                            <span asp-validation-for="Person.Address" class="text-danger small"></span>
+                        </div>
+                    </div>
+
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-3">
+                            <label asp-for="Person.Number" class="form-label">
+                                <i class="bi bi-hash me-1 text-primary"></i>
+                                <span class="fw-bold">Número</span>
+                                <span class="text-danger">*</span>
+                            </label>
+                            <input type="text" asp-for="Person.Number" class="form-control form-control-lg" placeholder="123">
+                            <span asp-validation-for="Person.Number" class="text-danger small"></span>
+                        </div>
+                        <div class="col-md-9">
+                            <label asp-for="Person.Complement" class="form-label">
+                                <i class="bi bi-building me-1 text-primary"></i>
+                                <span class="fw-bold">Complemento</span>
+                            </label>
+                            <input type="text" asp-for="Person.Complement" class="form-control form-control-lg" placeholder="Apto, Bloco, etc. (opcional)">
+                            <span asp-validation-for="Person.Complement" class="text-danger small"></span>
+                        </div>
+                    </div>
+
+                    <div class="row g-3 mb-3">
+                        <div class="col-md-5">
+                            <label asp-for="Person.Neighborhood" class="form-label">
+                                <i class="bi bi-map me-1 text-primary"></i>
+                                <span class="fw-bold">Bairro</span>
+                                <span class="text-danger">*</span>
+                            </label>
+                            <input type="text" asp-for="Person.Neighborhood" class="form-control form-control-lg" placeholder="Nome do bairro">
+                            <span asp-validation-for="Person.Neighborhood" class="text-danger small"></span>
+                        </div>
+                        <div class="col-md-5">
+                            <label asp-for="Person.City" class="form-label">
+                                <i class="bi bi-building me-1 text-primary"></i>
+                                <span class="fw-bold">Cidade</span>
+                                <span class="text-danger">*</span>
+                            </label>
+                            <input type="text" asp-for="Person.City" class="form-control form-control-lg" placeholder="Nome da cidade">
+                            <span asp-validation-for="Person.City" class="text-danger small"></span>
+                        </div>
+                        <div class="col-md-2">
+                            <label asp-for="Person.State" class="form-label">
+                                <i class="bi bi-geo me-1 text-primary"></i>
+                                <span class="fw-bold">Estado</span>
+                                <span class="text-danger">*</span>
+                            </label>
+                            <select asp-for="Person.State" class="form-select form-select-lg">
+                                <option value="">UF</option>
+                                <option value="AC">AC</option>
+                                <option value="AL">AL</option>
+                                <option value="AP">AP</option>
+                                <option value="AM">AM</option>
+                                <option value="BA">BA</option>
+                                <option value="CE">CE</option>
+                                <option value="DF">DF</option>
+                                <option value="ES">ES</option>
+                                <option value="GO">GO</option>
+                                <option value="MA">MA</option>
+                                <option value="MT">MT</option>
+                                <option value="MS">MS</option>
+                                <option value="MG">MG</option>
+                                <option value="PA">PA</option>
+                                <option value="PB">PB</option>
+                                <option value="PR">PR</option>
+                                <option value="PE">PE</option>
+                                <option value="PI">PI</option>
+                                <option value="RJ">RJ</option>
+                                <option value="RN">RN</option>
+                                <option value="RS">RS</option>
+                                <option value="RO">RO</option>
+                                <option value="RR">RR</option>
+                                <option value="SC">SC</option>
+                                <option value="SP" selected>SP</option>
+                                <option value="SE">SE</option>
+                                <option value="TO">TO</option>
+                            </select>
+                            <span asp-validation-for="Person.State" class="text-danger small"></span>
+                        </div>
                     </div>
                 </div>
+            </div>
 
-                <div class="row mt-3"><hr /></div>
+            <!-- Termos e Botões -->
+            <div class="card shadow-sm border-0 mb-4">
+                <div class="card-body p-4">
+                    <div class="form-check mb-4">
+                        <input class="form-check-input" type="checkbox" id="acceptTerms" required>
+                        <label class="form-check-label" for="acceptTerms">
+                            Aceito os <a href="#" class="text-primary">termos de uso</a> e <a href="#" class="text-primary">política de privacidade</a>
+                            <span class="text-danger">*</span>
+                        </label>
+                    </div>
 
-                <div class="row g-3 mb-3">
-                    <div class="col-md-8">
-                        <label asp-for="Person.Name" class="form-label fw-bold"></label>
-                        <input type="text" asp-for="Person.Name" class="form-control">
-                        <span asp-validation-for="Person.Name" class="text-danger"></span>
+                    <div class="alert alert-info border-0 mb-4">
+                        <i class="bi bi-info-circle me-2"></i>
+                        <strong>Importante:</strong> Após o cadastro, você será redirecionado para a página de pagamento do ingresso.
                     </div>
-                    <div class="col-md-4">
-                        <label asp-for="Person.Document" class="form-label fw-bold"></label>
-                        <input type="text" asp-for="Person.Document" class="form-control">
-                        <span asp-validation-for="Person.Document" class="text-danger"></span>
-                    </div>
-                </div>
 
-                <div class="row g-3 mb-3">
-                    <div class="col-md-6">
-                        <label asp-for="Person.Email" class="form-label fw-bold"></label>
-                        <input type="email" asp-for="Person.Email" class="form-control">
-                        <span asp-validation-for="Person.Email" class="text-danger"></span>
-                    </div>
-                    <div class="col-md-4">
-                        <label asp-for="Person.Phone" class="form-label fw-bold"></label>
-                        <input type="tel" asp-for="Person.Phone" class="form-control">
-                        <span asp-validation-for="Person.Phone" class="text-danger"></span>
-                    </div>
-                    <div class="col-md-2">
-                        <label asp-for="Person.BirthDay" class="form-label fw-bold"></label>
-                        <input type="text" asp-for="Person.BirthDay" class="form-control" placeholder="dd/MM/yyyy" asp-format="{0:dd/MM/yyyy}">
-                        <span asp-validation-for="Person.BirthDay" class="text-danger"></span>
-                    </div>
-                </div>
-
-                <div class="row g-3 mb-3">
-                    <div class="col-md-4">
-                        <label asp-for="Person.ZipCode" class="form-label fw-bold"></label>
-                        <div class="input-group">
-                            <input type="text" asp-for="Person.ZipCode" class="form-control">
-                            <button type="button" class="btn btn-outline-secondary" id="btnConsultaCep" title="Consultar CEP">
-                                <i class="bi bi-search"></i>
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <button type="submit" class="btn btn-primary btn-lg w-100 shadow">
+                                <i class="bi bi-check-circle me-2"></i>Confirmar Cadastro
                             </button>
                         </div>
-                        <span asp-validation-for="Person.ZipCode" class="text-danger"></span>
+                        <div class="col-md-6">
+                            <a asp-controller="Home" asp-action="Index" class="btn btn-outline-secondary btn-lg w-100">
+                                <i class="bi bi-x-circle me-2"></i>Cancelar
+                            </a>
+                        </div>
                     </div>
-                    <div class="col-md-8">
-                        <label asp-for="Person.Address" class="form-label fw-bold"></label>
-                        <input type="text" asp-for="Person.Address" class="form-control">
-                        <span asp-validation-for="Person.Address" class="text-danger"></span>
-                    </div>
-                </div>
 
-                <div class="row g-3 mb-3">
-                    <div class="col-md-4">
-                        <label asp-for="Person.Number" class="form-label fw-bold"></label>
-                        <input type="text" asp-for="Person.Number" class="form-control">
-                        <span asp-validation-for="Person.Number" class="text-danger"></span>
-                    </div>
-                    <div class="col-md-8">
-                        <label asp-for="Person.Complement" class="form-label fw-bold"></label>
-                        <input type="text" asp-for="Person.Complement" class="form-control">
-                        <span asp-validation-for="Person.Complement" class="text-danger"></span>
-                    </div>
-                </div>
-
-                <div class="row g-3 mb-3">
-                    <div class="col-md-4">
-                        <label asp-for="Person.Neighborhood" class="form-label fw-bold"></label>
-                        <input type="text" asp-for="Person.Neighborhood" class="form-control">
-                        <span asp-validation-for="Person.Neighborhood" class="text-danger"></span>
-                    </div>
-                    <div class="col-md-5">
-                        <label asp-for="Person.City" class="form-label fw-bold"></label>
-                        <input type="text" asp-for="Person.City" class="form-control">
-                        <span asp-validation-for="Person.City" class="text-danger"></span>
-                    </div>
-                    <div class="col-md-3">
-                        <label asp-for="Person.State" class="form-label fw-bold"></label>
-                        <select asp-for="Person.State" class="form-select">
-                            <option value="AC">Acre</option>
-                            <option value="AL">Alagoas</option>
-                            <option value="AP">Amapá</option>
-                            <option value="AM">Amazonas</option>
-                            <option value="BA">Bahia</option>
-                            <option value="CE">Ceará</option>
-                            <option value="DF">Distrito Federal</option>
-                            <option value="ES">Espírito Santo</option>
-                            <option value="GO">Goiás</option>
-                            <option value="MA">Maranhão</option>
-                            <option value="MT">Mato Grosso</option>
-                            <option value="MS">Mato Grosso do Sul</option>
-                            <option value="MG">Minas Gerais</option>
-                            <option value="PA">Pará</option>
-                            <option value="PB">Paraíba</option>
-                            <option value="PR">Paraná</option>
-                            <option value="PE">Pernambuco</option>
-                            <option value="PI">Piauí</option>
-                            <option value="RJ">Rio de Janeiro</option>
-                            <option value="RN">Rio Grande do Norte</option>
-                            <option value="RS">Rio Grande do Sul</option>
-                            <option value="RO">Rondônia</option>
-                            <option value="RR">Roraima</option>
-                            <option value="SC">Santa Catarina</option>
-                            <option value="SP" selected>São Paulo</option>
-                            <option value="SE">Sergipe</option>
-                            <option value="TO">Tocantins</option>
-                        </select>
-                        <span asp-validation-for="Person.State" class="text-danger"></span>
+                    <div class="text-center mt-3">
+                        <small class="text-muted">
+                            <i class="bi bi-shield-check me-1"></i>
+                            Seus dados estão seguros e protegidos
+                        </small>
                     </div>
                 </div>
             </div>
-
-            <div class="card-footer">
-                <div class="row">
-                    <div class="col text-center">
-                        <button type="submit" class="btn btn-primary">Cadastrar</button>
-                    </div>
-                    <div class="col text-center">
-                        <button type="reset" class="btn btn-secondary">Cancelar</button>
-                    </div>
+        </form>
+    }
+    else
+    {
+        <div class="row">
+            <div class="col-12">
+                <div class="alert alert-warning text-center shadow-sm border-0">
+                    <i class="bi bi-exclamation-triangle display-4 d-block mb-3"></i>
+                    <h4>Evento não encontrado</h4>
+                    <p class="mb-3">Não foi possível localizar as informações do evento.</p>
+                    <a asp-controller="Home" asp-action="Index" class="btn btn-primary">
+                        <i class="bi bi-house me-2"></i>Voltar à Home
+                    </a>
                 </div>
             </div>
         </div>
-    </form>
-}
-
+    }
+</div>
 
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
-    <script type="text/javascript">
-        $(document).ready(function(){
-
-            $.validator.addMethod("cpf", function(value, element) {
-                if (this.optional(element)) {
-                    return true;
-                }
-                return validarCPF(value);
-            }, "CPF inválido");
-
-            $('#Person_BirthDay').mask('00/00/0000');
-            $('#Person_Document').mask('000.000.000-00');
-            $('#Person_Phone').mask('(00) 00000-0000');
-            $('#Person_ZipCode').mask('00000-000');
-
-            // Adiciona a validação de CPF ao campo Document
-            $('#Person_Document').rules('add', {
-                cpf: true,
-                messages: {
-                    cpf: "CPF inválido"
-                }
-            });
-
-            // Evento de click no botão de consulta CEP
-            $('#btnConsultaCep').on('click', function() {
-                var cep = $('#Person_ZipCode').val();
-                consultarCEP(cep);
-            });
-
-            // Permite consultar CEP ao pressionar Enter no campo
-            $('#Person_ZipCode').on('keypress', function(e) {
-                if (e.which === 13) {
-                    e.preventDefault();
-                    consultarCEP($(this).val());
-                }
-            });
-
-            // Configuração de validação
-            $.validator.setDefaults({
-                onsubmit: true,
-                onfocusout: function(element) {
-                    // Não valida inputs, mas permite validar selects
-                    if ($(element).is('select')) {
-                        return false;
-                    }
-                    return false;
-                },
-                onkeyup: false,
-                onclick: false,
-                highlight: function(element) {
-                    $(element).addClass('is-invalid').removeClass('is-valid');
-                },
-                unhighlight: function(element) {
-                    $(element).removeClass('is-invalid').addClass('is-valid');
-                },
-                errorElement: 'div',
-                errorClass: 'invalid-feedback',
-                errorPlacement: function(error, element) {
-                    error.insertAfter(element);
-                },
-                // Ignora erros em tempo real
-                ignore: []
-            });
-        });
-    </script>
+    <script type="text/javascript" src="~/js/Views/Onboard.Index.js"></script>
 }

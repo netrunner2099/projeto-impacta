@@ -1,30 +1,36 @@
-﻿using Credenciamento.Application.Queries.User;
+﻿using Credenciamento.Application.Commands.User;
+using Credenciamento.Application.Queries.User;
+using Credenciamento.Shared.Helpers;
 using Credenciamento.Web.Models;
+using Credenciamento.Web.Services;
 using Microsoft.AspNetCore.Http;
 
 namespace Credenciamento.Web.Controllers;
 
 [Route("[controller]/[action]")]
-public class LoginController : Controller
+public class LoginController : LocalControllerBase
 {
     private static string enviromentName = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT");
     private static readonly CookieOptions authCookieOptions = new CookieOptions
     {
         Expires = DateTimeOffset.UtcNow.AddHours(8), // 8 horas
         HttpOnly = true, // Não acessível via JavaScript (mais seguro)
-        Secure = enviromentName != "localhost",
-        SameSite = enviromentName == "localhost" ? SameSiteMode.None : SameSiteMode.Strict,
+        Secure = enviromentName == "production",
+        SameSite = enviromentName == "production" ? SameSiteMode.Strict : SameSiteMode.Lax,
         Path = "/"
     };
-
     private readonly ILogger _logger;
+    private readonly IMapper _mapper;
     private readonly IMediator _mediator;
 
     public LoginController(
-        ILogger<LoginController> logger, 
-        IMediator mediator)
+        ILogger<LoginController> logger,
+        IMapper mapper,
+        IMediator mediator,
+        IServiceProvider services) : base(services)
     {
         _logger = logger;
+        _mapper = mapper;
         _mediator = mediator;
     }
 
@@ -53,20 +59,62 @@ public class LoginController : Controller
         }
 
         // Gravando o cookie de autenticação
-        Response.Cookies.Append("user-token", result.Token.ToString(), authCookieOptions);
+        Response.Cookies.Append("user-token", result.Token, authCookieOptions);
+
         if (Request.Cookies.TryGetValue("store-eventId", out string? eventId))
             return RedirectToAction("Index","Checkout", new { id = eventId, personId = result.PersonId });
 
-        return View("Index", request);
+        return RedirectToAction("Index", "Home");
     }
 
     [HttpGet("{login}")]
-    public IActionResult Forgot(string login)
+    public async Task<IActionResult> Forgot(string login)
     {
         var model = new LoginIndexViewModel();
+        login = !string.IsNullOrEmpty(login) ? StringHelpers.FromBase64(login) : "";
+        await _mediator.Send(new RecoverUserPasswordCommand { Email = login });
         model.Login = "";
         model.SuccessMessage = "Foi enviado um email com a nova senha para você.<br/>Caso não encontre, verifique a sua caixa de Spam, por favor.";
 
         return View("Index", model);
     }
+
+    [HttpGet]
+    public async Task<IActionResult> ResetPassword(string token)
+    {
+        var model = new LoginResetViewModel();
+        model.Token = token;
+        return View(model);
+    }
+
+    [HttpPost]
+    public async Task<IActionResult> ResetPassword(LoginResetViewModel model)
+    {
+        var result = await _mediator.Send(_mapper.Map<ResetUserPasswordCommand>(model));
+        if(result.Success)
+        {
+            model.SuccessMessage = "Senha alterada com sucesso. Você já pode fazer login com a nova senha.";
+        }
+        else
+        {
+            model.ErrorMessage = "Não foi possível alterar a senha. Tente novamente mais tarde.";
+        }
+        return View(model);
+    }
+
+    [HttpGet("{login}")]
+    public async Task<IActionResult> OneTime(string login)
+    {
+        var model = new LoginIndexViewModel();
+        model.Login = !string.IsNullOrEmpty(login) ? StringHelpers.FromBase64(login) : "";
+        var result = await _mediator.Send(new GetOtpCodeQuery { Email = model.Login });
+        if (result.Success)
+            model.SuccessMessage = "Código OTP gerado com sucesso. Verifique seu email.";
+        else 
+            model.ErrorMessage = "Não foi possível gerar o código OTP. Tente novamente mais tarde.";
+
+        return View("Index", model);
+    }
+
+
 }

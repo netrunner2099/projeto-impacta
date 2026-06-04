@@ -2,9 +2,7 @@
 
 namespace Credenciamento.Web.Models;
 
-public class StoreIndexViewModel
+public class StoreIndexViewModel : LocalBaseViewModel
 {
     public EventModel Event { get; set; }
-
-    public UserModel User { get; set; }
 }
