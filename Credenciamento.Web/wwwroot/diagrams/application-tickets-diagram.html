@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>Application - Tickets - Sistema de Credenciamento</title>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10.9.5/dist/mermaid.min.js"></script>
+    <link type="text/css" href="../css/diagram.css" rel="stylesheet" />
+</head>
+<body>
+    <div class="container">
+        <h1>🟢 Application Layer — Tickets</h1>
+        <div class="subtitle">CQRS: Commands, Queries e Handlers do módulo de Tickets</div>
+
+        <nav class="nav">
+            <a href="domain-diagram.html">Domain</a>
+            <a href="infrastructure-diagram.html">Infrastructure</a>
+            <a href="application-diagram.html">Application</a>
+            <a href="web-diagram.html">Web</a>
+            <a href="database-diagram.html">Database</a>
+            <a href="usecase-diagram.html">Use Cases</a>
+            <a href="class-diagram.html">Visão Completa</a>
+        </nav>
+
+        <div class="nav" style="margin-top:6px;">
+            <a href="application-diagram.html">↩ Voltar ao Índice Application</a>
+            <a href="application-events-diagram.html">Events</a>
+            <a href="application-tickets-diagram.html" class="active">Tickets</a>
+            <a href="application-users-diagram.html">Users</a>
+            <a href="application-persons-diagram.html">Persons</a>
+        </div>
+
+        <div class="info">
+            <strong>📦 Projeto:</strong> Credenciamento.Application<br>
+            <strong>🎯 Responsabilidade:</strong> Emissão, pagamento, listagem e impressão de tickets<br>
+            <strong>✨ Padrões:</strong> MediatR, CQRS, AutoMapper
+        </div>
+
+        <div class="mermaid">
+            classDiagram
+            %% ===============================================
+            %% MODEL
+            %% ===============================================
+            class TicketModel {
+            +long TicketId
+            +long EventId
+            +long PersonId
+            +decimal Price
+            +byte Payment
+            +string Transaction
+            +string Auth
+            +byte Status
+            +DateTime CreatedAt
+            +DateTime UpdatedAt
+            +EventModel Event
+            +PersonModel Person
+            }
+
+            class QRCodeResponse {
+            +string Base64
+            +string MimeType
+            +string DataUrl
+            }
+
+            %% ===============================================
+            %% COMMANDS
+            %% ===============================================
+            class CreateTicketCommand {
+            &lt;&lt;IRequest&gt;&gt;
+            +long EventId
+            +long PersonId
+            }
+
+            class PayTicketCommand {
+            &lt;&lt;IRequest&gt;&gt;
+            +long TicketId
+            }
+
+            %% ===============================================
+            %% QUERIES
+            %% ===============================================
+            class GetTicketQuery {
+            &lt;&lt;IRequest&gt;&gt;
+            +long TicketId
+            +string Transaction
+            }
+
+            class ListTicketAdminQuery {
+            &lt;&lt;IRequest&gt;&gt;
+            +long? EventId
+            +byte? Status
+            +byte? Payment
+            }
+
+            %% ===============================================
+            %% HANDLERS
+            %% ===============================================
+            class CreateTicketCommandHandler {
+            &lt;&lt;IRequestHandler&gt;&gt;
+            -ITicketRepository repository
+            -ILogger logger
+            -IMapper mapper
+            +Handle() Task~CreateTicketCommandResponse~
+            }
+
+            class PayTicketCommandHandler {
+            &lt;&lt;IRequestHandler&gt;&gt;
+            -ITicketRepository repository
+            -ILogger logger
+            -IMapper mapper
+            +Handle() Task~PayTicketCommandResponse~
+            }
+
+            class GetTicketQueryHandler {
+            &lt;&lt;IRequestHandler&gt;&gt;
+            -ITicketRepository repository
+            -IQrCodeClient qrCodeClient
+            -ILogger logger
+            -IMapper mapper
+            +Handle() Task~GetTicketQueryResponse~
+            }
+
+            class ListTicketAdminQueryHandler {
+            &lt;&lt;IRequestHandler&gt;&gt;
+            -ITicketRepository repository
+            -ILogger logger
+            -IMapper mapper
+            +Handle() Task~ListTicketAdminQueryResponse~
+            }
+
+            %% ===============================================
+            %% RESPONSES
+            %% ===============================================
+            class CreateTicketCommandResponse {
+            +long TicketId
+            +IEnumerable~string~ Errors
+            }
+
+            class PayTicketCommandResponse {
+            +string Transaction
+            +string Auth
+            }
+
+            class GetTicketQueryResponse {
+            +TicketModel Ticket
+            +QRCodeResponse QRCodeResponse
+            +bool Success
+            +string Message
+            }
+
+            class ListTicketAdminQueryResponse {
+            +IEnumerable~TicketModel~ Tickets
+            +bool Success
+            +string Message
+            }
+
+            %% ===============================================
+            %% RELATIONSHIPS
+            %% ===============================================
+            CreateTicketCommandHandler ..> CreateTicketCommand : processa
+            CreateTicketCommandHandler ..> CreateTicketCommandResponse : retorna
+
+            PayTicketCommandHandler ..> PayTicketCommand : processa
+            PayTicketCommandHandler ..> PayTicketCommandResponse : retorna
+
+            GetTicketQueryHandler ..> GetTicketQuery : processa
+            GetTicketQueryHandler ..> GetTicketQueryResponse : retorna
+
+            ListTicketAdminQueryHandler ..> ListTicketAdminQuery : processa
+            ListTicketAdminQueryHandler ..> ListTicketAdminQueryResponse : retorna
+
+            GetTicketQueryResponse --> TicketModel : contém
+            GetTicketQueryResponse --> QRCodeResponse : contém
+            ListTicketAdminQueryResponse --> TicketModel : contém (coleção)
+        </div>
+    </div>
+
+    <script>
+    mermaid.initialize({
+        startOnLoad: true,
+        theme: 'default',
+        themeVariables: {
+            primaryColor: '#c8e6c9',
+            primaryTextColor: '#000',
+            primaryBorderColor: '#4caf50',
+            lineColor: '#666',
+            secondaryColor: '#dcedc8',
+            tertiaryColor: '#f3e5f5',
+            fontSize: '14px'
+        }
+    });
+    </script>
+</body>
+</html>

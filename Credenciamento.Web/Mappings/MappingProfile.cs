@@ -1,6 +1,8 @@
-﻿using Credenciamento.Application.Commands.User;
+﻿using Credenciamento.Application.Commands.Event;
+using Credenciamento.Application.Commands.User;
 using Credenciamento.Application.Contracts.Ticket;
 using Credenciamento.Application.Models;
+using Credenciamento.Web.Areas.Admin.Models;
 using Credenciamento.Web.Models.Dto;
 
 namespace Credenciamento.Web.Mappings;
@@ -25,5 +27,19 @@ public class MappingProfile : Profile
         CreateMap<LocalBaseViewModel, ProfileIndexViewModel>().ReverseMap();
 
         CreateMap<LoginResetViewModel, ResetUserPasswordCommand>().ReverseMap();
+
+        CreateMap<LocalBaseViewModel, AdminHomeIndexViewModel>().ReverseMap();
+        CreateMap<LocalBaseViewModel, AdminLoginViewModel>().ReverseMap();
+        CreateMap<LocalBaseViewModel, AdminUserViewModel>().ReverseMap();
+        CreateMap<LocalBaseViewModel, AdminUserFormViewModel>().ReverseMap();
+        CreateMap<AdminUserFormViewModel, CreateUserCommand>().ReverseMap();
+        CreateMap<AdminUserFormViewModel, UpdateUserCommand>().ReverseMap();
+
+        CreateMap<LocalBaseViewModel, AdminEventViewModel>().ReverseMap();
+        CreateMap<LocalBaseViewModel, AdminEventFormViewModel>().ReverseMap();
+
+        CreateMap<LocalBaseViewModel, AdminTicketViewModel>().ReverseMap();
+        CreateMap<AdminEventFormViewModel, CreateEventCommand>().ReverseMap();
+        CreateMap<AdminEventFormViewModel, UpdateEventCommand>().ReverseMap();
     }
 }

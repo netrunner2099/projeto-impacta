@@ -1,0 +1,99 @@
+@model Credenciamento.Web.Areas.Admin.Models.AdminUserFormViewModel
+@using Credenciamento.Domain.Enums
+@{
+    Layout = "~/Areas/Admin/Views/Shared/_AdminLayout.cshtml";
+    ViewData["Title"] = "Novo Usuário";
+}
+
+<div class="d-flex align-items-center mb-4 gap-2">
+    <a asp-area="Admin" asp-controller="Users" asp-action="Index"
+       class="btn btn-sm btn-outline-secondary">
+        <i class="bi bi-arrow-left me-1"></i>Voltar
+    </a>
+    <div>
+        <h4 class="fw-bold mb-0"><i class="bi bi-person-plus-fill me-2 text-primary"></i>Novo Usuário</h4>
+        <small class="text-muted">Preencha os dados para cadastrar um novo usuário</small>
+    </div>
+</div>
+
+<div class="card border-0 shadow-sm" style="max-width:640px;">
+    <div class="card-body p-4">
+
+        @if (!string.IsNullOrEmpty(Model.ErrorMessage))
+        {
+            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                <i class="bi bi-exclamation-triangle me-2"></i>@Model.ErrorMessage
+                <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+            </div>
+        }
+
+        <form asp-area="Admin" asp-controller="Users" asp-action="Create" method="post">
+            @Html.AntiForgeryToken()
+
+            <div class="mb-3">
+                <label asp-for="Name" class="form-label fw-semibold"></label>
+                <input asp-for="Name" class="form-control" placeholder="Nome completo">
+                <span asp-validation-for="Name" class="text-danger small"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="Email" class="form-label fw-semibold"></label>
+                <input asp-for="Email" type="email" class="form-control" placeholder="email@exemplo.com">
+                <span asp-validation-for="Email" class="text-danger small"></span>
+            </div>
+
+            <div class="mb-3">
+                <label asp-for="Role" class="form-label fw-semibold"></label>
+                <select asp-for="Role" class="form-select">
+                    <option value="">Selecione um perfil</option>
+                    <option value="@((byte)UserRole.Admin)">Administrador</option>
+                    <option value="@((byte)UserRole.User)">Usuário</option>
+                </select>
+                <span asp-validation-for="Role" class="text-danger small"></span>
+            </div>
+
+            <hr class="my-4">
+
+            <div class="mb-3">
+                <label asp-for="Password" class="form-label fw-semibold"></label>
+                <div class="input-group">
+                    <input asp-for="Password" type="password" class="form-control"
+                           placeholder="Mín. 8 caracteres com letras e números" id="pwdField">
+                    <button class="btn btn-outline-secondary" type="button" id="togglePwd">
+                        <i class="bi bi-eye" id="togglePwdIcon"></i>
+                    </button>
+                </div>
+                <span asp-validation-for="Password" class="text-danger small"></span>
+            </div>
+
+            <div class="mb-4">
+                <label asp-for="PasswordConfirm" class="form-label fw-semibold"></label>
+                <input asp-for="PasswordConfirm" type="password" class="form-control"
+                       placeholder="Repita a senha">
+                <span asp-validation-for="PasswordConfirm" class="text-danger small"></span>
+            </div>
+
+            <div class="d-flex gap-2">
+                <button type="submit" class="btn btn-primary">
+                    <i class="bi bi-check-lg me-1"></i>Cadastrar
+                </button>
+                <a asp-area="Admin" asp-controller="Users" asp-action="Index"
+                   class="btn btn-outline-secondary">Cancelar</a>
+            </div>
+        </form>
+
+    </div>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script>
+        document.getElementById('togglePwd').addEventListener('click', function () {
+            const f = document.getElementById('pwdField');
+            const i = document.getElementById('togglePwdIcon');
+            f.type = f.type === 'password' ? 'text' : 'password';
+            i.classList.toggle('bi-eye');
+            i.classList.toggle('bi-eye-slash');
+        });
+    </script>
+}

@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>Application - Users - Sistema de Credenciamento</title>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10.9.5/dist/mermaid.min.js"></script>
+    <link type="text/css" href="../css/diagram.css" rel="stylesheet" />
+</head>
+<body>
+    <div class="container">
+        <h1>🟢 Application Layer — Users</h1>
+        <div class="subtitle">CQRS: Commands, Queries e Handlers do módulo de Usuários</div>
+
+        <nav class="nav">
+            <a href="domain-diagram.html">Domain</a>
+            <a href="infrastructure-diagram.html">Infrastructure</a>
+            <a href="application-diagram.html">Application</a>
+            <a href="web-diagram.html">Web</a>
+            <a href="database-diagram.html">Database</a>
+            <a href="usecase-diagram.html">Use Cases</a>
+            <a href="class-diagram.html">Visão Completa</a>
+        </nav>
+
+        <div class="nav" style="margin-top:6px;">
+            <a href="application-diagram.html">↩ Voltar ao Índice Application</a>
+            <a href="application-events-diagram.html">Events</a>
+            <a href="application-tickets-diagram.html">Tickets</a>
+            <a href="application-users-diagram.html" class="active">Users</a>
+            <a href="application-persons-diagram.html">Persons</a>
+        </div>
+
+        <div class="info">
+            <strong>📦 Projeto:</strong> Credenciamento.Application<br>
+            <strong>🎯 Responsabilidade:</strong> Autenticação, cadastro e gestão de usuários<br>
+            <strong>✨ Padrões:</strong> MediatR, CQRS, AutoMapper
+        </div>
+
+        <div class="mermaid">
+            classDiagram
+            %% ===============================================
+            %% MODEL
+            %% ===============================================
+            class UserModel {
+            +long UserId
+            +string Name
+            +string Email
+            +byte Role
+            +byte Status
+            +DateTime CreatedAt
+            +DateTime UpdatedAt
+            +PersonModel Person
+            }
+
+            %% ===============================================
+            %% COMMANDS
+            %% ===============================================
+            class CreateUserCommand {
+            &lt;&lt;IRequest&gt;&gt;
+            +string Name
+            +string Email
+            +string Password
+            +byte Role
+            }
+
+            class UpdateUserCommand {
+            &lt;&lt;IRequest&gt;&gt;
+            +long UserId
+            +string Name
+            +string Email
+            +byte Role
+            }
+
+            class DeleteUserCommand {
+            &lt;&lt;IRequest&gt;&gt;
+            +long UserId
+            }
+
+            class ActivateUserCommand {
+            &lt;&lt;IRequest&gt;&gt;
+            +long UserId
+            }
+
+            class InactivateUserCommand {
+            &lt;&lt;IRequest&gt;&gt;
+            +long UserId
+            }
+
+            class LoginUserCommand {
+            &lt;&lt;IRequest&gt;&gt;
+            +string Email
+            +string Password
+            }
+
+            %% ===============================================
+            %% QUERIES
+            %% ===============================================
+            class ListUserAdminQuery {
+            &lt;&lt;IRequest&gt;&gt;
+            +string Name
+            +byte? Role
+            }
+
+            class GetUserQuery {
+            &lt;&lt;IRequest&gt;&gt;
+            +long UserId
+            }
+
+            %% ===============================================
+            %% HANDLERS
+            %% ===============================================
+            class CreateUserCommandHandler {
+            &lt;&lt;IRequestHandler&gt;&gt;
+            -IUserRepository repository
+            -ILogger logger
+            -IMapper mapper
+            +Handle() Task~CreateUserCommandResponse~
+            }
+
+            class UpdateUserCommandHandler {
+            &lt;&lt;IRequestHandler&gt;&gt;
+            -IUserRepository repository
+            -IPersonRepository personRepository
+            -ILogger logger
+            -IMapper mapper
+            +Handle() Task~UpdateUserCommandResponse~
+            }
+
+            class DeleteUserCommandHandler {
+            &lt;&lt;IRequestHandler&gt;&gt;
+            -IUserRepository repository
+            -ILogger logger
+            +Handle() Task~DeleteUserCommandResponse~
+            }
+
+            class ActivateUserCommandHandler {
+            &lt;&lt;IRequestHandler&gt;&gt;
+            -IUserRepository repository
+            -ILogger logger
+            +Handle() Task~ActivateUserCommandResponse~
+            }
+
+            class InactivateUserCommandHandler {
+            &lt;&lt;IRequestHandler&gt;&gt;
+            -IUserRepository repository
+            -ILogger logger
+            +Handle() Task~InactivateUserCommandResponse~
+            }
+
+            class LoginUserCommandHandler {
+            &lt;&lt;IRequestHandler&gt;&gt;
+            -IUserRepository repository
+            -ILogger logger
+            -IMapper mapper
+            +Handle() Task~LoginUserCommandResponse~
+            }
+
+            class ListUserAdminQueryHandler {
+            &lt;&lt;IRequestHandler&gt;&gt;
+            -IUserRepository repository
+            -ILogger logger
+            -IMapper mapper
+            +Handle() Task~ListUserAdminQueryResponse~
+            }
+
+            class GetUserQueryHandler {
+            &lt;&lt;IRequestHandler&gt;&gt;
+            -IUserRepository repository
+            -ILogger logger
+            -IMapper mapper
+            +Handle() Task~UserModel~
+            }
+
+            %% ===============================================
+            %% RESPONSES
+            %% ===============================================
+            class CreateUserCommandResponse {
+            +long UserId
+            +IEnumerable~string~ Errors
+            }
+
+            class UpdateUserCommandResponse {
+            +IEnumerable~string~ Errors
+            }
+
+            class DeleteUserCommandResponse {
+            +bool Success
+            }
+
+            class ActivateUserCommandResponse {
+            +bool Success
+            }
+
+            class InactivateUserCommandResponse {
+            +bool Success
+            }
+
+            class LoginUserCommandResponse {
+            +string Token
+            +UserModel User
+            +IEnumerable~string~ Errors
+            }
+
+            class ListUserAdminQueryResponse {
+            +IEnumerable~UserModel~ Users
+            }
+
+            %% ===============================================
+            %% RELATIONSHIPS
+            %% ===============================================
+            CreateUserCommandHandler ..> CreateUserCommand : processa
+            CreateUserCommandHandler ..> CreateUserCommandResponse : retorna
+
+            UpdateUserCommandHandler ..> UpdateUserCommand : processa
+            UpdateUserCommandHandler ..> UpdateUserCommandResponse : retorna
+
+            DeleteUserCommandHandler ..> DeleteUserCommand : processa
+            DeleteUserCommandHandler ..> DeleteUserCommandResponse : retorna
+
+            ActivateUserCommandHandler ..> ActivateUserCommand : processa
+            ActivateUserCommandHandler ..> ActivateUserCommandResponse : retorna
+
+            InactivateUserCommandHandler ..> InactivateUserCommand : processa
+            InactivateUserCommandHandler ..> InactivateUserCommandResponse : retorna
+
+            LoginUserCommandHandler ..> LoginUserCommand : processa
+            LoginUserCommandHandler ..> LoginUserCommandResponse : retorna
+
+            ListUserAdminQueryHandler ..> ListUserAdminQuery : processa
+            ListUserAdminQueryHandler ..> ListUserAdminQueryResponse : retorna
+
+            GetUserQueryHandler ..> GetUserQuery : processa
+            GetUserQueryHandler ..> UserModel : retorna
+
+            ListUserAdminQueryResponse --> UserModel : contém (coleção)
+            LoginUserCommandResponse --> UserModel : contém
+        </div>
+    </div>
+
+    <script>
+    mermaid.initialize({
+        startOnLoad: true,
+        theme: 'default',
+        themeVariables: {
+            primaryColor: '#c8e6c9',
+            primaryTextColor: '#000',
+            primaryBorderColor: '#4caf50',
+            lineColor: '#666',
+            secondaryColor: '#dcedc8',
+            tertiaryColor: '#f3e5f5',
+            fontSize: '14px'
+        }
+    });
+    </script>
+</body>
+</html>

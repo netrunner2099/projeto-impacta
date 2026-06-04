@@ -1,0 +1,111 @@
+@using Credenciamento.Web.Models
+@model LocalBaseViewModel
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - Admin | IIngresso</title>
+
+    <link type="text/css" href="~/lib/bootstrap/css/bootstrap.min.css" rel="stylesheet" asp-append-version="true" />
+    <link type="text/css" href="~/lib/bootstrap-icons/font/bootstrap-icons.min.css" rel="stylesheet" asp-append-version="true" />
+    <link type="text/css" rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link type="text/css" rel="stylesheet" href="~/css/custom-styles.css" asp-append-version="true" />
+
+    <script type="text/javascript" src="~/lib/jquery/jquery.min.js" asp-append-version="true"></script>
+    <script type="text/javascript" src="~/lib/bootstrap/js/bootstrap.bundle.min.js" asp-append-version="true"></script>
+    <script type="text/javascript" src="~/js/cookies.js" asp-append-version="true"></script>
+    <script type="text/javascript" src="~/js/site.js" asp-append-version="true"></script>
+
+    <style>
+        body { background-color: #f1f3f5; }
+        .admin-navbar { background: linear-gradient(135deg, #1a1a2e 0%, #16213e 50%, #0f3460 100%); }
+        .admin-navbar .navbar-brand { color: #fff; font-weight: 700; letter-spacing: 1px; }
+        .admin-navbar .navbar-brand span { color: #dc3545; }
+        .admin-navbar .nav-link { color: rgba(255,255,255,.75) !important; font-weight: 500; border-radius: 6px; padding: 8px 14px !important; transition: background .2s; }
+        .admin-navbar .nav-link:hover, .admin-navbar .nav-link.active { background: rgba(220,53,69,.18); color: #fff !important; }
+        .admin-navbar .nav-link i { font-size: 1rem; }
+        .admin-topbar-user { color: rgba(255,255,255,.6); font-size: .85rem; }
+        .admin-main { padding: 2rem 0; }
+    </style>
+</head>
+<body>
+
+    <!-- Topbar Admin -->
+    <nav class="navbar navbar-expand-lg admin-navbar shadow-sm">
+        <div class="container-fluid px-4">
+
+            <!-- Brand -->
+            <a class="navbar-brand" asp-area="Admin" asp-controller="Home" asp-action="Index">
+                <i class="bi bi-shield-lock-fill me-2"></i>IIngresso <span>Admin</span>
+            </a>
+
+            <!-- Toggle mobile -->
+            <button class="navbar-toggler border-secondary" type="button"
+                    data-bs-toggle="collapse" data-bs-target="#adminNavMenu"
+                    aria-controls="adminNavMenu" aria-expanded="false" aria-label="Toggle navigation">
+                <i class="bi bi-list text-white fs-4"></i>
+            </button>
+
+            <div class="collapse navbar-collapse" id="adminNavMenu">
+
+                <!-- Menu principal -->
+                <ul class="navbar-nav me-auto ms-3 gap-1">
+                    <li class="nav-item">
+                        <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Users" ? "active" : "")"
+                           asp-area="Admin" asp-controller="Users" asp-action="Index">
+                            <i class="bi bi-people-fill me-1"></i>Usuários
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Events" ? "active" : "")"
+                           asp-area="Admin" asp-controller="Events" asp-action="Index">
+                            <i class="bi bi-calendar-event-fill me-1"></i>Eventos
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link @(ViewContext.RouteData.Values["controller"]?.ToString() == "Tickets" ? "active" : "")"
+                           asp-area="Admin" asp-controller="Tickets" asp-action="Index">
+                            <i class="bi bi-ticket-perforated-fill me-1"></i>Tickets
+                        </a>
+                    </li>
+                </ul>
+
+                <!-- Usuário logado + Sair -->
+                <ul class="navbar-nav ms-auto align-items-center gap-2">
+                    @if (Model?.User != null)
+                    {
+                        <li class="nav-item">
+                            <span class="admin-topbar-user">
+                                <i class="bi bi-person-circle me-1"></i>@Model.User.Name
+                            </span>
+                        </li>
+                    }
+                    <li class="nav-item">
+                        <a class="nav-link text-danger"
+                           asp-area="Admin" asp-controller="Login" asp-action="Logoff"
+                           title="Sair do painel">
+                            <i class="bi bi-box-arrow-right me-1"></i>Sair
+                        </a>
+                    </li>
+                </ul>
+
+            </div>
+        </div>
+    </nav>
+
+    <!-- Conteúdo -->
+    <div class="container-fluid px-4 admin-main">
+        @RenderBody()
+    </div>
+
+    <footer class="border-top mt-4 py-3 text-center">
+        <small class="text-muted">
+            <i class="bi bi-shield-lock me-1"></i>
+            IIngresso Admin &bull; &copy; @DateTime.Now.Year &bull; Área restrita
+        </small>
+    </footer>
+
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

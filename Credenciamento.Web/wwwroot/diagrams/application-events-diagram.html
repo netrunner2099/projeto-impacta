@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>Application - Events - Sistema de Credenciamento</title>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10.9.5/dist/mermaid.min.js"></script>
+    <link type="text/css" href="../css/diagram.css" rel="stylesheet" />
+</head>
+<body>
+    <div class="container">
+        <h1>🟢 Application Layer — Events</h1>
+        <div class="subtitle">CQRS: Commands, Queries e Handlers do módulo de Eventos</div>
+
+        <nav class="nav">
+            <a href="domain-diagram.html">Domain</a>
+            <a href="infrastructure-diagram.html">Infrastructure</a>
+            <a href="application-diagram.html">Application</a>
+            <a href="web-diagram.html">Web</a>
+            <a href="database-diagram.html">Database</a>
+            <a href="usecase-diagram.html">Use Cases</a>
+            <a href="class-diagram.html">Visão Completa</a>
+        </nav>
+
+        <div class="nav" style="margin-top:6px;">
+            <a href="application-diagram.html">↩ Voltar ao Índice Application</a>
+            <a href="application-events-diagram.html" class="active">Events</a>
+            <a href="application-tickets-diagram.html">Tickets</a>
+            <a href="application-users-diagram.html">Users</a>
+            <a href="application-persons-diagram.html">Persons</a>
+        </div>
+
+        <div class="info">
+            <strong>📦 Projeto:</strong> Credenciamento.Application<br>
+            <strong>🎯 Responsabilidade:</strong> Consulta, criação e gestão de eventos<br>
+            <strong>✨ Padrões:</strong> MediatR, CQRS, AutoMapper
+        </div>
+
+        <div class="mermaid">
+            classDiagram
+            %% ===============================================
+            %% MODEL
+            %% ===============================================
+            class EventModel {
+            +long EventId
+            +string Name
+            +string Description
+            +string Local
+            +decimal Price
+            +byte Status
+            +DateTime Begin
+            +DateTime End
+            +DateTime CreatedAt
+            +DateTime UpdatedAt
+            }
+
+            %% ===============================================
+            %% COMMANDS
+            %% ===============================================
+            class CreateEventCommand {
+            &lt;&lt;IRequest&gt;&gt;
+            +string Name
+            +string Description
+            +string Local
+            +decimal Price
+            +DateTime Begin
+            +DateTime End
+            }
+
+            class UpdateEventCommand {
+            &lt;&lt;IRequest&gt;&gt;
+            +long EventId
+            +string Name
+            +string Description
+            +string Local
+            +decimal Price
+            +DateTime Begin
+            +DateTime End
+            }
+
+            class DeleteEventCommand {
+            &lt;&lt;IRequest&gt;&gt;
+            +long EventId
+            }
+
+            class ActivateEventCommand {
+            &lt;&lt;IRequest&gt;&gt;
+            +long EventId
+            }
+
+            class InactivateEventCommand {
+            &lt;&lt;IRequest&gt;&gt;
+            +long EventId
+            }
+
+            %% ===============================================
+            %% QUERIES
+            %% ===============================================
+            class GetEventQuery {
+            &lt;&lt;IRequest&gt;&gt;
+            +long EventId
+            }
+
+            class ListFutureEventQuery {
+            &lt;&lt;IRequest&gt;&gt;
+            +string Name
+            +byte? Status
+            +bool OnlyFuture
+            }
+
+            %% ===============================================
+            %% HANDLERS
+            %% ===============================================
+            class CreateEventCommandHandler {
+            &lt;&lt;IRequestHandler&gt;&gt;
+            -IEventRepository repository
+            -ILogger logger
+            -IMapper mapper
+            +Handle() Task~CreateEventCommandResponse~
+            }
+
+            class UpdateEventCommandHandler {
+            &lt;&lt;IRequestHandler&gt;&gt;
+            -IEventRepository repository
+            -ILogger logger
+            -IMapper mapper
+            +Handle() Task~UpdateEventCommandResponse~
+            }
+
+            class DeleteEventCommandHandler {
+            &lt;&lt;IRequestHandler&gt;&gt;
+            -IEventRepository repository
+            -ILogger logger
+            +Handle() Task~DeleteEventCommandResponse~
+            }
+
+            class ActivateEventCommandHandler {
+            &lt;&lt;IRequestHandler&gt;&gt;
+            -IEventRepository repository
+            -ILogger logger
+            +Handle() Task~ActivateEventCommandResponse~
+            }
+
+            class InactivateEventCommandHandler {
+            &lt;&lt;IRequestHandler&gt;&gt;
+            -IEventRepository repository
+            -ILogger logger
+            +Handle() Task~InactivateEventCommandResponse~
+            }
+
+            class GetEventQueryHandler {
+            &lt;&lt;IRequestHandler&gt;&gt;
+            -IEventRepository repository
+            -ILogger logger
+            -IMapper mapper
+            +Handle() Task~EventModel~
+            }
+
+            class ListFutureEventQueryHandler {
+            &lt;&lt;IRequestHandler&gt;&gt;
+            -IEventRepository repository
+            -ILogger logger
+            -IMapper mapper
+            +Handle() Task~ListFutureEventQueryResponse~
+            }
+
+            %% ===============================================
+            %% RESPONSES
+            %% ===============================================
+            class CreateEventCommandResponse {
+            +long EventId
+            +IEnumerable~string~ Errors
+            }
+
+            class UpdateEventCommandResponse {
+            +IEnumerable~string~ Errors
+            }
+
+            class DeleteEventCommandResponse {
+            +bool Success
+            }
+
+            class ActivateEventCommandResponse {
+            +bool Success
+            }
+
+            class InactivateEventCommandResponse {
+            +bool Success
+            }
+
+            class ListFutureEventQueryResponse {
+            +IEnumerable~EventModel~ Events
+            }
+
+            %% ===============================================
+            %% RELATIONSHIPS
+            %% ===============================================
+            CreateEventCommandHandler ..> CreateEventCommand : processa
+            CreateEventCommandHandler ..> CreateEventCommandResponse : retorna
+
+            UpdateEventCommandHandler ..> UpdateEventCommand : processa
+            UpdateEventCommandHandler ..> UpdateEventCommandResponse : retorna
+
+            DeleteEventCommandHandler ..> DeleteEventCommand : processa
+            DeleteEventCommandHandler ..> DeleteEventCommandResponse : retorna
+
+            ActivateEventCommandHandler ..> ActivateEventCommand : processa
+            ActivateEventCommandHandler ..> ActivateEventCommandResponse : retorna
+
+            InactivateEventCommandHandler ..> InactivateEventCommand : processa
+            InactivateEventCommandHandler ..> InactivateEventCommandResponse : retorna
+
+            GetEventQueryHandler ..> GetEventQuery : processa
+            GetEventQueryHandler ..> EventModel : retorna
+
+            ListFutureEventQueryHandler ..> ListFutureEventQuery : processa
+            ListFutureEventQueryHandler ..> ListFutureEventQueryResponse : retorna
+
+            ListFutureEventQueryResponse --> EventModel : contém (coleção)
+        </div>
+    </div>
+
+    <script>
+    mermaid.initialize({
+        startOnLoad: true,
+        theme: 'default',
+        themeVariables: {
+            primaryColor: '#c8e6c9',
+            primaryTextColor: '#000',
+            primaryBorderColor: '#4caf50',
+            lineColor: '#666',
+            secondaryColor: '#dcedc8',
+            tertiaryColor: '#f3e5f5',
+            fontSize: '14px'
+        }
+    });
+    </script>
+</body>
+</html>

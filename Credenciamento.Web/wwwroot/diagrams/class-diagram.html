@@ -37,7 +37,7 @@
                 <div class="stat-label">Repositories</div>
             </div>
             <div class="stat-card">
-                <div class="stat-number">8</div>
+                <div class="stat-number">10</div>
                 <div class="stat-label">Commands/Queries</div>
             </div>
             <div class="stat-card">
@@ -45,11 +45,11 @@
                 <div class="stat-label">Handlers</div>
             </div>
             <div class="stat-card">
-                <div class="stat-number">6</div>
+                <div class="stat-number">7</div>
                 <div class="stat-label">Controllers</div>
             </div>
             <div class="stat-card">
-                <div class="stat-number">6</div>
+                <div class="stat-number">7</div>
                 <div class="stat-label">ViewModels</div>
             </div>
         </div>
@@ -337,9 +337,24 @@
             +string Transaction
             }
 
+            class ListTicketAdminQuery {
+            &lt;&lt;IRequest&gt;&gt;
+            +long? EventId
+            +byte? Status
+            +byte? Payment
+            }
+
             class GetTicketQueryResponse {
             +long TicketId
             +QRCodeResponse QRCodeResponse
+            +bool Success
+            +string Message
+            }
+
+            class ListTicketAdminQueryResponse {
+            +IEnumerable~TicketModel~ Tickets
+            +bool Success
+            +string Message
             }
 
             class ListFutureEventQueryResponse {
@@ -390,6 +405,14 @@
             }
 
             class GetTicketQueryHandler {
+            &lt;&lt;IRequestHandler&gt;&gt;
+            -ILogger logger
+            -IMapper mapper
+            -ITicketRepository repository
+            +Handle()
+            }
+
+            class ListTicketAdminQueryHandler {
             &lt;&lt;IRequestHandler&gt;&gt;
             -ILogger logger
             -IMapper mapper
@@ -467,6 +490,14 @@
             +TicketDto Ticket
             }
 
+            class AdminTicketViewModel {
+            +long? FilterEventId
+            +byte? FilterStatus
+            +byte? FilterPayment
+            +IEnumerable~TicketModel~ Tickets
+            +IEnumerable~EventModel~ Events
+            }
+
             %% ===============================================
             %% CAMADA WEB - CONTROLLERS
             %% ===============================================
@@ -513,6 +544,15 @@
             +Index(string)
             }
 
+            class AdminTicketsController {
+            -ILogger logger
+            -IMapper mapper
+            -IMediator mediator
+            -IEventRepository eventRepository
+            +Index(long?, byte?, byte?)
+            +Voucher(long)
+            }
+
             %% ===============================================
             %% RELACIONAMENTOS - DOMAIN ENTITIES
             %% ===============================================
@@ -544,6 +584,7 @@
             GetEventQueryHandler ..> IEventRepository : usa
             ListFutureEventQueryHandler ..> IEventRepository : usa
             GetTicketQueryHandler ..> ITicketRepository : usa
+            ListTicketAdminQueryHandler ..> ITicketRepository : usa
 
             %% ===============================================
             %% RELACIONAMENTOS - HANDLERS COM COMMANDS/QUERIES
@@ -554,6 +595,7 @@
             GetEventQueryHandler ..> GetEventQuery : processa
             ListFutureEventQueryHandler ..> ListFutureEventQuery : processa
             GetTicketQueryHandler ..> GetTicketQuery : processa
+            ListTicketAdminQueryHandler ..> ListTicketAdminQuery : processa
 
             %% ===============================================
             %% RELACIONAMENTOS - RESPONSES
@@ -562,6 +604,7 @@
             PayTicketCommandHandler ..> PayTicketCommandResponse : retorna
             CreatePersonCommandHandler ..> CreatePersonCommandResponse : retorna
             GetTicketQueryHandler ..> GetTicketQueryResponse : retorna
+            ListTicketAdminQueryHandler ..> ListTicketAdminQueryResponse : retorna
             ListFutureEventQueryHandler ..> ListFutureEventQueryResponse : retorna
 
             GetTicketQueryResponse --> QRCodeResponse : contém
@@ -576,6 +619,7 @@
             LoginController ..> LoginIndexViewModel : usa
             CheckoutController ..> CheckoutIndexViewModel : usa
             TicketController ..> TicketIndexViewModel : usa
+            AdminTicketsController ..> AdminTicketViewModel : usa
 
             %% ===============================================
             %% RELACIONAMENTOS - VIEWMODELS COM MODELS/DTOS
@@ -590,6 +634,8 @@
             TicketIndexViewModel --> TicketDto : contém
             TicketDto --> EventDto : contém
             TicketDto --> PersonDto : contém
+            AdminTicketViewModel --> TicketModel : contém
+            AdminTicketViewModel --> EventModel : contém
         </div>
 
         <div class="legend">
@@ -627,8 +673,10 @@
                 <div class="legend-section">
                     <h4>🟡 Web Layer</h4>
                     <ul>
-                        <li>Controllers (Home, Store, Checkout, etc.)</li>
-                        <li>ViewModels (apresentação)</li>
+                        <li>Controllers (Home, Store, Checkout, Ticket, etc.)</li>
+                        <li>Admin Controllers (Tickets, Events, Users)</li>
+                        <li>ViewModels (apresentação pública e admin)</li>
+                        <li>AdminTicketViewModel com filtros e lista de tickets</li>
                         <li>DTOs web (EventDto, PersonDto, TicketDto)</li>
                     </ul>
                 </div>
